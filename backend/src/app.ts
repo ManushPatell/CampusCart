@@ -1,13 +1,14 @@
-import express from 'express';
+import express, { Router } from 'express';
 
-import userRoutes from './routes/userRoutes';
-import housesRoutes from './routes/rentalsRoutes';
+import userRoutes from './routes/userRoutes.ts';
+import rentalRoutes from './routes/rentalRoutes.ts';
 
 const app = express();
-const router = express.Router();
+const PORT = 3000;
 
 app.use(express.json());
 app.use('/users', userRoutes);
-app.use('/rentals', rentalsRoutes);
+app.use('/rentals', rentalRoutes);
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(PORT, () => console.log('Server running on port 3000'));
+
