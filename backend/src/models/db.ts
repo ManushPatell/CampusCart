@@ -1,6 +1,6 @@
-import postgres from "postgres";
+const postgres = require("postgres");
 
-const sql: postgres.Sql = postgres({
+const sql = postgres({
     host: "localhost",
     port: 5432,
     username: 'username',

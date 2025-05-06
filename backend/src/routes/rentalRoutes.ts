@@ -1,9 +1,10 @@
 import express from 'express';
-import rentalController from '../controllers/rentalController';
+
+import { getRentalById, getAllRentals } from '../controllers/rentalController.ts';
 
 const router = express.Router();
 
-router.get("/:id", rentalController.getRentalById);
-router.outer.post("/", rentalController.createRental);
+router.get('/:id', getRentalById);
+router.get('/', getAllRentals);
 
-module.exports = router;
+export default router;

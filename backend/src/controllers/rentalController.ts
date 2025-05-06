@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 
-export const getUserById = (req: Request, res: Response) => {
+export const getRentalById = (req: Request, res: Response) => {
     res.status(200).json({ msg: 'hello' });
 };
 
-export const getAllUsers = (req: Request, res: Response) => {
+export const getAllRentals = async (req: Request, res: Response) => {
     res.status(200).json({ msg: 'hello' });
 };
