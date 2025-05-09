@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 
 import userRoutes from './routes/userRoutes.ts';
 import rentalRoutes from './routes/rentalRoutes.ts';
@@ -10,5 +10,9 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/rentals', rentalRoutes);
 
-app.listen(PORT, () => console.log('Server running on port 3000'));
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send('The server had an error!');
+});
 
+app.listen(PORT, () => console.log('Server running on port 3000'));

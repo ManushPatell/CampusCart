@@ -1,11 +1,12 @@
-const postgres = require("postgres");
+import postgres from 'postgres';
 
 const sql = postgres({
-    host: "localhost",
+    host: 'localhost',
     port: 5432,
-    username: 'username',
-    password: 'mypassword',
-    database: 'db'
-})
+    username: 'postgres',
+    password: 'mysecretpassword',
+    database: 'postgres',
+    debug: true,
+});
 
-export default sql
+export default sql;
