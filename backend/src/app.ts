@@ -1,6 +1,9 @@
 import express, { type NextFunction, type Request, type Response } from 'express';
 import bodyParser from 'body-parser';
 
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './swagger.ts';
+
 import userRoutes from './routes/userRoutes.ts';
 import rentalRoutes from './routes/rentalRoutes.ts';
 
@@ -18,4 +21,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     return;
 });
 
-app.listen(PORT, () => console.log('Server running on port 3000'));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.listen(PORT, () => {
+    console.log('Server running at http://localhost:3000');
+    console.log('JsDoc running on http://localhost:3000/docs');
+});

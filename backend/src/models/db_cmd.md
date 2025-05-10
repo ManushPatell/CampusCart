@@ -53,3 +53,6 @@ CREATE TABLE "house" ("id" SERIAL PRIMARY KEY, "seller" INT NOT NULL, CONSTRAINT
 
 # In postgres container
 \d <table_name> # shows table and columns
+
+/users
+Get
