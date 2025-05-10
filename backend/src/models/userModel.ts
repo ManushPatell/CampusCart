@@ -36,13 +36,25 @@ export const addUser = async (
     password: string
 ) => {
     try {
-        const newUser = await sql`
+        const newUser: any = await sql`
         INSERT INTO users (first_name, last_name, email, phone_number, password)
         VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password})
-        RETURNING (id, first_name, lastName, email);
+        RETURNING (id, first_name, last_name, email);
         `;
-        return newUser;
-    } catch (e) {
-        return e;
+        const [userId, userFirstName, userLastName, userEmail] = newUser[0]['row'];
+        return {
+            id: userId,
+            firstName: userFirstName,
+            lastName: userLastName,
+            email: userEmail,
+        };
+    } catch (err: any) {
+        if (err.code === '23505') {
+            throw new Error("That email has been taken!")
+        } else if (err instanceof Error) {
+            throw new Error(`Update failed: ${err.message}`);
+        } else {
+            throw new Error(String(err))
+        }
     }
 };

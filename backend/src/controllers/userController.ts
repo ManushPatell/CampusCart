@@ -24,9 +24,9 @@ export async function getAllUsers(req: Request, res: Response) {
 
 export async function postNewUser(req: Request, res: Response) {
     const { firstName, lastName, email, phoneNumber, password } = req.body;
-    if (!firstName || !lastName || !email || !phoneNumber) {
+    if (!firstName || !lastName || !email || !phoneNumber || !password) {
         res.status(400).json({
-            error: 'Must provide a first name, last name, email and phone number.',
+            error: 'Must provide a first name, last name, email, password, and phone number.',
         });
         return;
     }
@@ -39,5 +39,6 @@ export async function postNewUser(req: Request, res: Response) {
         }
         const newUser = await addUser(firstName, lastName, email, phoneNumber, hash);
         res.status(201).json(newUser);
+        return;
     });
 }
