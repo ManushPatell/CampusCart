@@ -20,7 +20,7 @@ return (
         />
 
         {/* Overlay Content */}
-        <div className="flex flex-col relative z-10 items-center justify-center h-full w-full p-12 text-center">
+        <div className="flex flex-col relative z-10 items-center justify-center h-full w-full p-12 text-center ">
             <h1
                 style={{ fontFamily: 'RetroCustom' }}
                 className="text-white text-8xl tracking-wider drop-shadow-lg"
