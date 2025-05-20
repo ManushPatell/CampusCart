@@ -1,7 +1,7 @@
 import isaiah from "../assets/isaiah.jpg";
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { useEffect } from "react";
-
+import stella from '../assets/stella.jpg';
 export default function Hero() {
     const handleScroll = () => { //scroll function
         const contentSection = document.getElementById('content-section');
