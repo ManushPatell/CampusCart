@@ -2,12 +2,15 @@
 
 ## User routes
 
-### GET /user/
+### GET /user
 
 Returns an array of all the users.
 
-### POST user/ 
+### GET /user/:id
+
+Returns the user at that id.
+
+### POST /user 
 
 Posts a user to the database. 
 
-### 

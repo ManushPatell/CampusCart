@@ -4,6 +4,8 @@
     "main": "dist/app.js",
     "type": "module",
     "scripts": {
+        "docker-build:dev": "docker build -t backend-img:0.0.1 -f Dockerfile.dev .",
+        "docker-run:dev": "docker run -it -p 3000:3000 --name backend-container -v ./:/app -v my-node-modules:/app/node_modules backend-img:0.0.1",
         "dev": "nodemon ./src/app.ts",
         "build": "tsc",
         "start": "node dist/app.js"
@@ -14,16 +16,22 @@
     "description": "",
     "dependencies": {
         "bcrypt": "^5.1.1",
+        "body-parser": "^2.2.0",
         "express": "^5.1.0",
-        "postgres": "^3.4.5"
+        "postgres": "^3.4.5",
+        "swagger-jsdoc": "^6.2.8"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.2",
         "@types/express": "^5.0.1",
         "@types/node": "^22.15.3",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.8",
         "nodemon": "^3.1.10",
+        "swagger-ui-express": "^5.0.1",
         "ts-node": "^10.9.2",
         "ts-node-dev": "^2.0.0",
+        "tsx": "^4.19.4",
         "typescript": "^5.8.3"
     }
 }

@@ -13,7 +13,9 @@ function App() {
      <NavBar/>
      <Hero/>
      <section id="content-section" 
-     className="min-h-screen  border-10">
+
+     className="min-h-screen border-e-gray-950 bg-[#F5F1EA] p-8">
+
         <Content/>
 
 
