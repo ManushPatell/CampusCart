@@ -1,6 +1,11 @@
 import express from 'express';
 
-import { getUserById, getAllUsers, postNewUser } from '../controllers/userController.ts';
+import {
+  getUserById,
+  getAllUsers,
+  postNewUser,
+  postLoginUser,
+} from '../controllers/userController.ts';
 
 const router = express.Router();
 
@@ -130,5 +135,6 @@ router.get('/', getAllUsers);
  *                      type: string
  */
 router.post('/', postNewUser);
+router.post('/login', postLoginUser);
 
 export default router;
