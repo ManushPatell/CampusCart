@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import {
   findAllUsers,
   findUserById,
@@ -7,8 +8,14 @@ import {
   findUserByEmail,
 } from '../models/userModel.ts';
 
+// An implimentation of UserPayload is encoded in the jwt when logged in.
+interface UserPayload {
+  id?: number;
+  role?: 'admin' | 'user';
+}
+
 export async function getUserById(req: Request, res: Response) {
-  const id: number = parseInt(req.params.id);
+  const id = parseInt(req.params.id);
   if (!id) {
     res.status(400).json({ error: 'Id is required' });
     return;
@@ -58,9 +65,25 @@ export async function postNewUser(req: Request, res: Response) {
 export async function postLoginUser(req: Request, res: Response) {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
+
+  if (!userEmail || !userPassword) {
+    res.status(400).json({
+      error:
+        'Failed to provide an email or password or both in the request body.',
+    });
+    return;
+  }
+
   const { id, password } = await findUserByEmail(userEmail);
+
   const isValid = await bcrypt.compare(password, userPassword);
   if (isValid) {
+    const { role, id } = findUserById(id);
+    const userPayload: UserPayload = {
+      id: id,
+      role: role,
+    };
+    const accessToken = jwt.sign(userPayload, process.env.ACCESS_TOKEN_SECRET);
     res.status(200).json('logged in');
   }
 }

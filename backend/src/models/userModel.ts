@@ -6,6 +6,7 @@ interface User {
   lastName: string;
   email: string;
   phoneNumber: string;
+  admin: 'user' | 'admin';
 }
 
 // CAUTION, this interface contains the user password

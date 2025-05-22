@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, {
   type NextFunction,
   type Request,
@@ -13,7 +16,7 @@ import rentalRoutes from './routes/rentalRoutes.ts';
 
 const app = express();
 const PORT = 3000;
-const NODE_ENV = process.env.NODE_ENV;
+const NODE_ENV = 'development';
 
 app.use(express.json({ limit: '10mb' }));
 app.use(bodyParser.json());
