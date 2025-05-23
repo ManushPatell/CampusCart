@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import {
   findAllUsers,
   findUserById,
@@ -11,7 +11,7 @@ import {
 // An implimentation of UserPayload is encoded in the jwt when logged in.
 interface UserPayload {
   id?: number;
-  role?: 'admin' | 'user';
+  role?: 'admin' | 'user' | 'banned';
 }
 
 export async function getUserById(req: Request, res: Response) {
@@ -74,16 +74,25 @@ export async function postLoginUser(req: Request, res: Response) {
     return;
   }
 
-  const { id, password } = await findUserByEmail(userEmail);
+  const authedUser = await findUserByEmail(userEmail);
 
-  const isValid = await bcrypt.compare(password, userPassword);
+  const isValid = await bcrypt.compare(authedUser.password, userPassword);
   if (isValid) {
-    const { role, id } = findUserById(id);
     const userPayload: UserPayload = {
-      id: id,
-      role: role,
+      id: authedUser.id,
+      role: authedUser.role,
     };
-    const accessToken = jwt.sign(userPayload, process.env.ACCESS_TOKEN_SECRET);
-    res.status(200).json('logged in');
+    const accessToken = await jwt.sign(
+      userPayload,
+      process.env.ACCESS_TOKEN_SECRET as string,
+      { expiresIn: '30m' }
+    );
+    const refreshToken = jwt.sign(
+      userPayload,
+      process.env.REFRESH_TOKEN_SECRET as string
+    );
+    res
+      .status(200)
+      .json({ accessToken: accessToken, refreshToken: refreshToken });
   }
 }

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 interface JwtPayload {
   id?: string;
-  role?: 'user' | 'admin';
+  role?: 'user' | 'admin' | 'banned';
 }
 
 interface AuthRequest extends Request {

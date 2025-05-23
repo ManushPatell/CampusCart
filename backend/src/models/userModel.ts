@@ -6,7 +6,7 @@ interface User {
   lastName: string;
   email: string;
   phoneNumber: string;
-  admin: 'user' | 'admin';
+  role: 'user' | 'admin' | 'banned';
 }
 
 // CAUTION, this interface contains the user password
@@ -14,6 +14,7 @@ interface SecureUser {
   id: number;
   password: string;
   email: string;
+  role: 'user' | 'admin' | 'banned';
 }
 
 export const findAllUsers = async (): Promise<User[]> => {
