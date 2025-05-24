@@ -13,6 +13,7 @@ import { swaggerSpec } from './swagger.ts';
 
 import userRoutes from './routes/userRoutes.ts';
 import rentalRoutes from './routes/rentalRoutes.ts';
+import authRoutes from './routes/authRoutes.ts';
 
 const app = express();
 const PORT = 3000;
@@ -20,6 +21,7 @@ const NODE_ENV = 'development';
 
 app.use(express.json({ limit: '10mb' }));
 app.use(bodyParser.json());
+app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/rentals', rentalRoutes);
 
