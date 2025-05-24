@@ -50,7 +50,7 @@ export const addUser = async (
   password: string
 ): Promise<User> => {
   try {
-    const newUser: any = await sql<User[]>`
+    const newUser = await sql<User[]>`
         INSERT INTO users (first_name, last_name, email, phone_number, password)
         VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password})
         RETURNING id, first_name, last_name, email;

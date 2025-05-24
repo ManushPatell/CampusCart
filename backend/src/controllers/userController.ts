@@ -7,6 +7,8 @@ import {
   addUser,
   findUserByEmail,
 } from '../models/userModel.ts';
+import { registerToken, deleteToken } from '../models/tokenModel.ts';
+import { access } from 'fs';
 
 // An implimentation of UserPayload is encoded in the jwt when logged in.
 interface UserPayload {
@@ -91,8 +93,49 @@ export async function postLoginUser(req: Request, res: Response) {
       userPayload,
       process.env.REFRESH_TOKEN_SECRET as string
     );
+    refreshTokens.push(refreshToken);
     res
       .status(200)
       .json({ accessToken: accessToken, refreshToken: refreshToken });
   }
+}
+
+let refreshTokens: string[] = [];
+
+export async function postRefreshToken(req: Request, res: Response) {
+  const refreshToken = req.body.token;
+  if (refreshToken == null) {
+    res.status(401).json({ error: 'No token provided.' });
+    return;
+  }
+
+  if (refreshToken.includes(refreshToken)) {
+    res.status(401).json({ error: 'Token not in database.' });
+    return;
+  }
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as string,
+    (err: any, user: any) => {
+      if (err) {
+        res.status(403).json({ error: err });
+        return;
+      }
+      const userPayload: UserPayload = {
+        id: user.id,
+        role: user.role,
+      };
+      const accessToken = jwt.sign(
+        userPayload,
+        process.env.ACCESS_TOKEN_SECRET as string,
+        { expiresIn: '30m' }
+      );
+      res.status(200).json(accessToken);
+    }
+  );
+}
+
+export async function deleteLogoutUser(req: Request, res: Response) {
+  refreshTokens = refreshTokens.filter((token) => token != req.body.token);
+  res.status(204);
 }

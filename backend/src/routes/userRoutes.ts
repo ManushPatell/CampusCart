@@ -5,6 +5,8 @@ import {
   getAllUsers,
   postNewUser,
   postLoginUser,
+  postRefreshToken,
+  deleteLogoutUser,
 } from '../controllers/userController.ts';
 
 const router = express.Router();
@@ -184,5 +186,7 @@ router.post('/', postNewUser);
  *                      type: string
  */
 router.post('/login', postLoginUser);
+router.post('/token', postRefreshToken);
+router.delete('/logout', deleteLogoutUser);
 
 export default router;
