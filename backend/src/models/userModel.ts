@@ -77,8 +77,5 @@ export const findUserByEmail = async (email: string): Promise<SecureUser> => {
         SELECT * 
         FROM users 
         WHERE email = ${email}`;
-  if (user.length > 1) {
-    throw new Error('Multiple users with same email. Returning first match!');
-  }
   return user[0];
 };
