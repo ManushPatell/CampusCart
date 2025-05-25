@@ -9,10 +9,10 @@ const router = express.Router();
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Login a user.
- *     tags: [auth]
+ *     tags: [Auth]
  *     requestBody:
  *       content:
  *           application/json:
@@ -44,6 +44,15 @@ const router = express.Router();
  *               properties:
  *                  error:
  *                      type: string
+ *       401:
+ *           description: Invalid login credentials.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
  *       500:
  *           description: An error occured.
  *           content:
@@ -55,6 +64,48 @@ const router = express.Router();
  *                      type: string
  */
 router.post('/login', postLoginUser);
+
+/**
+ * @swagger
+ * /auth/token:
+ *   post:
+ *     summary: Generates a refresh token.
+ *     tags: [Auth]
+ *     requestBody:
+ *        content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  token:
+ *                    type: string
+ *     responses:
+ *       200:
+ *             description: Login successful.
+ *             content:
+ *                 application/json:
+ *                     schema:
+ *                         type: string
+ *
+ *       401:
+ *             description: No token provided or token not in database.
+ *             content:
+ *                 application/json:
+ *                     schema:
+ *                     type: object
+ *                     properties:
+ *                         error:
+ *                             type: string
+ *       403:
+ *           description: Invalid refresh token.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ */
 router.post('/token', postRefreshToken);
 router.delete('/logout', deleteLogoutUser);
 

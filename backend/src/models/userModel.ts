@@ -25,21 +25,21 @@ export const findAllUsers = async (): Promise<User[]> => {
   return users;
 };
 
-export const findUserById = async (id: number): Promise<User> => {
-  try {
-    const user = await sql<User[]>`
+interface foundUser {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: number;
+}
+
+export const findUserById = async (id: number): Promise<foundUser> => {
+  const user = await sql<foundUser[]>`
         SELECT id, first_name, last_name, email, phone_number 
         FROM users
         WHERE id=${id}
         `;
-    if (user.length > 1) {
-      throw new Error('Multiple users with same id. Returning first match!');
-    } else {
-      return user[0];
-    }
-  } catch (err) {
-    throw new Error(`Error finding user by id: ${err}`);
-  }
+  return user[0];
 };
 
 export const addUser = async (
@@ -47,37 +47,38 @@ export const addUser = async (
   lastName: string,
   email: string,
   phoneNumber: number,
-  password: string
-): Promise<User> => {
-  try {
-    const newUser = await sql<User[]>`
-        INSERT INTO users (first_name, last_name, email, phone_number, password)
-        VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password})
+  password: string,
+  role: 'admin' | 'user' | 'banned' = 'user'
+): Promise<{
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+}> => {
+  const newUser = await sql<
+    {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+    }[]
+  >`
+        INSERT INTO users (first_name, last_name, email, phone_number, password, role)
+        VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password}, ${role})
+        ON CONFLICT (email) DO NOTHING
         RETURNING id, first_name, last_name, email;
         `;
-    return newUser[0];
-  } catch (err: any) {
-    if (err.code === '23505') {
-      throw new Error('That email has been taken!');
-    } else if (err instanceof Error) {
-      throw new Error(`Update failed: ${err.message}`);
-    } else {
-      throw new Error(String(err));
-    }
-  }
+
+  return newUser[0];
 };
 
 export const findUserByEmail = async (email: string): Promise<SecureUser> => {
-  try {
-    const user = await sql<SecureUser[]>`
+  const user = await sql<SecureUser[]>`
         SELECT * 
         FROM users 
         WHERE email = ${email}`;
-    if (user.length > 1) {
-      throw new Error('Multiple users with same email. Returning first match!');
-    }
-    return user[0];
-  } catch (err) {
-    throw new Error(String(err));
+  if (user.length > 1) {
+    throw new Error('Multiple users with same email. Returning first match!');
   }
+  return user[0];
 };

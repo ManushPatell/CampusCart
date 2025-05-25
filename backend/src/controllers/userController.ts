@@ -1,4 +1,8 @@
-import express, { type Request, type Response } from 'express';
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {
@@ -8,15 +12,25 @@ import {
   findUserByEmail,
 } from '../models/userModel.ts';
 
-
-export async function getUserById(req: Request, res: Response) {
+export async function getUserById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const id = parseInt(req.params.id);
   if (!id) {
     res.status(400).json({ error: 'Id is required' });
     return;
   }
 
-  const user = await findUserById(id);
+  let user;
+  try {
+    user = await findUserById(id);
+  } catch (err) {
+    next(err);
+    return;
+  }
+
   if (!user) {
     res.status(500).json({ error: 'User not found!' });
     return;
@@ -24,12 +38,27 @@ export async function getUserById(req: Request, res: Response) {
   res.status(200).json(user);
 }
 
-export async function getAllUsers(req: Request, res: Response) {
-  const users = await findAllUsers();
+export async function getAllUsers(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  let users;
+  try {
+    users = await findAllUsers();
+  } catch (err) {
+    next(err);
+    return;
+  }
+
   res.status(200).json(users);
 }
 
-export async function postNewUser(req: Request, res: Response) {
+export async function postNewUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { firstName, lastName, email, phoneNumber, password } = req.body;
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
     res.status(400).json({
@@ -45,6 +74,7 @@ export async function postNewUser(req: Request, res: Response) {
       res.status(500).json({ error: 'Failed to encrypt password.' });
       return;
     }
+
     const newUser = await addUser(
       firstName,
       lastName,
@@ -52,7 +82,10 @@ export async function postNewUser(req: Request, res: Response) {
       phoneNumber,
       hash
     );
+    if (!newUser) {
+      res.status(409).json({ error: 'That email has been taken.' });
+      return;
+    }
     res.status(201).json(newUser);
-    return;
   });
 }

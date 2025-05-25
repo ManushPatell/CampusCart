@@ -26,9 +26,11 @@ app.use('/users', userRoutes);
 app.use('/rentals', rentalRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(`Thrown error: ${err.stack}`);
-  res.status(500).json({ error: 'The server had an error!' });
-  return;
+  console.log(`Thrown error: ${err.stack}`);
+  res.status(500).json({ error: err.message });
+  if (NODE_ENV === 'development') {
+    //return;
+  }
 });
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
