@@ -1,3 +1,4 @@
+import { type UserPayload } from '../types/user.ts';
 import express, { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -9,12 +10,6 @@ import {
   deleteTokenById,
 } from '../models/tokenModel.ts';
 import { findUserByEmail } from '../models/userModel.ts';
-
-// An implimentation of UserPayload is encoded in the jwt when logged in.
-interface UserPayload {
-  id?: number;
-  role?: 'admin' | 'user' | 'banned';
-}
 
 export async function postLoginUser(req: Request, res: Response) {
   const userEmail = req.body.email;
@@ -31,6 +26,7 @@ export async function postLoginUser(req: Request, res: Response) {
   const authedUser = await findUserByEmail(userEmail);
   if (!authedUser) {
     res.status(404).json({ error: 'User not found.' });
+    return;
   }
 
   // Delete any existing refresh tokens registered to given user.
@@ -55,7 +51,20 @@ export async function postLoginUser(req: Request, res: Response) {
     console.log(`Registered refresh token: ${token}`);
     res
       .status(200)
-      .json({ accessToken: accessToken, refreshToken: refreshToken });
+      .cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 1800000), // expires in 30 minutes
+      })
+      .cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      })
+      .send();
+
+    return;
   } else {
     res.status(401).json({ error: 'Invalid login credentials.' });
   }
@@ -80,16 +89,17 @@ export async function postRefreshToken(req: Request, res: Response) {
         res.status(403).json({ error: err });
         return;
       }
-      const userPayload: UserPayload = {
-        id: user.id,
-        role: user.role,
-      };
       const accessToken = jwt.sign(
-        userPayload,
+        { id: user.id, role: user.role },
         process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: '30m' }
       );
-      res.status(200).json(accessToken);
+      res.status(200).cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 30, // 30 minutes
+      });
+      return;
     }
   );
 }
@@ -97,4 +107,5 @@ export async function postRefreshToken(req: Request, res: Response) {
 export async function deleteLogoutUser(req: Request, res: Response) {
   deleteToken(req.body.token);
   res.status(204).json(req.body.token);
+  return;
 }

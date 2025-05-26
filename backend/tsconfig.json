@@ -15,6 +15,6 @@
     "allowSyntheticDefaultImports": true,
     "moduleDetection": "force"
   },
-  "include": ["src/**/*.ts", "src/app.ts"],
+  "include": ["src/**/*.ts", "src/app.ts", "src/types/**/.ts"],
   "exclude": ["node_modules"]
 }

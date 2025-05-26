@@ -4,6 +4,7 @@ import {
   postLoginUser,
   postRefreshToken,
 } from '../controllers/authController.ts';
+import { authenticateToken } from '../middleware/authMiddleware.ts';
 
 const router = express.Router();
 
@@ -106,7 +107,7 @@ router.post('/login', postLoginUser);
  *                  error:
  *                      type: string
  */
-router.post('/token', postRefreshToken);
-router.delete('/logout', deleteLogoutUser);
+router.post('/token', authenticateToken, postRefreshToken);
+router.delete('/logout', authenticateToken, deleteLogoutUser);
 
 export default router;

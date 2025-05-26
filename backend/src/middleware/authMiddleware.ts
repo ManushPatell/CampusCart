@@ -1,22 +1,18 @@
+import { type UserPayload } from '../types/user.ts';
 import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface JwtPayload {
-  id?: string;
-  role?: 'user' | 'admin' | 'banned';
-}
-
-interface AuthRequest extends Request {
-  user?: JwtPayload;
-}
-
 export const authenticateToken = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const tokenFromHeader = authHeader && authHeader.split(' ')[1];
+  const tokenFromCookie = req.cookies && req.cookies.token;
+
+  const token = tokenFromCookie || tokenFromHeader;
+
   if (token == undefined) {
     res.status(401).json({ error: 'No token provided!' });
     return;
@@ -24,16 +20,21 @@ export const authenticateToken = (
 
   if (process.env.ACCESS_TOKEN_SECRET == undefined) {
     console.error('No ACCESS_TOKEN_SECRET environment variables');
-    throw new Error('Server had a problem');
+    res.status(500).json({ error: 'Server had a problem' });
+    return;
   }
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) {
-      res.status(403).json({ error: err });
-      return;
-    }
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET as string,
+    (err: any, decoded: any) => {
+      if (err) {
+        res.status(403).json({ error: err });
+        return;
+      }
 
-    req.user = decoded as JwtPayload;
-    next();
-  });
+      req.user = decoded as UserPayload;
+      next();
+    }
+  );
 };

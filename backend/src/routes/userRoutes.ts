@@ -6,6 +6,8 @@ import {
   postNewUser,
 } from '../controllers/userController.ts';
 
+import { authenticateToken } from '../middleware/authMiddleware.ts';
+
 const router = express.Router();
 
 /**
@@ -88,7 +90,7 @@ router.get('/:id', getUserById);
  *                      type: string
  *
  */
-router.get('/', getAllUsers);
+router.get('/', authenticateToken, getAllUsers);
 
 /**
  * @swagger
