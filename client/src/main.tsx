@@ -6,18 +6,18 @@ import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import "./fonts/fonts.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route element={<NavBar />}>
-          <Route index element={<Home />} />
-
+          <Route path="/" element={<Home />} />
         </Route>
 
-          <Route path="login" element={<Login />} />
-    <Route path="register" element={<Signup />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Signup />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
