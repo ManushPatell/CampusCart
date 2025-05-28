@@ -1,6 +1,9 @@
 import express from 'express';
 
-import { getRentalById, getAllRentals } from '../controllers/rentalController.ts';
+import {
+  getRentalById,
+  getAllRentals,
+} from '../controllers/rentalController.ts';
 
 const router = express.Router();
 

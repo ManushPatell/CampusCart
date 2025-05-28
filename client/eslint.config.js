@@ -1,33 +1,58 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+// eslint.config.js
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
+
+import tseslint from "@typescript-eslint/eslint-plugin";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import prettier from "eslint-plugin-prettier";
+
+import parser from "@typescript-eslint/parser";
+
+import path from "path";
+
+const compat = new FlatCompat({
+  baseDirectory: path.resolve(),
+});
 
 export default [
-  { ignores: ['dist'] },
+  js.configs.recommended,
+
+  ...compat.extends(
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "prettier",
+  ),
+
   {
-    files: ['**/*.{js,jsx}'],
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      parser: parser,
       parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+        project: "./tsconfig.json",
+        tsconfigRootDir: path.resolve(),
+        ecmaFeatures: {
+          jsx: true,
+        },
+        sourceType: "module",
       },
     },
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      "@typescript-eslint": tseslint,
+      react,
+      "react-hooks": reactHooks,
+      prettier,
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      "prettier/prettier": "warn",
+      "react/react-in-jsx-scope": "off", // Not needed in React 17+
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
   },
-]
+];

@@ -1,26 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Kavoon&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Kavoon&display=swap");
 @import "tailwindcss";
-/* @import "@fontsource/inter/variable.css"; */
-
 
 body {
-    font-family: 'Londrina Outline','Kavoon','Inter', 'sans-serif', 'Times New Roman', sans-serif, 'Press Start 2P';
+  font-family:
+    "Londrina Outline", "Kavoon", "Inter", "sans-serif", "Times New Roman",
+    sans-serif, "Press Start 2P";
 
-    
-    html, body, #root {
-        height: 100%;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-        overflow-x: hidden; /*Prevent horizontal scroll*/
-
-      }
-    
-    background-color: transparent;
-      
-        html {
-            scroll-behavior: smooth;
-          }
-      
-      
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /*Prevent horizontal scroll*/
   }
+
+  background-color: transparent;
+
+  html {
+    scroll-behavior: smooth;
+  }
+}

@@ -1,6 +1,12 @@
 import express from 'express';
 
-import { getUserById, getAllUsers, postNewUser } from '../controllers/userController.ts';
+import {
+  getUserById,
+  getAllUsers,
+  postNewUser,
+} from '../controllers/userController.ts';
+
+import { authenticateToken } from '../middleware/authMiddleware.ts';
 
 const router = express.Router();
 
@@ -84,7 +90,7 @@ router.get('/:id', getUserById);
  *                      type: string
  *
  */
-router.get('/', getAllUsers);
+router.get('/', authenticateToken, getAllUsers);
 
 /**
  * @swagger
@@ -92,26 +98,37 @@ router.get('/', getAllUsers);
  *   post:
  *     summary: Register new user.
  *     tags: [Users]
- *     responses:
- *       201:
- *         description: Single user.
- *         content:
+ *     requestBody:
+ *       content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                  id:
- *                      type: integer
  *                  firstName:
  *                      type: string
  *                  lastName:
  *                      type: string
  *                  email:
  *                      type: string
+ *                  password:
+ *                      type: string
  *                  phoneNumber:
  *                      type: integer
+ *     responses:
+ *       201:
+ *         description: Single user.
+ *
  *       400:
  *           description: Failed to provide required input parameters.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ *       409:
+ *           description: Provided email has been taken.
  *           content:
  *           application/json:
  *             schema:
