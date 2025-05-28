@@ -1,20 +1,20 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "moduleResolution": "Node",
-        "module": "ESNext",
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-        "allowImportingTsExtensions": true,
-        "noEmit": true,
-        "types": ["node"],
-        "allowSyntheticDefaultImports": true,
-        "moduleDetection": "force"
-    },
-    "include": ["src/**/*.ts", "src/app.ts"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "moduleDetection": "force"
+  },
+  "include": ["src/**/*.ts", "src/app.ts", "src/types/**/.ts"],
+  "exclude": ["node_modules"]
 }
