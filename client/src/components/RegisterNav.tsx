@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 export default function RegisterNav() {
   return (
@@ -12,24 +12,24 @@ export default function RegisterNav() {
 
         {/* Navigation Links */}
         <div className="space-x-6 text-sm z-50 hidden md:flex">
-          <a
-            href="#"
+          <Link
+            to="/register"
             className="px-3 py-2 border-2 border-blue-200 text-white hover:bg-white hover:text-black transition-colors duration-300"
           >
             Sign Up
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/login"
             className="px-3 py-2 border-2 border-blue-200 text-white hover:bg-white hover:text-black transition-colors duration-300"
           >
             Login
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="/#about"
             className="px-3 py-2 border-2 border-blue-200 text-white hover:bg-blue-50 hover:text-black transition-colors duration-300"
           >
             About Us
-          </a>
+          </Link>
         </div>
       </nav>
       <Outlet />
