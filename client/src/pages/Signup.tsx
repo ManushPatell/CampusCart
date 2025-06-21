@@ -27,6 +27,19 @@ export default function SignUp() {
     if (codeInput === "123456") {
       setShowPopup(false);
       setSuccessMessage("Email verified. Sign-up successful!");
+      fetch("localhost:8000/users", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phoneNumber: phoneNumber,
+          password: password
+        })          
+      });
     } else {
       setError("Invalid verification code.");
     }
