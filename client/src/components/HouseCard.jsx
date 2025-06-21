@@ -1,12 +1,9 @@
 // src/components/HouseCard.jsx
 import {Link} from 'react-router-dom';
 
-const HouseCard = ({ house, onClick }) => {
+const HouseCard = ({ house }) => {
   return (
-    <div 
-      onClick={onClick}
-      className="mb-4 break-inside-avoid rounded-lg shadow bg-white cursor-pointer"
-    >
+    <div className="mb-4 break-inside-avoid rounded-lg shadow bg-white">
       <img
         src={house.image}
         alt={house.title}
@@ -18,7 +15,7 @@ const HouseCard = ({ house, onClick }) => {
         <p className="text-gray-600">Price: {house.price}</p>
         
         {/*Create link to further house details */}
-        <Link to={`/house/${house.id}`}>
+        <Link to={`/houses/${house.id}`}>
           <button className = "mt-4 bg-[#4A4032] text-white px-4 py-2 rounded-lg hover:bg-[#5C503E] transition-colors">
             View Details
           </button>
@@ -32,17 +29,3 @@ const HouseCard = ({ house, onClick }) => {
 
 export default HouseCard;
 
-// In your App.jsx or router configuration file
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HouseDetail from '../pages/HouseDetail';
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Houses />} />
-        <Route path="/house/:id" element={<HouseDetail />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}

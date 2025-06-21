@@ -131,3 +131,4 @@ house.amenities.some((a) => a.toLowerCase().includes('furnished'))
 - ex. a = 'Wi-Fi'  
     a = 'Furnished'
 
+# Sublet available or not

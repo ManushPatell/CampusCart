@@ -10,13 +10,13 @@ const NavBar = () => {
         }`;
 
     return (
-        <nav className="flex items-center justify-between px-8 py-4 bg-[#F5F1EA] shadow-md border-b border-[#E8DFD0]">
+        <nav className="flex items-center justify-between px-8 py-4 bg-[#F5F1EA] shadow-md border-b-4 border-[#D6C7B0]">
             <Link to="/" className="font-bold text-2xl tracking-wide text-[#4A4032] no-underline">
                 CampusCart
             </Link>
             <div className="flex gap-8">
                 <Link to="/" className={linkClasses('/')}>
-                    Home
+                    Homes
                 </Link>
                 <Link to="/about" className={linkClasses('/about')}>
                     About
