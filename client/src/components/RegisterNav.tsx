@@ -13,13 +13,13 @@ export default function RegisterNav() {
         {/* Navigation Links */}
         <div className="space-x-6 text-sm z-50 hidden md:flex">
           <a
-            href="#"
+            href="/register"
             className="px-3 py-2 border-2 border-blue-200 text-white hover:bg-white hover:text-black transition-colors duration-300"
           >
             Sign Up
           </a>
           <a
-            href="#"
+            href="/login"
             className="px-3 py-2 border-2 border-blue-200 text-white hover:bg-white hover:text-black transition-colors duration-300"
           >
             Login
