@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.get('/:id', getRentalById);
 router.get('/', getAllRentals);
+router.get('/:id', getRentalById);
 
 export default router;

@@ -1,12 +1,11 @@
 import express, { type Request, type Response } from 'express';
-import { getAllRentalsModel } from '../models/rentalModel';
-import { getRentalById } from '../models/rentalModel';
+import { findAllRentals, findRental } from '../models/rentalModel.ts';
 
-export const getRentalByIdController = async (req: Request, res: Response) => {
+export const getRentalById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const house = await getRentalById(id);
+    const house = await findRental(id);
     if (!house) return res.status(404).json({ error: 'Not found' });
     res.status(200).json(house);
   } catch (err) {
@@ -18,12 +17,10 @@ export const getRentalByIdController = async (req: Request, res: Response) => {
 export const getAllRentals = async (req: Request, res: Response) => {
 
     try {
-        // HTTP status code 200 indicates a successful request
-        const rentals = await getAllRentalsModel();
-      
+        const rentals = await findAllRentals();
         res.status(200).json(rentals);
     } catch (error) {
-        // HTTP status code 500 indicates a server error
+        // 500 indicates a server error.
         res.status(500).json({error: 'Failed to retrieve rentals'});
     }
 };
