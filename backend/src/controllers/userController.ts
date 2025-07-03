@@ -17,7 +17,7 @@ export async function getUserById(
   res: Response,
   next: NextFunction
 ) {
-  const id = parseInt(req.user.id);
+  const id = req.user?.id;
   if (!id) {
     res.status(400).json({ error: 'Id is required' });
     return;
