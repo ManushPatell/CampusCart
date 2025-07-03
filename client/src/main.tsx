@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
+import HouseDetail from "./pages/HouseDetail";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
 
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Signup />} />
+        <Route path = "rentals/:id" element = {<HouseDetail />} /> 
       </Routes>
     </BrowserRouter>
   </StrictMode>,

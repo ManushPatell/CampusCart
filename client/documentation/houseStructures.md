@@ -107,8 +107,8 @@ const [isFilterOpen, setIsFilterOpen] = useState(false);
 - Important: These values are set together when the slider is moved
 - Keep them in sync - if they fall out of sync, the filtering logic may not work as expected
 
-### 2. `house.price` is a formatted string like `$1,200/month`
-- Prices in `mockListings` are strings, not numbers. 
+### 2. `house.price` is an integer like `$1,200/month`
+- Prices in `mockListings` are strings, not numbers but this will be different than the sql database
 - In order to compare prices, you must clean the string:  
 ``` javascript
 parseFloat(house.price.replace(/[^0-9.]/g, ''))
@@ -131,3 +131,4 @@ house.amenities.some((a) => a.toLowerCase().includes('furnished'))
 - ex. a = 'Wi-Fi'  
     a = 'Furnished'
 
+# Sublet available or not
