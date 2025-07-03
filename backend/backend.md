@@ -4,7 +4,7 @@ This document will attempt to provide a description of the logic behind our back
 
 ## Differences between Routes, Controllers, and Models
 
-It's important to understand how the logic works between the three components because they're a fundemental part of how the backend operates. 
+It's important to understand how the logic works between the three components because they're a fundamental part of how the backend operates. 
 
 ### Routes: src/routes/*.ts
 

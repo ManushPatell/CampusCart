@@ -21,6 +21,8 @@ const app = express();
 const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
 
+app.use(cors()); //  This allows ALL origins
+
 app.use(express.json({ limit: '10mb' }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -38,7 +40,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use(cors()); //  This allows ALL origins
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the API — use /auth, /users, /rentals, or /docs');

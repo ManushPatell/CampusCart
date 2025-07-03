@@ -51,7 +51,7 @@ router.get('/', getAllRentals);
  *       404:
  *         description: Rental not found
  */
-router.get('rentals/:id', getRentalByIdController);
+router.get('/:id', getRentalByIdController);
 
 /**
  * @swagger
