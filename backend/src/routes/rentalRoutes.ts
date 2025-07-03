@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllRentals, getRentalByIdController } from '../controllers/rentalController.ts';
+import { getAllRentals, getRentalById } from '../controllers/rentalController.ts';
 
 const router = express.Router();
 
@@ -51,7 +51,7 @@ router.get('/', getAllRentals);
  *       404:
  *         description: Rental not found
  */
-router.get('/:id', getRentalByIdController);
+router.get('/:id', getRentalById);
 
 /**
  * @swagger
