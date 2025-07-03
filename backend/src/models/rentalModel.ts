@@ -20,15 +20,15 @@ export interface Rental {
   is_shared: boolean;
 }
 
-
+///Retrieves all rentals from the database
 export async function findAllRentals(): Promise<Rental[]> {
     const result = await sql<Rental[]>
     `SELECT * FROM house`;
     return result;
 }
 
-// rentalModel.ts
-export const findRentalById = async (id: string): Promise<Rental | null>  => {
+export const findRental = async (id: string): Promise<Rental | null>  => {
+  
   const result = await sql<Rental[]>`SELECT * FROM house WHERE id = ${id}`;
   return result[0] ?? null; 
 };

@@ -1,6 +1,5 @@
 import express, { type Request, type Response } from 'express';
-import { findAllRentals } from '../models/rentalModel.ts';
-import { findRentalById } from '../models/rentalModel.ts';
+import {findAllRentals, findRental } from '../models/rentalModel.ts';
 import { HouseView } from '../types/types.ts';
 
 //Transformer function 
@@ -34,11 +33,11 @@ function transformRentalToHouseView(rental: any): HouseView {
     }
   };
 }
-export const getRentalByIdController = async (req: Request, res: Response): Promise<void> => {
+export const getRentalById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
-    const house = await findRentalById(id);
+    const house = await findRental(id);
     if (!house) {
     res.status(404).json({ error: 'Not found' });
     return;
