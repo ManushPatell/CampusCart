@@ -15,7 +15,7 @@ const HouseCard = ({ house }) => {
         <p className="text-gray-600">Price: {house.price}</p>
         
         {/*Create link to further house details */}
-        <Link to={`/houses/${house.id}`}>
+        <Link to={`/rentals/${house.id}`}>
           <button className = "mt-4 bg-[#4A4032] text-white px-4 py-2 rounded-lg hover:bg-[#5C503E] transition-colors">
             View Details
           </button>
