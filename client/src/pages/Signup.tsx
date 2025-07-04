@@ -28,22 +28,25 @@ export default function SignUp() {
       setShowPopup(false);
       setSuccessMessage("Email verified. Sign-up successful!");
       fetch("localhost:8000/users", {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
+        body: JSON.stringify({
           firstName: firstName,
           lastName: lastName,
           email: email,
           phoneNumber: phoneNumber,
-          password: password
-        })          
+          password: password,
+        }),
       });
     } else {
       setError("Invalid verification code.");
     }
   };
+
+  const inputClassName =
+    "w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400";
 
   return (
     <div className="flex min-h-screen bg-gray-100 relative">
@@ -74,41 +77,38 @@ export default function SignUp() {
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={inputClassName}
           />
           <input
             type="text"
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={inputClassName}
           />
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={inputClassName}
           />
           <input
             type="tel"
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={inputClassName}
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={inputClassName}
           />
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-xl hover:bg-blue-600 transition duration-200"
-          >
+          <button type="submit" className={inputClassName}>
             Sign Up
           </button>
         </form>

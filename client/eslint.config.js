@@ -17,7 +17,6 @@ const compat = new FlatCompat({
 
 export default [
   js.configs.recommended,
-
   ...compat.extends(
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
@@ -46,8 +45,8 @@ export default [
       prettier,
     },
     rules: {
-      "prettier/prettier": "warn",
-      "react/react-in-jsx-scope": "off", // Not needed in React 17+
+      "prettier/prettier": "error",
+      "react/react-in-jsx-scope": "off",
     },
     settings: {
       react: {

@@ -1,24 +1,26 @@
 import React, { useState, FormEvent } from "react";
+import { useForm } from "react-hook-form";
+import ControlledInput from "../components/forms/ControlledInput";
+import Submit from "../components/forms/Submit";
+
+const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
+
+type FormInputs = {
+  email: string;
+  password: string;
+};
 
 export default function Login() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<FormInputs>({
+    defaultValues: { email: "", password: "" },
+  });
 
-  const handleLogin = (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    // Dummy auth logic
-    if (email === "admin" && password === "password") {
-      alert("Login successful!");
-    } else {
-      setError("Invalid credentials.");
-    }
+  const onSubmit = (data: FormInputs) => {
+    console.log(data);
   };
 
   return (
@@ -35,35 +37,34 @@ export default function Login() {
       {/* Right Login Form */}
       <div className="flex w-full md:w-1/2 items-center justify-center px-6 py-12">
         <form
-          onSubmit={handleLogin}
-          className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm"
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm flex flex-col gap-[.5rem]"
         >
-          <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          <input
-            type="text"
+          <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+          <ControlledInput
+            name="email"
+            control={control}
+            errors={errors}
+            rules={{
+              required: "Field required",
+              validate: {
+                macEmail: (v: string) =>
+                  macEmailRegex.test(v) || "Invalid McMaster email",
+              },
+            }}
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-
-          <input
-            type="password"
+          <ControlledInput
+            name="password"
+            control={control}
+            errors={errors}
+            rules={{
+              required: "Field required",
+            }}
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-xl hover:bg-blue-600 transition duration-200"
-          >
-            Login
-          </button>
+          <Submit label="Login" className="mt-3" />
         </form>
       </div>
     </div>

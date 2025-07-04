@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/RegisterNav.js";
 import { useParams } from "react-router-dom";
 
 export interface Rental {
