@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Control,
   Controller,
@@ -17,8 +18,9 @@ interface ControlledInputProps<T extends FieldValues> {
   >;
   inputClassName?: string;
   placeholder?: string;
-  type?: "password" | "text" | "number" | "email";
+  type?: "password" | "text" | "number" | "email" | "tel";
   errors: FieldErrors<T>;
+  hideToggle?: boolean;
 }
 
 export default function ControlledInput<T extends FieldValues>({
@@ -27,10 +29,13 @@ export default function ControlledInput<T extends FieldValues>({
   rules,
   errors,
   inputClassName,
-  type,
+  type = "text",
   placeholder,
   label,
+  hideToggle = false,
 }: ControlledInputProps<T>) {
+  const [hideText, setHideText] = useState<boolean>(true);
+
   const hasError = errors[name]?.message;
 
   return (
@@ -42,14 +47,24 @@ export default function ControlledInput<T extends FieldValues>({
         <span>
           <label>
             {label}
-            <input
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              type={type}
-              className={`w-full px-4 transition-all duration-200 py-2 placeholder-gray-400 border ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-blue-400"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
-              placeholder={placeholder}
-            />
+            <span className="relative">
+              <input
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                type={hideText && hideToggle ? "password" : type}
+                className={`w-full px-4 transition-all duration-200 py-2 placeholder-gray-400 border ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-blue-400"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
+                placeholder={placeholder}
+              />
+              {hideToggle && (
+                <button
+                  className="absolute -translate-x-3/2 hover:text-gray-500 top-1/2 -translate-y-1/2 "
+                  onClick={() => setHideText((prev) => !prev)}
+                >
+                  {hideText ? "Show" : "Hide"}
+                </button>
+              )}
+            </span>
           </label>
           {hasError && (
             <p className="text-red-500 font-light text-sm mt-[.3rem]">

@@ -1,4 +1,3 @@
-import React, { useState, FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
@@ -40,7 +39,7 @@ export default function Login() {
           onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm flex flex-col gap-[.5rem]"
         >
-          <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+          <h2 className="text-2xl font-semibold text-center mb-9">Login</h2>
           <ControlledInput
             name="email"
             control={control}
@@ -62,6 +61,7 @@ export default function Login() {
               required: "Field required",
             }}
             placeholder="Password"
+            hideToggle
           />
 
           <Submit label="Login" className="mt-3" />
