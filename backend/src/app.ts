@@ -55,5 +55,5 @@ app.use((req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running for ${NODE_ENV} at http://localhost:${PORT}`);
-  console.log('JsDoc running on http://localhost:3000/docs');
+  console.log(`JsDoc running on http://localhost:${PORT}/docs`);
 });
