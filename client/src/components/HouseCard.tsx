@@ -1,5 +1,5 @@
 // src/components/HouseCard.jsx
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const HouseCard = ({ house }) => {
   return (
@@ -13,10 +13,10 @@ const HouseCard = ({ house }) => {
         <h2 className="text-xl font-semibold text-[#4A4032]">{house.title}</h2>
         <p className="text-gray-600">Location: {house.location}</p>
         <p className="text-gray-600">Price: {house.price}</p>
-        
+
         {/*Create link to further house details */}
         <Link to={`/rentals/${house.id}`}>
-          <button className = "mt-4 bg-[#4A4032] text-white px-4 py-2 rounded-lg hover:bg-[#5C503E] transition-colors">
+          <button className="mt-4 bg-[#4A4032] text-white px-4 py-2 rounded-lg hover:bg-[#5C503E] transition-colors">
             View Details
           </button>
         </Link>
@@ -25,7 +25,4 @@ const HouseCard = ({ house }) => {
   );
 };
 
-
-
 export default HouseCard;
-

@@ -3,10 +3,74 @@ import {
   deleteLogoutUser,
   postLoginUser,
   postRefreshToken,
+  getUserInformation
 } from '../controllers/authController.ts';
 import { authenticateToken } from '../middleware/authMiddleware.ts';
 
 const router = express.Router();
+
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Returns the information about a current user.
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Successfully identified user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  id:
+ *                      type: number
+ *                  firstName:
+ *                      type: string
+ *                  lastName:
+ *                      type: string
+ *                  email:
+ *                      type: string
+ *                  phoneNumber:
+ *                      type: number
+ *       404:
+ *           description: User information not found.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ *       401:
+ *           description: No access token provided.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ *       403:
+ *           description: Invalid login credentials or banned user.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ *       500:
+ *           description: An error occurred.
+ *           content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  error:
+ *                      type: string
+ */
+router.get('/me', authenticateToken, getUserInformation);
 
 /**
  * @swagger
@@ -55,7 +119,7 @@ const router = express.Router();
  *                  error:
  *                      type: string
  *       500:
- *           description: An error occured.
+ *           description: An error occurred.
  *           content:
  *           application/json:
  *             schema:

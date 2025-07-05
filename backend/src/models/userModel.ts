@@ -25,7 +25,7 @@ export const findAllUsers = async (): Promise<User[]> => {
   return users;
 };
 
-interface foundUser {
+interface FoundUser {
   id: number;
   first_name: string;
   last_name: string;
@@ -33,8 +33,8 @@ interface foundUser {
   phone_number: number;
 }
 
-export const findUserById = async (id: number): Promise<foundUser> => {
-  const user = await sql<foundUser[]>`
+export const findUserById = async (id: number): Promise<FoundUser> => {
+  const user = await sql<FoundUser[]>`
         SELECT id, first_name, last_name, email, phone_number 
         FROM users
         WHERE id=${id}

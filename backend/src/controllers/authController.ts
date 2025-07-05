@@ -9,7 +9,19 @@ import {
   isRefreshTokenRegistered,
   deleteTokenById,
 } from '../models/tokenModel.ts';
-import { findUserByEmail } from '../models/userModel.ts';
+import { findUserByEmail, findUserById } from '../models/userModel.ts';
+
+export async function getUserInformation(req: Request, res: Response) {
+  const {id} = req.user!; // This route is protected which guarantees req.user exists
+  const user = await findUserById(id)
+
+  if (!user) {
+    res.status(404).json({error: "User information not found."})
+    return;
+  }
+
+  res.status(200).json(user)
+}
 
 export async function postLoginUser(req: Request, res: Response) {
   const userEmail = req.body.email;
@@ -71,9 +83,9 @@ export async function postLoginUser(req: Request, res: Response) {
 }
 
 export async function postRefreshToken(req: Request, res: Response) {
-  const refreshToken = req.body.token;
+  const refreshToken = req.body.refreshToken;
   if (refreshToken == null) {
-    res.status(401).json({ error: 'No token provided.' });
+    res.status(401).json({ error: 'No refresh token provided.' });
     return;
   }
 

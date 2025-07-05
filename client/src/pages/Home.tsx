@@ -1,6 +1,6 @@
 import Hero from "../components/Hero";
 import Content from "../components/Content";
-import Houses from "../components/Houses"; 
+import Houses from "../components/Houses";
 
 export default function Home() {
   return (
@@ -16,4 +16,3 @@ export default function Home() {
     </div>
   );
 }
-

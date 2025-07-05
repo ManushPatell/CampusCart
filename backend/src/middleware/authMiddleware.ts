@@ -7,13 +7,9 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers['authorization'];
-  const tokenFromHeader = authHeader && authHeader.split(' ')[1];
-  const tokenFromCookie = req.cookies && req.cookies.token;
+  const accessToken = req.cookies.accessToken;
 
-  const token = tokenFromCookie || tokenFromHeader;
-
-  if (token == undefined) {
+  if (accessToken == undefined) {
     res.status(401).json({ error: 'No token provided!' });
     return;
   }
@@ -25,7 +21,7 @@ export const authenticateToken = (
   }
 
   jwt.verify(
-    token,
+    accessToken,
     process.env.ACCESS_TOKEN_SECRET as string,
     (err: any, decoded: any) => {
       if (err) {
@@ -33,7 +29,12 @@ export const authenticateToken = (
         return;
       }
 
-      req.user = decoded as UserPayload;
+      const userPayload = decoded as UserPayload;
+      if (userPayload.role === "banned") {
+        res.status(403).json({error: "You have been banned."})
+        return;
+      }
+      req.user = userPayload;
       next();
     }
   );
