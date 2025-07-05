@@ -22,6 +22,8 @@ CREATE TYPE condition AS ENUM ('Used', 'New');
 
 CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Condo');
 
+CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
+
 create table "users" (
   "id" serial primary key,
   "first_name" varchar(255) not null,
@@ -39,9 +41,11 @@ create table "textbooks" (
   "date_posted" DATE DEFAULT CURRENT_DATE,
   "photos" BYTEA[] not null,
   "year" INT,
-  "faculty" varchar(255),
-  "price" INT not null, 
-  "condition" condition not null
+  "faculty" faculty,
+  "price" INT not null,
+  "condition" condition not null,
+  "course_code" varchar(50) not null, 
+  CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\*[0-9]{4}$')
 );
 
 create table "house" (
