@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 
@@ -21,16 +21,68 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     control,
+    setError,
+    trigger,
   } = useForm<FormInputs>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+    },
   });
 
-  const onSubmit = (data: FormInputs) => {
-    console.log(data);
-  };
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const inputClassName =
-    "w-full px-4 py-2 mb-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400";
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    const isValid = await trigger();
+    console.log(errors, isValid);
+    if (Object.keys(errors).length > 0) return; // Checks for errors we manually set
+
+    try {
+      setIsLoading(true);
+      const res = await fetch("http://localhost:3001/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+
+      if (res.status === 500) {
+        setErrorMessage(
+          "An error occurred on our end. Please try again later.",
+        );
+      }
+      if (res.status === 409) {
+        setError("email", {
+          type: "manual",
+          message: "That email has been taken",
+        });
+      }
+      if (res.status === 400) {
+        setErrorMessage("Improper request! Are you sure you meant to do that?");
+      }
+      if (res.status === 201) {
+        // login user
+      }
+    } catch (err) {
+      if (typeof err === "string") {
+        setErrorMessage(err);
+      }
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      }
+      console.error("POST failed:", err);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100 relative">
@@ -118,7 +170,10 @@ export default function SignUp() {
             hideToggle
           />
 
-          <Submit label="Sign Up" className="mt-[1rem]" />
+          {errorMessage && (
+            <p className="text-red-400 text-center">{errorMessage}</p>
+          )}
+          <Submit label="Sign Up" className="mt-[1rem]" isLoading={isLoading} />
         </form>
       </div>
     </div>

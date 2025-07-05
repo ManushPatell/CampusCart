@@ -53,7 +53,7 @@ export default function ControlledInput<T extends FieldValues>({
                 onBlur={onBlur}
                 value={value}
                 type={hideText && hideToggle ? "password" : type}
-                className={`w-full px-4 transition-all duration-200 py-2 placeholder-gray-400 border ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-blue-400"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
+                className={`w-full px-4 transition-all duration-200 py-2 placeholder-gray-400  ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-blue-400 border-2 focus:border-blue-400"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
                 placeholder={placeholder}
               />
               {hideToggle && (
