@@ -37,10 +37,6 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const isValid = await trigger();
-    console.log(errors, isValid);
-    if (Object.keys(errors).length > 0) return; // Checks for errors we manually set
-
     try {
       setIsLoading(true);
       const res = await fetch("http://localhost:3001/users", {
@@ -52,9 +48,7 @@ export default function SignUp() {
       });
 
       const result = await res.json();
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      setIsLoading(false);
 
       if (res.status === 500) {
         setErrorMessage(
@@ -71,7 +65,7 @@ export default function SignUp() {
         setErrorMessage("Improper request! Are you sure you meant to do that?");
       }
       if (res.status === 201) {
-        // login user
+        fetch("https");
       }
     } catch (err) {
       if (typeof err === "string") {
