@@ -45,7 +45,7 @@ export default [
       prettier,
     },
     rules: {
-      "prettier/prettier": "error",
+      "prettier/prettier": "warn",
       "react/react-in-jsx-scope": "off",
     },
     settings: {

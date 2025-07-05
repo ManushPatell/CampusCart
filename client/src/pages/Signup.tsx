@@ -1,7 +1,8 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
+import { useNavigate } from "react-router-dom";
 
 type FormInputs = {
   firstName: string;
@@ -22,7 +23,6 @@ export default function SignUp() {
     formState: { errors },
     control,
     setError,
-    trigger,
   } = useForm<FormInputs>({
     defaultValues: {
       firstName: "",
@@ -35,11 +35,12 @@ export default function SignUp() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:3001/users", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +48,6 @@ export default function SignUp() {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
       setIsLoading(false);
 
       if (res.status === 500) {
@@ -65,7 +65,30 @@ export default function SignUp() {
         setErrorMessage("Improper request! Are you sure you meant to do that?");
       }
       if (res.status === 201) {
-        fetch("https");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+        });
+        const body = await res.json();
+        if (res.status === 200) {
+          navigate(`/${body.id}`);
+        }
+        if (res.status === 400) {
+          setErrorMessage("Failed to provide email and password.");
+        }
+        if (res.status === 401) {
+          // This case should NEVER be hit, since we just registered a new user.
+          setErrorMessage("Invalid login credentials. This shouldn't happen!");
+        }
+        if (res.status === 500) {
+          setErrorMessage("An error occurred on our end. Please try again.");
+        }
       }
     } catch (err) {
       if (typeof err === "string") {

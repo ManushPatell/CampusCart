@@ -1,6 +1,7 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
+import { useState } from "react";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
@@ -18,8 +19,37 @@ export default function Login() {
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: FormInputs) => {
-    console.log(data);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    setIsLoading(true);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    });
+    setIsLoading(false);
+
+    if (res.status === 200) {
+      // login success
+    }
+    if (res.status === 400) {
+      setErrorMessage("Failed to provide email and password.");
+    }
+    if (res.status === 401) {
+      // This case should NEVER be hit, since we just registered a new user.
+      setErrorMessage("Invalid login credentials. This shouldn't happen!");
+    }
+    if (res.status === 500) {
+      setErrorMessage("An error occurred on our end. Please try again.");
+    }
   };
 
   return (
@@ -64,7 +94,10 @@ export default function Login() {
             hideToggle
           />
 
-          <Submit label="Login" className="mt-3" />
+          {errorMessage && (
+            <p className="text-red-400 text-center">{errorMessage}</p>
+          )}
+          <Submit label="Login" className="mt-3" isLoading={isLoading} />
         </form>
       </div>
     </div>
