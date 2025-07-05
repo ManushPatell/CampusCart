@@ -132,9 +132,9 @@ router.post('/login', postLoginUser);
 
 /**
  * @swagger
- * /auth/token:
+ * /auth/refresh:
  *   post:
- *     summary: Generates a refresh token.
+ *     summary: Refreshes an access token.
  *     tags: [Auth]
  *     requestBody:
  *        content:
@@ -171,7 +171,7 @@ router.post('/login', postLoginUser);
  *                  error:
  *                      type: string
  */
-router.post('/token', authenticateToken, postRefreshToken);
+router.post('/refresh', authenticateToken, postRefreshToken);
 router.delete('/logout', authenticateToken, deleteLogoutUser);
 
 export default router;

@@ -73,6 +73,7 @@ export async function postLoginUser(req: Request, res: Response) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
+        expires: new Date(Date.now() + 604800000) // expires in 7 days
       })
       .send();
 
@@ -90,7 +91,7 @@ export async function postRefreshToken(req: Request, res: Response) {
   }
 
   if (await isRefreshTokenRegistered(refreshToken)) {
-    res.status(401).json({ error: 'Token not in database.' });
+    res.status(401).json({ error: 'Refresh token not in database.' });
     return;
   }
   jwt.verify(
