@@ -75,7 +75,7 @@ export async function postLoginUser(req: Request, res: Response) {
         sameSite: 'lax',
         expires: new Date(Date.now() + 604800000) // expires in 7 days
       })
-      .send();
+      .json({})
 
     return;
   } else {

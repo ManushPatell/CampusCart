@@ -27,15 +27,15 @@ export const findAllUsers = async (): Promise<User[]> => {
 
 interface FoundUser {
   id: number;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone_number: number;
+  phoneNumber: number;
 }
 
 export const findUserById = async (id: number): Promise<FoundUser> => {
   const user = await sql<FoundUser[]>`
-        SELECT id, first_name, last_name, email, phone_number 
+        SELECT id, first_name as "firstName", last_name as "lastName", email, phone_number as "phoneNumber" 
         FROM users
         WHERE id=${id}
         `;
@@ -54,8 +54,9 @@ export const addUser = async (
   email: string;
   firstName: string;
   lastName: string;
-}> => {
-  const newUser = await sql<
+} | undefined> => {
+  try {
+const newUser = await sql<
     {
       id: number;
       email: string;
@@ -65,17 +66,23 @@ export const addUser = async (
   >`
         INSERT INTO users (first_name, last_name, email, phone_number, password, role)
         VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password}, ${role})
-        ON CONFLICT (email) DO NOTHING
-        RETURNING id, first_name, last_name, email;
+        RETURNING id, first_name as "firstName", last_name as "lastName", email;
         `;
 
   return newUser[0];
+  } catch (err: any) {
+    console.error(err)
+    return undefined
+  }
+  
 };
 
-export const findUserByEmail = async (email: string): Promise<SecureUser> => {
-  const user = await sql<SecureUser[]>`
-        SELECT * 
+export const findUserByEmail = async (
+  email: string
+): Promise<SecureUser | undefined> => {
+    const user = await sql<SecureUser[]>`
+        SELECT id, password, email, role 
         FROM users 
         WHERE email = ${email}`;
-  return user[0];
+    return user[0];
 };

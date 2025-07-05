@@ -20,8 +20,12 @@ import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-app.use(cors()); //  This allows ALL origins
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+})); // Since we rely on credential for cookies, we must set the origin.
 
 app.use(express.json({ limit: '10mb' }));
 app.use(bodyParser.json());

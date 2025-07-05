@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
+import Dashboard from "./pages/Dashboard";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route element={<RegisterNav />}>
           <Route path="/" element={<Home />} />
+          <Route path="dashboard" element={<Dashboard />} />
         </Route>
 
         <Route path="login" element={<Login />} />

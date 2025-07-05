@@ -2,6 +2,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
@@ -11,6 +12,7 @@ type FormInputs = {
 };
 
 export default function Login() {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     formState: { errors },
@@ -38,7 +40,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (res.status === 200) {
-      // login success
+      navigate("/dashboard");
     }
     if (res.status === 400) {
       setErrorMessage("Failed to provide email and password.");

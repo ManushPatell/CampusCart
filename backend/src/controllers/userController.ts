@@ -75,6 +75,12 @@ export async function postNewUser(
       return;
     }
 
+    const usersWithSameEmail = await findUserByEmail(email);
+    if (usersWithSameEmail) {
+      res.status(409).json({ error: 'That email has been taken.' });
+      return;
+    }
+
     const newUser = await addUser(
       firstName,
       lastName,
@@ -82,10 +88,6 @@ export async function postNewUser(
       phoneNumber,
       hash
     );
-    if (!newUser) {
-      res.status(409).json({ error: 'That email has been taken.' });
-      return;
-    }
     res.status(201).json(newUser);
   });
 }

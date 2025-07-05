@@ -74,10 +74,10 @@ export default function SignUp() {
             email: data.email,
             password: data.password,
           }),
+          credentials: "include",
         });
-        const body = await res.json();
         if (res.status === 200) {
-          navigate(`/${body.id}`);
+          navigate(`/dashboard`);
         }
         if (res.status === 400) {
           setErrorMessage("Failed to provide email and password.");

@@ -45,8 +45,9 @@ export default [
       prettier,
     },
     rules: {
-      "prettier/prettier": "warn",
+      "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
+      "react-hooks/exhaustive-deps": "error",
     },
     settings: {
       react: {
