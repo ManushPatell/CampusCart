@@ -18,7 +18,7 @@ docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v db-da
 
 CREATE TYPE "year" AS ENUM ('1', '2', '3', '4');
 
-CREATE TYPE "condition" AS ENUM ('Used', 'New');
+CREATE TYPE condition AS ENUM ('Used', 'New'); 
 
 CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Condo');
 
@@ -37,10 +37,11 @@ create table "textbooks" (
   "edition" varchar(255),
   "seller" serial REFERENCES users(id) ON DELETE CASCADE,
   "date_posted" DATE DEFAULT CURRENT_DATE,
-  "photos" BYTEA[] not null, 
-  "year" INT, 
+  "photos" BYTEA[] not null,
+  "year" INT,
   "faculty" varchar(255),
-  "price" INT not null
+  "price" INT not null, 
+  "condition" condition not null
 );
 
 create table "house" (
