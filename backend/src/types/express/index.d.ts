@@ -1,4 +1,4 @@
-import { UserPayload } from '../../types/user'; // Define your user type
+import { UserPayload } from "../../types/user"; // Define your user type
 
 declare global {
   namespace Express {
