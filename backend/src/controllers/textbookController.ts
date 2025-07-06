@@ -7,8 +7,8 @@ export async function GetAllTextbooks(
   res: Response,
 ){
     try{
-        const textbooks = await FindAllTextbooks();
-        res.status(200).json(textbooks);
+        const textbook = await FindAllTextbooks();
+        res.status(200).json(textbook);
 
     }
     catch (error) {

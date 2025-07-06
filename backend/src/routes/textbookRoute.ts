@@ -31,6 +31,21 @@ const router = express.Router();
  */
 router.get('/', GetAllTextbooks);
 
+interface Textbook {
+    id: number;
+    book_title: string;
+    author: string;
+    edition: string;
+    condition: string;
+    seller: number;
+    date_posted: string;
+    photos: string[];
+    year: number;
+    faculty: string;
+    price: number;
+    course_code: string;
+}   
+
 /**
  * @swagger
  * /textbooks/{id}:
@@ -55,5 +70,43 @@ router.get('/', GetAllTextbooks);
  *         description: Textbook not found
  */
 router.get('/:id', GetTextbookById);
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Textbook:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         book_title:
+ *           type: string
+ *         author:
+ *           type: string
+ *         edition:
+ *           type: string
+ *         condition:
+ *           type: string
+ *         seller:
+ *           type: integer
+ *         date_posted:
+ *           type: string
+ *           format: date
+ *         photos:
+ *           type: array
+ *           items:
+ *             type: string
+ *         year:
+ *           type: integer
+ *         faculty:
+ *           type: string
+ *         price:
+ *           type: number
+ *         course_code:
+ *           type: string
+ */
+
+
 
 export default router;
