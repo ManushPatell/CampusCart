@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 
-export default function RegisterNav() {
+export default function Nav() {
   return (
     <>
       <nav className="absolute top-0 left-0 w-full z-50 bg-transparent px-6 py-4 flex items-center justify-between">

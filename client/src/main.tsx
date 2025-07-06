@@ -9,20 +9,23 @@ import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
 import Dashboard from "./pages/Dashboard";
+import { AuthProvider } from "./context/AuthContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route element={<RegisterNav />}>
-          <Route path="/" element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
-        </Route>
+      <AuthProvider>
+        <Routes>
+          <Route element={<RegisterNav />}>
+            <Route path="/" element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>
 
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Signup />} />
-        <Route path="rentals/:id" element={<HouseDetail />} />
-      </Routes>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Signup />} />
+          <Route path="rentals/:id" element={<HouseDetail />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 );

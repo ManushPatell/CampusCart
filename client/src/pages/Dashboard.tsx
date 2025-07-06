@@ -1,38 +1,20 @@
-import { useMemo } from "react";
-import useFetch from "../hooks/useFetch";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
-  const options: RequestInit = useMemo(
-    () => ({
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    }),
-    [],
-  );
-  const { data, error, loading } = useFetch<{
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: number;
-  }>(`${import.meta.env.VITE_API_URL}/auth/me`, options);
+  const { loading: loadingAuth, user } = useAuth();
 
-  if (loading) return <p>Loading...</p>;
-  if (error)
-    return (
-      <p>
-        Status: {error.status}, Error msg: {error.message}
-      </p>
-    );
+  if (loadingAuth) return <p>Loading...</p>;
 
+  if (user === null) return <p>You are not currently logged in.</p>;
+
+  const { id, firstName, lastName, email, phoneNumber } = user;
   return (
     <p>
-      {data?.id}
-      {data?.firstName}
-      {data?.lastName}
-      {data?.email}
-      {data?.phoneNumber}
+      Id: {id}
+      First Name: {firstName}
+      Last Name: {lastName}
+      email: {email}
+      phoneNumber: {phoneNumber}
     </p>
   );
 }

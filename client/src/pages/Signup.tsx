@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type FormInputs = {
   firstName: string;
@@ -35,6 +36,7 @@ export default function SignUp() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { refetchUser } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -77,6 +79,7 @@ export default function SignUp() {
           credentials: "include",
         });
         if (res.status === 200) {
+          refetchUser();
           navigate(`/dashboard`);
         }
         if (res.status === 400) {
