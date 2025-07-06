@@ -1,13 +1,13 @@
 import express, { type Request, type Response } from 'express';
 
-import { FindAllTextbooks, findTextbook } from '../models/textbookModel';
+import { findAllTextbooks, findTextbook } from '../models/textbookModel';
 
-export async function GetAllTextbooks(
+export async function getAllTextbooks(
   req: Request,
   res: Response,
 ){
     try{
-        const textbook = await FindAllTextbooks();
+        const textbook = await findAllTextbooks();
         res.status(200).json(textbook);
 
     }
@@ -18,13 +18,13 @@ export async function GetAllTextbooks(
 
 }
 
-export async function GetTextbookById(
+export async function getTextbookById(
     req: Request, 
     res: Response, 
 ){
     const {id} = req.params;
     try {
-        const textbook = await findTextbook(Number(id));
+        const textbook = await findTextbook(parseInt(id));
         if (isNaN(Number(id)) || !textbook) {
             res.status(404).json({ error: 'Textbook not found' });
             return;

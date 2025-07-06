@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetTextbookById, GetAllTextbooks } from '../controllers/textbookController';
+import { getTextbookById, getAllTextbooks } from '../controllers/textbookController';
 
 const router = express.Router();
 /**
@@ -29,22 +29,7 @@ const router = express.Router();
  *       500:
  *         description: An error occurred while fetching textbooks
  */
-router.get('/', GetAllTextbooks);
-
-interface Textbook {
-    id: number;
-    book_title: string;
-    author: string;
-    edition: string;
-    condition: string;
-    seller: number;
-    date_posted: string;
-    photos: string[];
-    year: number;
-    faculty: string;
-    price: number;
-    course_code: string;
-}   
+router.get('/', getAllTextbooks); 
 
 /**
  * @swagger
@@ -69,7 +54,7 @@ interface Textbook {
  *       404:
  *         description: Textbook not found
  */
-router.get('/:id', GetTextbookById);
+router.get('/:id', getTextbookById);
 
 /**
  * @swagger

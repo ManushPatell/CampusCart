@@ -15,13 +15,13 @@ interface Textbook {
     course_code: string;
 }   
 
-export async function FindAllTextbooks(): Promise<Textbook[]>{
+export async function findAllTextbooks(): Promise<Textbook[]>{
     const result = await sql<Textbook[]>
     `Select * FROM textbooks`;
     return result;
 }
 
-export const findTextbook = async (id: number): Promise<Textbook | null> => {
+export async function findTextbook(id:number): Promise<Textbook | null>  {
   const result = await sql<Textbook[]>`
     SELECT * FROM textbooks WHERE id = ${id}
   `;
