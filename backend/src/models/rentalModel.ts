@@ -1,4 +1,4 @@
-import sql from './db.ts';
+import sql from "./db.ts";
 
 export interface Rental {
   id: number;
@@ -22,13 +22,11 @@ export interface Rental {
 
 ///Retrieves all rentals from the database
 export async function findAllRentals(): Promise<Rental[]> {
-    const result = await sql<Rental[]>
-    `SELECT * FROM house`;
-    return result;
+  const result = await sql<Rental[]>`SELECT * FROM house`;
+  return result;
 }
 
-export const findRental = async (id: string): Promise<Rental | null>  => {
-  
+export const findRental = async (id: string): Promise<Rental | null> => {
   const result = await sql<Rental[]>`SELECT * FROM house WHERE id = ${id}`;
-  return result[0] ?? null; 
+  return result[0] ?? null;
 };

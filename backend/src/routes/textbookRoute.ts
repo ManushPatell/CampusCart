@@ -1,5 +1,8 @@
-import express from 'express';
-import { getTextbookById, getAllTextbooks } from '../controllers/textbookController';
+import express from "express";
+import {
+  getTextbookById,
+  getAllTextbooks,
+} from "../controllers/textbookController";
 
 const router = express.Router();
 /**
@@ -29,7 +32,7 @@ const router = express.Router();
  *       500:
  *         description: An error occurred while fetching textbooks
  */
-router.get('/', getAllTextbooks); 
+router.get("/", getAllTextbooks);
 
 /**
  * @swagger
@@ -54,7 +57,7 @@ router.get('/', getAllTextbooks);
  *       404:
  *         description: Textbook not found
  */
-router.get('/:id', getTextbookById);
+router.get("/:id", getTextbookById);
 
 /**
  * @swagger
@@ -91,7 +94,5 @@ router.get('/:id', getTextbookById);
  *         course_code:
  *           type: string
  */
-
-
 
 export default router;

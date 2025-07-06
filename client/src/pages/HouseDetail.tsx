@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/RegisterNav.js";
 import { useParams } from "react-router-dom";
 
 export interface Rental {
@@ -36,7 +36,9 @@ export default function HouseDetail() {
   useEffect(() => {
     const fetchHouse = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/rentals/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/rentals/${id}`,
+        );
         if (!res.ok) {
           setError("House not found");
           return;
