@@ -14,7 +14,9 @@
     "types": ["node"],
     "allowSyntheticDefaultImports": true,
     "moduleDetection": "force"
+    
   },
-  "include": ["src/**/*.ts", "src/app.ts", "src/swagger.ts", "src/types/**/.ts"],
+  
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

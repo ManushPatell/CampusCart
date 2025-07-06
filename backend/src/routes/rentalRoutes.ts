@@ -1,5 +1,8 @@
-import express from 'express';
-import { getAllRentals, getRentalById } from '../controllers/rentalController.ts';
+import express from "express";
+import {
+  getAllRentals,
+  getRentalById,
+} from "../controllers/rentalController.ts";
 
 const router = express.Router();
 
@@ -26,7 +29,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Rental'
  */
-router.get('/', getAllRentals);
+router.get("/", getAllRentals);
 
 /**
  * @swagger
@@ -51,7 +54,7 @@ router.get('/', getAllRentals);
  *       404:
  *         description: Rental not found
  */
-router.get('/:id', getRentalById);
+router.get("/:id", getRentalById);
 
 /**
  * @swagger
@@ -65,7 +68,7 @@ router.get('/:id', getRentalById);
  *         title:
  *           type: string
  *         price:
- *           type: string 
+ *           type: string
  *         location:
  *           type: string
  *         image:
@@ -91,6 +94,5 @@ router.get('/:id', getRentalById);
  *             contact:
  *               type: string
  */
-
 
 export default router;

@@ -1,12 +1,12 @@
-import express from 'express';
+import express from "express";
 
 import {
   getUserById,
   getAllUsers,
   postNewUser,
-} from '../controllers/userController.ts';
+} from "../controllers/userController.ts";
 
-import { authenticateToken } from '../middleware/authMiddleware.ts';
+import { authenticateToken } from "../middleware/authMiddleware.ts";
 
 const router = express.Router();
 
@@ -51,7 +51,7 @@ const router = express.Router();
  *                  error:
  *                      type: string
  */
-router.get('/:id', getUserById);
+router.get("/:id", getUserById);
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.get('/:id', getUserById);
  *                      type: string
  *
  */
-router.get('/', authenticateToken, getAllUsers);
+router.get("/", authenticateToken, getAllUsers);
 
 /**
  * @swagger
@@ -146,6 +146,6 @@ router.get('/', authenticateToken, getAllUsers);
  *                  error:
  *                      type: string
  */
-router.post('/', postNewUser);
+router.post("/", postNewUser);
 
 export default router;
