@@ -1,11 +1,11 @@
-import express from 'express';
+import express from "express";
 import {
   deleteLogoutUser,
   postLoginUser,
   postRefreshToken,
-  getUserInformation
-} from '../controllers/authController.ts';
-import { authenticateToken } from '../middleware/authMiddleware.ts';
+  getUserInformation,
+} from "../controllers/authController.ts";
+import { authenticateToken } from "../middleware/authMiddleware.ts";
 
 const router = express.Router();
 
@@ -70,7 +70,7 @@ const router = express.Router();
  *                  error:
  *                      type: string
  */
-router.get('/me', authenticateToken, getUserInformation);
+router.get("/me", authenticateToken, getUserInformation);
 
 /**
  * @swagger
@@ -128,7 +128,7 @@ router.get('/me', authenticateToken, getUserInformation);
  *                  error:
  *                      type: string
  */
-router.post('/login', postLoginUser);
+router.post("/login", postLoginUser);
 
 /**
  * @swagger
@@ -171,7 +171,7 @@ router.post('/login', postLoginUser);
  *                  error:
  *                      type: string
  */
-router.post('/refresh', authenticateToken, postRefreshToken);
-router.delete('/logout', authenticateToken, deleteLogoutUser);
+router.post("/refresh", authenticateToken, postRefreshToken);
+router.delete("/logout", authenticateToken, deleteLogoutUser);
 
 export default router;

@@ -1,4 +1,4 @@
-import sql from './db.ts';
+import sql from "./db.ts";
 
 interface User {
   id: number;
@@ -6,7 +6,7 @@ interface User {
   lastName: string;
   email: string;
   phoneNumber: string;
-  role: 'user' | 'admin' | 'banned';
+  role: "user" | "admin" | "banned";
 }
 
 // CAUTION, this interface contains the user password
@@ -14,7 +14,7 @@ interface SecureUser {
   id: number;
   password: string;
   email: string;
-  role: 'user' | 'admin' | 'banned';
+  role: "user" | "admin" | "banned";
 }
 
 export const findAllUsers = async (): Promise<User[]> => {
@@ -48,7 +48,7 @@ export const addUser = async (
   email: string,
   phoneNumber: number,
   password: string,
-  role: 'admin' | 'user' | 'banned' = 'user'
+  role: "admin" | "user" | "banned" = "user",
 ): Promise<{
   id: number;
   email: string;

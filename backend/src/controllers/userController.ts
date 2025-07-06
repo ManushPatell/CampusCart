@@ -2,24 +2,24 @@ import express, {
   type NextFunction,
   type Request,
   type Response,
-} from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+} from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
   findAllUsers,
   findUserById,
   addUser,
   findUserByEmail,
-} from '../models/userModel.ts';
+} from "../models/userModel.ts";
 
 export async function getUserById(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const id = req.user?.id;
   if (!id) {
-    res.status(400).json({ error: 'Id is required' });
+    res.status(400).json({ error: "Id is required" });
     return;
   }
 
@@ -32,7 +32,7 @@ export async function getUserById(
   }
 
   if (!user) {
-    res.status(500).json({ error: 'User not found!' });
+    res.status(500).json({ error: "User not found!" });
     return;
   }
   res.status(200).json(user);
@@ -41,7 +41,7 @@ export async function getUserById(
 export async function getAllUsers(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   let users;
   try {
@@ -57,13 +57,13 @@ export async function getAllUsers(
 export async function postNewUser(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { firstName, lastName, email, phoneNumber, password } = req.body;
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
     res.status(400).json({
       error:
-        'Must provide a first name, last name, email, password, and phone number.',
+        "Must provide a first name, last name, email, password, and phone number.",
     });
     return;
   }
@@ -71,7 +71,7 @@ export async function postNewUser(
   const saltRounds = 10;
   bcrypt.hash(password, saltRounds, async (err, hash) => {
     if (err) {
-      res.status(500).json({ error: 'Failed to encrypt password.' });
+      res.status(500).json({ error: "Failed to encrypt password." });
       return;
     }
 
@@ -80,10 +80,10 @@ export async function postNewUser(
       lastName,
       email,
       phoneNumber,
-      hash
+      hash,
     );
     if (!newUser) {
-      res.status(409).json({ error: 'That email has been taken.' });
+      res.status(409).json({ error: "That email has been taken." });
       return;
     }
     res.status(201).json(newUser);
