@@ -15,6 +15,7 @@ import { swaggerSpec } from "./swagger.ts";
 import userRoutes from "./routes/userRoutes.ts";
 import rentalRoutes from "./routes/rentalRoutes.ts";
 import authRoutes from "./routes/authRoutes.ts";
+import textbookRoutes from "./routes/textbookRoute.ts";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/rentals", rentalRoutes);
+app.use("/textbooks", textbookRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(`Thrown error: ${err.stack}`);
@@ -41,7 +43,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to the API — use /auth, /users, /rentals, or /docs");
+  res.send(
+    "Welcome to the API — use /auth, /users, /rentals, /docs or /textbooks",
+  );
 });
 
 app.use((req, res, next) => {

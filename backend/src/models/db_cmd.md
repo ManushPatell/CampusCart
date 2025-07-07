@@ -26,9 +26,11 @@ docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v db-da
 
 CREATE TYPE "year" AS ENUM ('1', '2', '3', '4');
 
-CREATE TYPE "condition" AS ENUM ('Used', 'New');
+CREATE TYPE condition AS ENUM ('Used', 'New');
 
 CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Condo');
+
+CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
 
 create table "users" (
 "id" serial primary key,
@@ -39,6 +41,21 @@ create table "users" (
 );
 
 create table "textbooks" (
+<<<<<<< HEAD
+"id" serial primary key,
+"book_title" varchar(255) not null,
+"author" varchar(255),
+"edition" varchar(255),
+"seller" serial REFERENCES users(id) ON DELETE CASCADE,
+"date_posted" DATE DEFAULT CURRENT_DATE,
+"photos" BYTEA[] not null,
+"year" INT,
+"faculty" faculty,
+"price" INT not null,
+"condition" condition not null,
+"course_code" varchar(50) not null,
+CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\\*[0-9]{4}$')
+=======
 "id" serial primary key,
 "book_title" varchar(255) not null,
 "author" varchar(255),
@@ -49,7 +66,9 @@ create table "textbooks" (
 "year" INT,
 "faculty" varchar(255),
 "price" INT not null
-);
+
+> > > > > > > main
+> > > > > > > );
 
 create table "house" (
 "id" serial primary key,

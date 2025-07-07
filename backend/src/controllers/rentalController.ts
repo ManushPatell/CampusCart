@@ -1,10 +1,10 @@
 import express, { type Request, type Response } from "express";
-import { findAllRentals, findRental } from "../models/rentalModel.ts";
+import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
 import { HouseView } from "../types/types.ts";
 
 //Transformer function
 
-function transformRentalToHouseView(rental: any): HouseView {
+function transformRentalToHouseView(rental: Rental): HouseView {
   return {
     id: rental.id,
     title: rental.title,
