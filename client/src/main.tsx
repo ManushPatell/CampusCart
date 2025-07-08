@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import RegisterNav from "./components/RegisterNav";
+import UnauthenticatedNav from "./components/Nav";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -16,14 +16,14 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route element={<RegisterNav />}>
+          <Route element={<UnauthenticatedNav />}>
             <Route path="/" element={<Home />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="rentals/:id" element={<HouseDetail />} />
           </Route>
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Signup />} />
-          <Route path="rentals/:id" element={<HouseDetail />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

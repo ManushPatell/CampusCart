@@ -54,7 +54,7 @@ const Houses = () => {
 
   // Render the component
   return (
-    <div className="min-h-screen bg-[#F5F1EA] font-serif">
+    <div className="min-h-screen bg-[#F5F1EA]">
       {/* Header */}
       <div className="py-8 px-4">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
@@ -64,7 +64,7 @@ const Houses = () => {
 
       {/* Disclaimer */}
       <div className="px-4 py-6">
-        <h2 className="text-2xl text-[#4A4032] font-serif">
+        <h2 className="text-2xl text-[#4A4032]">
           Campus Cart does not guarantee all content in the classifieds section
           to be true. Duplicate and/or multiple listings for the same content
           will be deleted.

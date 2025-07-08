@@ -1,10 +1,5 @@
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import {
   findAllUsers,
   findUserById,
@@ -54,11 +49,7 @@ export async function getAllUsers(
   res.status(200).json(users);
 }
 
-export async function postNewUser(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function postNewUser(req: Request, res: Response) {
   const { firstName, lastName, email, phoneNumber, password } = req.body;
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
     res.status(400).json({
@@ -72,12 +63,6 @@ export async function postNewUser(
   bcrypt.hash(password, saltRounds, async (err, hash) => {
     if (err) {
       res.status(500).json({ error: "Failed to encrypt password." });
-      return;
-    }
-
-    const usersWithSameEmail = await findUserByEmail(email);
-    if (usersWithSameEmail) {
-      res.status(409).json({ error: "That email has been taken." });
       return;
     }
 
