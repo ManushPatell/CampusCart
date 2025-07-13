@@ -49,6 +49,20 @@ export async function getAllUsers(
   res.status(200).json(users);
 }
 
+export async function getUserRentals(req: Request, res: Response) {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: "Failed to provide an id." });
+    return;
+  }
+  return;
+}
+
+export async function getUserTextbooks(req: Request, res: Response) {
+  return;
+}
+
 export async function postNewUser(req: Request, res: Response) {
   const { firstName, lastName, email, phoneNumber, password } = req.body;
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
