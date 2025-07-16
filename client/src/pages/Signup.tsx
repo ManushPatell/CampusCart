@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 type FormInputs = {
@@ -105,9 +105,9 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 relative">
+    <div className="flex min-h-screen bg-bg relative text-primary-fg">
       {/* Left Image */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
+      <div className="hidden md:flex w-1/2 items-center justify-center bg-primary-bg">
         <img
           src="/login_photo.jpg"
           alt="Login Visual"
@@ -193,7 +193,17 @@ export default function SignUp() {
           {errorMessage && (
             <p className="text-red-400 text-center">{errorMessage}</p>
           )}
+
           <Submit label="Sign Up" className="mt-[1rem]" isLoading={isLoading} />
+          <span className="text-center mt-[1rem]">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-black text-primary-fg hover:underline"
+            >
+              Log in
+            </Link>
+          </span>
         </form>
       </div>
     </div>

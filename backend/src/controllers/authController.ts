@@ -75,7 +75,7 @@ export async function postLoginUser(req: Request, res: Response) {
         sameSite: "lax",
         expires: new Date(Date.now() + 604800000), // expires in 7 days
       })
-      .json({})
+      .json({});
 
     return;
   } else {
@@ -97,7 +97,7 @@ export async function postRefreshToken(req: Request, res: Response) {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET as string,
-    (err: any, user: any) => {
+    (err: unknown, user: UserPayload) => {
       if (err) {
         res.status(403).json({ error: err });
         return;

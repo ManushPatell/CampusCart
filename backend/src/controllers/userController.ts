@@ -6,6 +6,7 @@ import {
   addUser,
   findUserByEmail,
 } from "../models/userModel.ts";
+import { findRentalsFromUser } from "../models/rentalModel.ts";
 
 export async function getUserById(
   req: Request,
@@ -56,11 +57,15 @@ export async function getUserRentals(req: Request, res: Response) {
     res.status(400).json({ error: "Failed to provide an id." });
     return;
   }
-  return;
-}
 
-export async function getUserTextbooks(req: Request, res: Response) {
-  return;
+  try {
+    const userRentals = await findRentalsFromUser(id);
+    res.status(200).json(userRentals);
+    return;
+  } catch (err) {
+    res.status(500).json(err);
+    return;
+  }
 }
 
 export async function postNewUser(req: Request, res: Response) {

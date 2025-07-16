@@ -10,7 +10,7 @@ export const findAllUsers = async (): Promise<User[]> => {
 };
 
 export const findUserById = async (
-  id: number,
+  id: string,
 ): Promise<Omit<User, "password">> => {
   const user = await sql<Omit<User, "password">[]>`
         SELECT id, first_name as "firstName", last_name as "lastName", email, phone_number as "phoneNumber", role as "role"

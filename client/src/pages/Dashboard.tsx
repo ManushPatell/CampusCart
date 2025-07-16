@@ -1,20 +1,27 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
-  const { loading: loadingAuth, user } = useAuth();
+  const { user, loading } = useAuth();
+  const [rentalsData, setRentalsData] = useState(null);
 
-  if (loadingAuth) return <p>Loading...</p>;
+  useEffect(() => {
+    if (loading || !user) return;
+
+    fetch(`${import.meta.env.VITE_API_URL}/users/${user.id}/rentals`)
+      .then((res) => res.json())
+      .then((body) => setRentalsData(body));
+  }, [loading, user]);
+
+  if (loading) return <p>Loading...</p>;
 
   if (user === null) return <p>You are not currently logged in.</p>;
 
-  const { id, firstName, lastName, email, phoneNumber } = user;
+  console.log(rentalsData);
+  // const { id, firstName, lastName, email, phoneNumber } = user;
   return (
-    <p>
-      Id: {id}
-      First Name: {firstName}
-      Last Name: {lastName}
-      email: {email}
-      phoneNumber: {phoneNumber}
-    </p>
+    <div>
+      <div>Rentals: {String(rentalsData)}</div>
+    </div>
   );
 }

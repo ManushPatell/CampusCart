@@ -1,9 +1,6 @@
 import sql from "./db.ts";
 
-export const registerToken = async (
-  refreshToken: string,
-  userId: number,
-): Promise<string> => {
+export const registerToken = async (refreshToken: string, userId: string) => {
   const tokenRow = await sql<{ token: string }[]>`
   INSERT INTO refresh_tokens (token, user_id)
   VALUES (${refreshToken}, ${userId})
@@ -12,7 +9,7 @@ export const registerToken = async (
   return !tokenRow[0] ? "" : tokenRow[0].token;
 };
 
-export const deleteTokenById = async (id: number): Promise<string> => {
+export const deleteTokenById = async (id: string) => {
   const token = await sql<{ token: string }[]>`
   DELETE FROM refresh_tokens
   WHERE user_id=${id}
@@ -20,7 +17,7 @@ export const deleteTokenById = async (id: number): Promise<string> => {
   return !token[0] ? "" : token[0].token;
 };
 
-export const deleteToken = async (token: string): Promise<string> => {
+export const deleteToken = async (token: string) => {
   const deletedToken = await sql<{ token: string }[]>`
   DELETE FROM refresh_tokens
   WHERE token=${token}
@@ -28,9 +25,7 @@ export const deleteToken = async (token: string): Promise<string> => {
   return !deletedToken[0] ? "" : deletedToken[0].token;
 };
 
-export const isRefreshTokenRegistered = async (
-  refreshToken: string,
-): Promise<boolean> => {
+export const isRefreshTokenRegistered = async (refreshToken: string) => {
   const isRegistered = await sql`
     SELECT COUNT(*) 
     FROM refresh_tokens 

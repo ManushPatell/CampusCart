@@ -6,7 +6,14 @@ export async function findAllRentals(): Promise<Rental[]> {
   return result;
 }
 
-export const findRentalById = async (id: string): Promise<Rental | null> => {
+export async function findRentalById(id: string): Promise<Rental | null> {
   const result = await sql<Rental[]>`SELECT * FROM rentals WHERE id = ${id}`;
   return result[0] ?? null;
-};
+}
+
+export async function findRentalsFromUser(id: string) {
+  const rentals = await sql<
+    Rental[]
+  >`SELECT * FROM rentals WHERE seller = ${id}`;
+  return rentals;
+}

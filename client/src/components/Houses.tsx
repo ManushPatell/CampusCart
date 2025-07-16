@@ -54,7 +54,7 @@ const Houses = () => {
 
   // Render the component
   return (
-    <div className="min-h-screen bg-[#F5F1EA]">
+    <div className="min-h-screen bg-bg">
       {/* Header */}
       <div className="py-8 px-4">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
@@ -109,7 +109,7 @@ const Houses = () => {
           isFilterOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
+        <div className="flex justify-between items-center p-4 border-b pt-[4.5rem]">
           <h3 className="text-xl font-bold text-[#4A4032]">Filters</h3>
           <button
             onClick={() => setIsFilterOpen(false)}
@@ -122,7 +122,7 @@ const Houses = () => {
         <div className="p-6 space-y-4">
           {/* Bedrooms */}
           <div>
-            <p className="text-[#6B5B45] mb-2">Bedrooms</p>
+            <p className="text-primary-fg mb-2">Bedrooms</p>
             <div className="flex flex-wrap gap-2">
               {["Any", "1", "2", "3", "4", "5"].map((count) => (
                 <button
@@ -148,7 +148,7 @@ const Houses = () => {
 
           {/* Checkboxes */}
           <div className="space-y-2">
-            <label className="flex gap-2 text-[#4A4032] items-center">
+            <label className="flex gap-2 text-secondary-fg items-center">
               <input
                 type="checkbox"
                 checked={filters.furnished}
@@ -158,11 +158,11 @@ const Houses = () => {
                     furnished: e.target.checked,
                   }))
                 }
-                className="accent-[#4A4032]"
+                className="accent-secondary-fg"
               />
               Furnished
             </label>
-            <label className="flex gap-2 text-[#4A4032] items-center">
+            <label className="flex gap-2 text-secondary-fg items-center">
               <input
                 type="checkbox"
                 checked={filters.petFriendly}
@@ -172,7 +172,7 @@ const Houses = () => {
                     petFriendly: e.target.checked,
                   }))
                 }
-                className="accent-[#4A4032]"
+                className="accent-primary-fg"
               />
               Pet Friendly
             </label>
@@ -181,8 +181,8 @@ const Houses = () => {
           {/* Price Slider */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <p className="text-[#6B5B45] mb-2">Price Range</p>
-              <span className="text-[#4A4032] font-medium">
+              <p className="text-primary-fg mb-2">Price Range</p>
+              <span className="text-secondary-fg font-medium">
                 ${filters.currentPrice}
               </span>
             </div>
@@ -227,7 +227,7 @@ const Houses = () => {
 
           <button
             onClick={() => setIsFilterOpen(false)}
-            className="mt-6 w-full bg-[#4A4032] text-white py-2 rounded-lg hover:bg-[#5C503E]"
+            className="mt-6 w-full bg-primary-fg text-white py-2 rounded-lg hover:bg-primary-fg/75"
           >
             APPLY FILTERS
           </button>

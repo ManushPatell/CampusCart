@@ -2,24 +2,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --color-bg: #f5f1ea;
+  --color-primary-fg: #4a4032;
+  --color-primary-bg: #ffffff;
+  --color-secondary-fg: #8b7355;
+}
+
 body {
-  /* font-family:
-    "Londrina Outline", "Kavoon", "Inter", "sans-serif", "Times New Roman",
-    sans-serif, "Press Start 2P"; */
   font-family: "Nunito", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-}
-
 html {
+  margin: 0;
+  padding: 0;
   scroll-behavior: smooth;
 }

@@ -1,39 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 export default function UnauthenticatedNav() {
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isListingsOpen, setIsListingsOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log("scrolling");
-      const currentScrollY = window.scrollY;
-      const scrollDifference = lastScrollY - currentScrollY;
-
-      if (scrollDifference > 25) {
-        // Scrolled up more than 25px
-        setShowNavbar(true);
-        setLastScrollY(currentScrollY);
-      } else if (scrollDifference < -5) {
-        // Slight scroll down, hide immediately
-        setShowNavbar(false);
-        setLastScrollY(currentScrollY);
-      }
-      // If difference is between -5 and 25, do nothing
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   const navLinkClassName = "text";
   return (
-    <>
+    <div>
       <nav
-        className={`top-0 left-0 w-full z-50 animate-all duration-300 px-6 py-4 flex items-center justify-between backdrop-blur-3xl bg-black/30 fixed ${showNavbar ? "translate-y-0" : "-translate-y-full"}`}
+        className={`left-0 w-full z-1000 animate-all duration-300 px-6 py-4 flex items-center justify-between backdrop-blur-3xl bg-black/30 sticky top-0`}
       >
         {/* Logo */}
         <h1
@@ -68,6 +43,6 @@ export default function UnauthenticatedNav() {
         </div>
       </nav>
       <Outlet />
-    </>
+    </div>
   );
 }
