@@ -26,7 +26,7 @@ export async function findAllRentals(): Promise<Rental[]> {
   return result;
 }
 
-export const findRental = async (id: string): Promise<Rental | null> => {
+export const findRental = async (id: number): Promise<Rental | null> => {
   const result = await sql<Rental[]>`SELECT * FROM house WHERE id = ${id}`;
   return result[0] ?? null;
 };

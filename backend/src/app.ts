@@ -15,6 +15,7 @@ import { swaggerSpec } from "./swagger.ts";
 import userRoutes from "./routes/userRoutes.ts";
 import rentalRoutes from "./routes/rentalRoutes.ts";
 import authRoutes from "./routes/authRoutes.ts";
+import miscRoutes from "./routes/miscRoutes.ts";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/rentals", rentalRoutes);
+app.use("/misc", miscRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(`Thrown error: ${err.stack}`);

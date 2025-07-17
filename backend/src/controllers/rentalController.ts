@@ -4,7 +4,7 @@ import { HouseView } from "../types/types.ts";
 
 //Transformer function
 
-function transformRentalToHouseView(rental: any): HouseView {
+export function transformRentalToHouseView(rental: any): HouseView {
   return {
     id: rental.id,
     title: rental.title,
@@ -36,8 +36,8 @@ export const getRentalById = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const { id } = req.params;
-
+  const id = parseInt(req.params.id, 10);
+  
   try {
     const house = await findRental(id);
     if (!house) {
