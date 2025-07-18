@@ -1,7 +1,41 @@
-import { type Request, type Response } from "express";
-import { findAllRentals, findRentalById } from "../models/rentalModel.ts";
+import express, { type Request, type Response } from "express";
+import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
+import { HouseView } from "../types/types.ts";
 
-export const getRentalById = async (req: Request, res: Response) => {
+//Transformer function
+
+function transformRentalToHouseView(rental: Rental): HouseView {
+  return {
+    id: rental.id,
+    title: rental.title,
+    price: rental.cost.toString(),
+    location: rental.address,
+    image: rental.image ?? "",
+    description: rental.description,
+
+    details: {
+      available: rental.date_available,
+      lease: rental.post_date,
+    },
+
+    amenities: [
+      rental.has_laundry ? "Laundry" : "",
+      rental.has_cooking ? "Cooking" : "",
+      rental.has_parking ? "Parking" : "",
+      rental.no_smoking ? "No Smoking" : "",
+      rental.is_shared ? "Shared" : "",
+    ].filter(Boolean) as string[],
+
+    seller: {
+      name: rental.seller,
+      contact: rental.contact,
+    },
+  };
+}
+export const getRentalById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const { id } = req.params;
 
   try {
