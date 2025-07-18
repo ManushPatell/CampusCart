@@ -1,6 +1,6 @@
 import {express} from "express";
 import { type NextFunction, type Request, type Response } from "express";
-import { findMiscbyId, findAllMisc } from "../models/miscModel";
+import { findMiscById, findAllMisc } from "../models/miscModel";
 
 
 export const getMiscById = async (
@@ -11,7 +11,7 @@ export const getMiscById = async (
     const id = parseInt(req.params.id, 10);
 
     try {
-        const misc = await findMiscbyId(id);
+        const misc = await findMiscById(id);
         if (!misc) {
             res.status(404).json({ error: "Not found" });
             return;

@@ -3,6 +3,9 @@ import sql from "./db.ts";
 export interface Rental {
   id: number;
   seller: string;
+  title: string;
+  image: string;
+  contact: string;
   address: string;
   post_date: string;
   date_available: string;
@@ -10,7 +13,6 @@ export interface Rental {
   house_type: string;
   cost: number;
   num_beds: number;
-  is_cost_per_room: boolean;
   is_utilities_included: boolean;
   is_sublet: boolean;
   has_laundry: boolean;

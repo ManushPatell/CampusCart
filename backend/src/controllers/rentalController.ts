@@ -1,21 +1,25 @@
 import express, { type Request, type Response } from "express";
-import { findAllRentals, findRental } from "../models/rentalModel.ts";
+import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
 import { HouseView } from "../types/types.ts";
 
 //Transformer function
 
-export function transformRentalToHouseView(rental: any): HouseView {
+export function transformRentalToHouseView(rental: Rental): HouseView {
   return {
     id: rental.id,
     title: rental.title,
     price: rental.cost.toString(),
-    location: rental.address,
-    image: rental.image ?? "",
+    address: rental.address,
+    image: rental.image,
     description: rental.description,
+    date_posted: rental.date_posted,
+    house_type: rental.house_type,
+    number_of_beds: rental.num_beds,
+    sublet: rental.is_sublet,
+    utilities_included: rental.is_utilities_included,
 
     details: {
       available: rental.date_available,
-      lease: rental.post_date,
     },
 
     amenities: [
@@ -32,6 +36,7 @@ export function transformRentalToHouseView(rental: any): HouseView {
     },
   };
 }
+
 export const getRentalById = async (
   req: Request,
   res: Response,

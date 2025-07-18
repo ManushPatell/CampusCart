@@ -12,7 +12,7 @@ export interface Miscallenous {
     category: string;
 }
 
-export const findMiscbyId = async (id: number): Promise<Miscallenous | null> => {
+export const findMiscById = async (id: number): Promise<Miscallenous | null> => {
     const result = await sql<Miscallenous[]>`
         SELECT * FROM misc WHERE id = ${id}
     `;

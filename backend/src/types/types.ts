@@ -2,12 +2,16 @@ export interface HouseView {
   id: number;
   title: string;
   price: string;
-  location: string;
+  address: string;
   image?: string;
   description: string;
+  date_posted: string;
+  house_type: string;
+  utilities_included: boolean;
+  number_of_beds: number;
+  sublet: boolean;
   details: {
     available: string;
-    lease: string;
   };
   amenities: string[];
   seller: {

@@ -65,34 +65,44 @@ router.get("/:id", getRentalById);
  *       properties:
  *         id:
  *           type: integer
+ *         seller:
+ *           type: string
  *         title:
- *           type: string
- *         price:
- *           type: string
- *         location:
  *           type: string
  *         image:
  *           type: string
+ *         contact:
+ *           type: string
+ *         address:
+ *           type: string
+ *         post_date:
+ *           type: string
+ *           format: date-time
+ *         date_available:
+ *           type: string
  *         description:
  *           type: string
- *         details:
- *           type: object
- *           properties:
- *             available:
- *               type: string
- *             lease:
- *               type: string
- *         amenities:
- *           type: array
- *           items:
- *             type: string
- *         seller:
- *           type: object
- *           properties:
- *             name:
- *               type: string
- *             contact:
- *               type: string
+ *         house_type:
+ *           type: string
+ *         cost:
+ *           type: integer
+ *         num_beds:
+ *           type: integer
+ *         is_utilities_included:
+ *           type: boolean
+ *         is_sublet:
+ *           type: boolean
+ *         has_laundry:
+ *           type: boolean
+ *         has_cooking:
+ *           type: boolean
+ *         has_parking:
+ *           type: boolean
+ *         no_smoking:
+ *           type: boolean
+ *         is_shared:
+ *           type: boolean
  */
+
 
 export default router;
