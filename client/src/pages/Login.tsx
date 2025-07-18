@@ -2,6 +2,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
@@ -11,6 +13,8 @@ type FormInputs = {
 };
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { refetchUser } = useAuth();
   const {
     handleSubmit,
     formState: { errors },
@@ -38,7 +42,8 @@ export default function Login() {
     setIsLoading(false);
 
     if (res.status === 200) {
-      // login success
+      refetchUser();
+      navigate("/dashboard");
     }
     if (res.status === 400) {
       setErrorMessage("Failed to provide email and password.");
@@ -53,9 +58,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-bg text-primary-fg">
       {/* Left Image */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
+      <div className="hidden md:flex w-1/2 items-center justify-center bg-primary-bg">
         <img
           src="/login_photo.jpg"
           alt="Login Visual"
@@ -98,6 +103,15 @@ export default function Login() {
             <p className="text-red-400 text-center">{errorMessage}</p>
           )}
           <Submit label="Login" className="mt-3" isLoading={isLoading} />
+          <span className="text-center mt-[1rem]">
+            Don{"'"}t have an account?{" "}
+            <Link
+              to="/register"
+              className="font-black text-primary-fg hover:underline"
+            >
+              Sign up
+            </Link>
+          </span>
         </form>
       </div>
     </div>

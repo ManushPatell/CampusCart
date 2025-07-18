@@ -4,6 +4,8 @@ import {
   getUserById,
   getAllUsers,
   postNewUser,
+  getUserRentals,
+  getUserTextbooks,
 } from "../controllers/userController.ts";
 
 import { authenticateToken } from "../middleware/authMiddleware.ts";
@@ -52,6 +54,8 @@ const router = express.Router();
  *                      type: string
  */
 router.get("/:id", getUserById);
+router.get("/:id/rentals", getUserRentals);
+router.get("/:id/textbooks", getUserTextbooks);
 
 /**
  * @swagger

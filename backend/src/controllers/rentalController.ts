@@ -1,6 +1,10 @@
 import express, { type Request, type Response } from "express";
-import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
-import { HouseView } from "../types/types.ts";
+import {
+  findAllRentals,
+  findRentalById,
+  HouseView,
+  Rental,
+} from "../models/rentalModel";
 
 //Transformer function
 
@@ -39,7 +43,7 @@ export const getRentalById = async (
   const { id } = req.params;
 
   try {
-    const house = await findRental(id);
+    const house = await findRentalById(id);
     if (!house) {
       res.status(404).json({ error: "Not found" });
       return;

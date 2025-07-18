@@ -2,7 +2,7 @@
 
 docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
 
-# Connect to the container through an interactive temrinal
+# Connect to the container through an interactive terminal
 
 docker exec -it db psql -U postgres
 
@@ -66,9 +66,7 @@ CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\\*[0-9]{4}$')
 "year" INT,
 "faculty" varchar(255),
 "price" INT not null
-
-> > > > > > > main
-> > > > > > > );
+);
 
 create table "house" (
 "id" serial primary key,
