@@ -1,5 +1,15 @@
-import { RentalListing, User } from "../types/types.ts";
 import sql from "./db.ts";
+import { RentalListing } from "./rentalModel.ts";
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  role: "user" | "admin" | "banned";
+}
 
 export const findAllUsers = async (): Promise<User[]> => {
   const users = await sql<User[]>`

@@ -1,6 +1,10 @@
 import express, { type Request, type Response } from "express";
-import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
-import { HouseView } from "../types/types.ts";
+import {
+  findAllRentals,
+  findRentalById,
+  HouseView,
+  Rental,
+} from "../models/rentalModel";
 
 //Transformer function
 
@@ -44,19 +48,24 @@ export const getRentalById = async (
       res.status(404).json({ error: "Not found" });
       return;
     }
+    const transformedHouse = transformRentalToHouseView(house);
 
-    res.status(200).json(house);
+    res.status(200).json(transformedHouse);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
 
-export const getAllRentals = async (req: Request, res: Response) => {
+export const getAllRentals = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const rentals = await findAllRentals();
-    res.status(200).json(rentals);
+    const transformedRentals = rentals.map(transformRentalToHouseView);
+    res.status(200).json(transformedRentals);
   } catch (error) {
-    res.status(500).json({ error: `Failed to retrieve rentals: ${error}` });
+    res.status(500).json({ error: "Failed to retrieve rentals" });
   }
 };

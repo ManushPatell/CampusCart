@@ -27,3 +27,10 @@ export async function findTextbook(id: number): Promise<Textbook | null> {
 
   return result[0] ?? null;
 }
+
+export async function findTextbooksFromUser(id: string) {
+  const textbooks = await sql<
+    Textbook[]
+  >`SELECT * FROM textbooks WHERE seller = ${id}`;
+  return textbooks;
+}
