@@ -23,30 +23,7 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   title:
- *                     type: string
- *                   description:
- *                     type: string
- *                   price:
- *                     type: number
- *                   seller:
- *                     type: integer
- *                   date_posted:
- *                     type: string
- *                   photos:
- *                     type: array
- *                     items:
- *                       type: string
- *                   condition:
- *                     type: string
- *                   category:
- *                     type: string
+ *               $ref: '#/components/schemas/misc'
  *       404:
  *         description: Miscellaneous items not found
  *       500:
@@ -73,33 +50,41 @@ router.get("/", getAllMisc);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 title:
- *                   type: string
- *                 description:
- *                   type: string
- *                 price:
- *                   type: number
- *                 seller:
- *                   type: integer
- *                 date_posted:
- *                   type: string
- *                 photos:
- *                   type: array
- *                   items:
- *                     type: string
- *                 condition:
- *                   type: string
- *                 category:
- *                   type: string
+ *               $ref: '#/components/schemas/misc'
  *       404:
  *         description: Miscellaneous item not found
  *       500:
  *         description: An error occurred while fetching the miscellaneous item
  */
 router.get("/:id", getMiscById);
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     misc:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         price:
+ *           type: number
+ *         seller:
+ *           type: integer
+ *         date_posted:
+ *           type: string
+ *         photos:
+ *           type: array
+ *           items:
+ *             type: string
+ *         condition:
+ *           type: string
+ *         category:
+ *           type: string
+ */
+
 
 export default router;
