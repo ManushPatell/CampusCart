@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type FormInputs = {
   firstName: string;
@@ -35,6 +36,7 @@ export default function SignUp() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { refetchUser } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -74,10 +76,11 @@ export default function SignUp() {
             email: data.email,
             password: data.password,
           }),
+          credentials: "include",
         });
-        const body = await res.json();
         if (res.status === 200) {
-          navigate(`/${body.id}`);
+          refetchUser();
+          navigate(`/dashboard`);
         }
         if (res.status === 400) {
           setErrorMessage("Failed to provide email and password.");
@@ -102,9 +105,9 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 relative">
+    <div className="flex min-h-screen bg-bg relative text-primary-fg">
       {/* Left Image */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
+      <div className="hidden md:flex w-1/2 items-center justify-center bg-primary-bg">
         <img
           src="/login_photo.jpg"
           alt="Login Visual"
@@ -190,7 +193,17 @@ export default function SignUp() {
           {errorMessage && (
             <p className="text-red-400 text-center">{errorMessage}</p>
           )}
+
           <Submit label="Sign Up" className="mt-[1rem]" isLoading={isLoading} />
+          <span className="text-center mt-[1rem]">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-black text-primary-fg hover:underline"
+            >
+              Log in
+            </Link>
+          </span>
         </form>
       </div>
     </div>

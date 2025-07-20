@@ -24,6 +24,10 @@ export const authenticateToken = (
     accessToken,
     process.env.ACCESS_TOKEN_SECRET as string,
     (err: any, decoded: any) => {
+      if (err?.name === "TokenExpiredError") {
+        res.status(403).json({error: "Access token expired, please login again."})
+        return;
+      }
       if (err) {
         res.status(403).json({ error: err });
         return;

@@ -1,7 +1,8 @@
 # Start db container
 docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
 
-# Connect to the container through an interactive temrinal
+# Connect to the container through an interactive terminal
+
 docker exec -it db psql -U postgres
 
 # Get a list of all tables
@@ -24,15 +25,33 @@ CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Con
 
 CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
 
+CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
+
 create table "users" (
   "id" serial primary key,
   "first_name" varchar(255) not null,
   "last_name" varchar(255) UNIQUE not null,
   "email" varchar(255) UNIQUE not null,
-  "phone_number" varchar(255) null default NULL
+  "phone_number" varchar(255) null default NULL,
+  "password" varchar(255) not null
 );
 
 create table "textbooks" (
+
+"id" serial primary key,
+"book_title" varchar(255) not null,
+"author" varchar(255),
+"edition" varchar(255),
+"seller" serial REFERENCES users(id) ON DELETE CASCADE,
+"date_posted" DATE DEFAULT CURRENT_DATE,
+"photos" BYTEA[] not null,
+"year" INT,
+"faculty" faculty,
+"price" INT not null,
+"condition" condition not null,
+"course_code" varchar(50) not null,
+CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\\*[0-9]{4}$')
+
   "id" serial primary key,
   "book_title" varchar(255) not null,
   "author" varchar(255),

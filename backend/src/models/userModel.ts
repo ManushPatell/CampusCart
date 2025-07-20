@@ -1,19 +1,13 @@
 import sql from "./db.ts";
+import { RentalListing } from "./rentalModel.ts";
 
-interface User {
-  id: number;
+export interface User {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
-  role: "user" | "admin" | "banned";
-}
-
-// CAUTION, this interface contains the user password
-interface SecureUser {
-  id: number;
   password: string;
-  email: string;
+  phoneNumber: string;
   role: "user" | "admin" | "banned";
 }
 
@@ -25,17 +19,11 @@ export const findAllUsers = async (): Promise<User[]> => {
   return users;
 };
 
-interface FoundUser {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone_number: number;
-}
-
-export const findUserById = async (id: number): Promise<FoundUser> => {
-  const user = await sql<FoundUser[]>`
-        SELECT id, first_name, last_name, email, phone_number 
+export const findUserById = async (
+  id: string,
+): Promise<Omit<User, "password">> => {
+  const user = await sql<Omit<User, "password">[]>`
+        SELECT id, first_name as "firstName", last_name as "lastName", email, phone_number as "phoneNumber", role as "role"
         FROM users
         WHERE id=${id}
         `;
@@ -49,33 +37,39 @@ export const addUser = async (
   phoneNumber: number,
   password: string,
   role: "admin" | "user" | "banned" = "user",
-): Promise<{
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-}> => {
-  const newUser = await sql<
-    {
-      id: number;
-      email: string;
-      firstName: string;
-      lastName: string;
-    }[]
-  >`
+): Promise<
+  Pick<User, "id" | "email" | "firstName" | "lastName"> | undefined
+> => {
+  try {
+    const newUser = await sql<
+      Pick<User, "id" | "email" | "firstName" | "lastName">[]
+    >`
         INSERT INTO users (first_name, last_name, email, phone_number, password, role)
         VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password}, ${role})
-        ON CONFLICT (email) DO NOTHING
-        RETURNING id, first_name, last_name, email;
+        RETURNING id, first_name as "firstName", last_name as "lastName", email;
         `;
 
-  return newUser[0];
+    return newUser[0];
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
 };
 
-export const findUserByEmail = async (email: string): Promise<SecureUser> => {
-  const user = await sql<SecureUser[]>`
-        SELECT * 
+export const findUserByEmail = async (
+  email: string,
+): Promise<Pick<User, "id" | "password" | "email" | "role"> | undefined> => {
+  const user = await sql<Pick<User, "id" | "password" | "email" | "role">[]>`
+        SELECT id, password, email, role 
         FROM users 
         WHERE email = ${email}`;
   return user[0];
+};
+
+export const findUserRentals = async (id: number) => {
+  const rentals = await sql<RentalListing[]>`
+    SELECT * 
+    FROM rentals 
+    WHERE id = ${id}`;
+  return rentals;
 };

@@ -1,4 +1,4 @@
 export interface UserPayload {
-  id: number;
+  id: string;
   role: "admin" | "user" | "banned";
 }

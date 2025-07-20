@@ -1,10 +1,11 @@
 import express, { type Request, type Response } from "express";
-import { findAllRentals, findRental, Rental } from "../models/rentalModel.ts";
-import { HouseView } from "../types/types.ts";
+import {
+  findAllRentals,
+  findRentalById, Rental, RentalListing}  from "../models/rentalModel";
 
 //Transformer function
 
-export function transformRentalToHouseView(rental: Rental): HouseView {
+function transformRentalToHouseView(rental: Rental): RentalListing {
   return {
     id: rental.id,
     title: rental.title,
@@ -14,7 +15,7 @@ export function transformRentalToHouseView(rental: Rental): HouseView {
     description: rental.description,
     date_posted: rental.date_posted,
     house_type: rental.house_type,
-    number_of_beds: rental.num_beds,
+    num_beds: rental.num_beds,
     sublet: rental.is_sublet,
     utilities_included: rental.is_utilities_included,
 
@@ -32,7 +33,6 @@ export function transformRentalToHouseView(rental: Rental): HouseView {
 
     seller: {
       name: rental.seller,
-      contact: rental.contact,
     },
   };
 }
@@ -44,7 +44,7 @@ export const getRentalById = async (
   const id = parseInt(req.params.id, 10);
   
   try {
-    const house = await findRental(id);
+    const house = await findRentalById(id);
     if (!house) {
       res.status(404).json({ error: "Not found" });
       return;

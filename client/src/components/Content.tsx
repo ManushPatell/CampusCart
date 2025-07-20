@@ -33,10 +33,10 @@ const AboutSection = () => {
   };
 
   return (
-    <section className="min-h-screen bg-[#F5F1EA] py-16 relative">
+    <section className="min-h-screen bg-bg py-16 relative">
       <div className="max-w-8xl mx-auto px-4">
         {/* Larger heading with more space */}
-        <h2 className="text-6xl md:text-7xl font-bold mb-32 text-center text-[#4A4032] font-['RetroCustom'] tracking-wide">
+        <h2 className="text-6xl md:text-7xl font-bold mb-32 text-center text-primary-fg font-['RetroCustom'] tracking-wide">
           Why Campus Cart?
         </h2>
 
@@ -44,7 +44,7 @@ const AboutSection = () => {
         <div className="relative p-12 mx-auto border-2 border-[#E8DFD0] rounded-xl bg-[#FAF9F6] shadow-xl w-full max-w-[2400px]">
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-[#E8DFD0] p-2 rounded-md text-[#4A4032] transition-all duration-300"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-[#E8DFD0] p-2 rounded-md text-primary-fg transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@ const AboutSection = () => {
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-[#E8DFD0] p-2 rounded-md text-[#4A4032] transition-all duration-300"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-[#E8DFD0] p-2 rounded-md text-primary-fg transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -93,12 +93,12 @@ const AboutSection = () => {
             </div>
 
             {/* Content section with more spacing */}
-            <div className="w-full md:w-2/5 text-[#4A4032] space-y-8 py-4">
-              <div className="text-lg uppercase tracking-wider text-[#8B7355] font-semibold">
+            <div className="w-full md:w-2/5 text-primary-fg space-y-8 py-4">
+              <div className="text-lg uppercase tracking-wider text-secondary-fg font-semibold">
                 {currentSlide === 0 ? "About Us" : "How It Works"}
               </div>
 
-              <h3 className="text-4xl font-bold font-['Kavoon'] text-[#4A4032]">
+              <h3 className="text-4xl font-bold font-['Kavoon'] text-primary-fg">
                 {slides[currentSlide].title}
               </h3>
 
@@ -129,8 +129,8 @@ const AboutSection = () => {
                 onClick={() => setCurrentSlide(index)}
                 className={`h-1.5 transition-all duration-300 rounded-full ${
                   currentSlide === index
-                    ? "w-8 bg-[#4A4032]"
-                    : "w-4 bg-[#8B7355]"
+                    ? "w-8 bg-primary-fg"
+                    : "w-4 bg-primary-fg/75"
                 }`}
               />
             ))}
@@ -138,10 +138,10 @@ const AboutSection = () => {
         </div>
 
         <div className="text-center py-16 mt-16">
-          <button className="bg-[#4A4032] hover:bg-[#5C503E] text-white text-xl font-bold py-4 px-10 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+          <button className="bg-primary-fg hover:bg-bg/75 text-white text-xl font-bold py-4 px-10 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md">
             Join Your Campus Community
           </button>
-          <p className="mt-6 text-[#4A4032] text-lg italic">
+          <p className="mt-6 text-primary-fg text-lg italic">
             Already over 10,000 students saving money!
           </p>
         </div>

@@ -1,13 +1,34 @@
 import sql from "./db.ts";
 
+
+export type RentalListing = {
+  id: number;
+  title: string;
+  price: string;
+  address: string;
+  image?: string;
+  description: string;
+  date_posted: string;
+  house_type: string;
+  num_beds: number;
+  utilities_included: boolean;
+  sublet: boolean;
+  details: {
+    available: string;
+  };
+  amenities: string[];
+  seller: {
+    name: string;
+  };
+};
+
 export interface Rental {
   id: number;
-  seller: string;
   title: string;
   image: string;
-  contact: string;
+  seller: string;
   address: string;
-  post_date: string;
+  date_posted: string;
   date_available: string;
   description: string;
   house_type: string;
@@ -22,13 +43,20 @@ export interface Rental {
   is_shared: boolean;
 }
 
-///Retrieves all rentals from the database
+
 export async function findAllRentals(): Promise<Rental[]> {
-  const result = await sql<Rental[]>`SELECT * FROM house`;
+  const result = await sql<Rental[]>`SELECT * FROM rentals`;
   return result;
 }
 
-export const findRental = async (id: number): Promise<Rental | null> => {
-  const result = await sql<Rental[]>`SELECT * FROM house WHERE id = ${id}`;
+export async function findRentalById(id: string): Promise<Rental | null> {
+  const result = await sql<Rental[]>`SELECT * FROM rentals WHERE id = ${id}`;
   return result[0] ?? null;
-};
+}
+
+export async function findRentalsFromUser(id: string) {
+  const rentals = await sql<
+    Rental[]
+  >`SELECT * FROM rentals WHERE seller = ${id}`;
+  return rentals;
+}

@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-screen">
       {/* Background Image */}
       <img
         src="isaiah.jpg"
