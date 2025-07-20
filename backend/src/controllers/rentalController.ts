@@ -1,25 +1,26 @@
 import express, { type Request, type Response } from "express";
 import {
   findAllRentals,
-  findRentalById,
-  HouseView,
-  Rental,
-} from "../models/rentalModel";
+  findRentalById, Rental, RentalListing}  from "../models/rentalModel";
 
 //Transformer function
 
-function transformRentalToHouseView(rental: Rental): HouseView {
+function transformRentalToHouseView(rental: Rental): RentalListing {
   return {
     id: rental.id,
     title: rental.title,
     price: rental.cost.toString(),
-    location: rental.address,
-    image: rental.image ?? "",
+    address: rental.address,
+    image: rental.image,
     description: rental.description,
+    date_posted: rental.date_posted,
+    house_type: rental.house_type,
+    num_beds: rental.num_beds,
+    sublet: rental.is_sublet,
+    utilities_included: rental.is_utilities_included,
 
     details: {
       available: rental.date_available,
-      lease: rental.post_date,
     },
 
     amenities: [
@@ -32,16 +33,16 @@ function transformRentalToHouseView(rental: Rental): HouseView {
 
     seller: {
       name: rental.seller,
-      contact: rental.contact,
     },
   };
 }
+
 export const getRentalById = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const { id } = req.params;
-
+  const id = parseInt(req.params.id, 10);
+  
   try {
     const house = await findRentalById(id);
     if (!house) {

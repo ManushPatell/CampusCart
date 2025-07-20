@@ -13,4 +13,4 @@ CREATE TABLE "textbooks" ("id" UUID PRIMARY KEY DEFAULT gen_random_uuid(), "book
 
 CREATE TABLE "rentals" ("id" UUID PRIMARY KEY DEFAULT gen_random_uuid(), "seller" UUID REFERENCES users(id) ON DELETE CASCADE, "address" TEXT NOT NULL, "post_date" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP, "date_available" DATE NOT NULL, "description" TEXT NOT NULL, "house_type" house_type NOT NULL, "cost" INT NOT NULL, "num_beds" INT NOT NULL DEFAULT 1, "is_cost_per_room" BOOLEAN NOT NULL, "is_utilities_included" BOOLEAN NOT NULL, "is_sublet" BOOLEAN NOT NULL, "has_laundry" BOOLEAN NOT NULL, "has_cooking" BOOLEAN NOT NULL, "has_parking" BOOLEAN NOT NULL, "no_smoking" BOOLEAN NOT NULL, "is_shared" BOOLEAN NOT NULL);
 
-CREATE TABLE "refresh_tokens" ("token" TEXT PRIMARY KEY NOT NULL, "user_id" UUID REFERENCES users(id) ON DELETE CASCADE);
+CREATE TABLE "refresh_tokens" ("token" TEXT PRIMARY KEY NOT NULL, "user_id" UUID REFERENCES users(id) ON DELETE CASCADE); 

@@ -1,54 +1,39 @@
 import sql from "./db.ts";
 
-export interface Rental {
-  id: number;
-  seller: string;
-  address: string;
-  post_date: string;
-  date_available: string;
-  description: string;
-  house_type: string;
-  cost: number;
-  num_beds: number;
-  is_cost_per_room: boolean;
-  is_utilities_included: boolean;
-  is_sublet: boolean;
-  has_laundry: boolean;
-  has_cooking: boolean;
-  has_parking: boolean;
-  no_smoking: boolean;
-  is_shared: boolean;
-}
 
 export type RentalListing = {
-  id: string;
+  id: number;
   title: string;
   price: string;
-  location: string;
+  address: string;
   image?: string;
   description: string;
+  date_posted: string;
+  house_type: string;
+  num_beds: number;
+  utilities_included: boolean;
+  sublet: boolean;
   details: {
     available: string;
-    lease: string;
   };
   amenities: string[];
   seller: {
     name: string;
-    contact: string;
   };
 };
 
 export interface Rental {
   id: number;
+  title: string;
+  image: string;
   seller: string;
   address: string;
-  post_date: string;
+  date_posted: string;
   date_available: string;
   description: string;
   house_type: string;
   cost: number;
   num_beds: number;
-  is_cost_per_room: boolean;
   is_utilities_included: boolean;
   is_sublet: boolean;
   has_laundry: boolean;
@@ -58,23 +43,6 @@ export interface Rental {
   is_shared: boolean;
 }
 
-export interface HouseView {
-  id: number;
-  title: string;
-  price: string;
-  location: string;
-  image?: string;
-  description: string;
-  details: {
-    available: string;
-    lease: string;
-  };
-  amenities: string[];
-  seller: {
-    name: string;
-    contact: string;
-  };
-}
 
 export async function findAllRentals(): Promise<Rental[]> {
   const result = await sql<Rental[]>`SELECT * FROM rentals`;
