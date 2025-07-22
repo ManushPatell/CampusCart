@@ -1,5 +1,5 @@
 import { type UserPayload } from "../types/user.ts";
-import express, { type Request, type Response } from "express";
+import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

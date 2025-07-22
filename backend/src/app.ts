@@ -19,16 +19,24 @@ import textbookRoutes from "./routes/textbookRoute.ts";
 import miscRoutes from "./routes/miscRoutes.ts";
 
 import cors from "cors";
+import morgan from "morgan";
 
 const app = express();
 const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-app.use(cors({
-  origin: FRONTEND_ORIGIN,
-  credentials: true,
-})); // Since we rely on credential for cookies, we must set the origin.
+app.use(
+  morgan("dev", {
+    skip: () => NODE_ENV !== "development",
+  }),
+);
+app.use(
+  cors({
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
+  }),
+); // Since we rely on credential for cookies, we must set the origin.
 
 app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json());
