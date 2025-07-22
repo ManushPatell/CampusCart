@@ -25,7 +25,9 @@ CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Con
 
 CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
 
-CREATE TYPE faculty as ENUM ('Engineering', 'Health Sciences', 'Humanities', 'Social Science', 'Business');
+CREATE TYPE category as ENUM ('Appliances', 'Arts & Crafts', 'Bicycles', 'Books & Magazines', 'Cameras & Photos', 'Cars & Other Vehicles', 'Clothing & Accessories', 'Collectibles', 'Compact Discs & Vinyl', 'Computers & Accessories', 'DVDs, Videos and Games', 'Electronics', 'Other', 'Furniture', 'Games', 'Garage Sales', 'Health & Beauty', 'Home & Garden', 'Jobs', 'Lost & Found', 'Musical Instruments', 'Parking', 'Sports & Recreation', 'Tickets', 'Tools', 'Travel', 'Tutoring', 'Volunteer');
+
+CREATE TYPE service as ENUM ('Wanted', 'Offering');
 
 create table "users" (
   "id" serial primary key,
@@ -37,7 +39,6 @@ create table "users" (
 );
 
 create table "textbooks" (
-
 "id" serial primary key,
 "book_title" varchar(255) not null,
 "author" varchar(255),
@@ -52,19 +53,6 @@ create table "textbooks" (
 "course_code" varchar(50) not null,
 CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\\*[0-9]{4}$')
 
-  "id" serial primary key,
-  "book_title" varchar(255) not null,
-  "author" varchar(255),
-  "edition" varchar(255),
-  "seller" serial REFERENCES users(id) ON DELETE CASCADE,
-  "date_posted" DATE DEFAULT CURRENT_DATE,
-  "photos" BYTEA[] not null,
-  "year" INT,
-  "faculty" faculty,
-  "price" INT not null,
-  "condition" condition not null,
-  "course_code" varchar(50) not null, 
-  CONSTRAINT course_code_format CHECK (course_code ~ '^[A-Z]{4}\\*[0-9]{4}$')
 );
 
 create table "house" (
@@ -83,8 +71,20 @@ create table "house" (
   "num_beds" INT not null default 1,
   "is_cost_per_room" BOOLEAN not null,
   "is_utilities_included" BOOLEAN not null,
-  "is_shared" BOOLEAN not nulll
+  "is_shared" BOOLEAN not null
 );
+
+create table "misc" (
+  "id" serial primary key,
+  "title" varchar(255),
+  "description" varchar(255),
+  "price" INT not null,
+  "seller" serial REFERENCES users(id) ON DELETE CASCADE,
+  "date_posted" DATE DEFAULT CURRENT_DATE,
+  "photos" BYTEA[] not null,
+  "category" category,
+  "service" service
+)
 
 CREATE TABLE "users" ("id" SERIAL PRIMARY KEY, "first_name" VARCHAR(255) NOT NULL, "last_name" VARCHAR(255) NOT NULL, "email" VARCHAR(255) UNIQUE NOT NULL, "phone_number" VARCHAR(255) UNIQUE NOT NULL);
 
