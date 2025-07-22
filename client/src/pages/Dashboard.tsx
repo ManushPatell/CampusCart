@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { House, LibraryBig, ShoppingBasket } from "lucide-react";
-import { Rental, Textbook } from "../types/types";
+import { Miscellaneous, Rental, Textbook } from "../types/types";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const [rentalsData, setRentalsData] = useState<Rental[] | null>(null);
   const [textbooksData, setTextbooksData] = useState<Textbook[] | null>(null);
-  const [miscData, setMiscData] = useState<any[] | null>(null);
+  const [miscData, setMiscData] = useState<Miscellaneous[] | null>(null);
 
   useEffect(() => {
     if (loading || !user) return;
@@ -22,7 +22,7 @@ export default function Dashboard() {
 
     fetch(`${import.meta.env.VITE_API_URL}/users/${user.id}/misc`)
       .then((res) => res.json())
-      .then((body) => setTextbooksData(body));
+      .then((body) => setMiscData(body));
   }, [loading, user]);
 
   if (loading) return <p>Loading...</p>;
@@ -65,7 +65,7 @@ export default function Dashboard() {
             <p className="text-secondary-fg">Miscellaneous</p>
             <ShoppingBasket className="rounded-md bg-[#6D152B]/30 text-[#6D152B] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
           </span>
-          <h3 className={amountClassName}>{rentalsData?.length}</h3>
+          <h3 className={amountClassName}>{miscData?.length}</h3>
         </div>
       </span>
 

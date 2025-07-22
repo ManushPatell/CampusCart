@@ -86,5 +86,4 @@ router.get("/:id", getMiscById);
  *           type: string
  */
 
-
 export default router;

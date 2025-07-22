@@ -1,7 +1,10 @@
 import express, { type Request, type Response } from "express";
 import {
   findAllRentals,
-  findRentalById, Rental, RentalListing}  from "../models/rentalModel";
+  findRentalById,
+  Rental,
+  RentalListing,
+} from "../models/rentalModel";
 
 //Transformer function
 
@@ -42,7 +45,7 @@ export const getRentalById = async (
   res: Response,
 ): Promise<void> => {
   const id = parseInt(req.params.id, 10);
-  
+
   try {
     const house = await findRentalById(id);
     if (!house) {

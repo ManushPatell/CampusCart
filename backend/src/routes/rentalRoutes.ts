@@ -104,5 +104,4 @@ router.get("/:id", getRentalById);
  *           type: boolean
  */
 
-
 export default router;

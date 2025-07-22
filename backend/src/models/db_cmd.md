@@ -1,4 +1,5 @@
 # Start db container
+
 docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
 
 # Connect to the container through an interactive terminal
@@ -6,20 +7,26 @@ docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postg
 docker exec -it db psql -U postgres
 
 # Get a list of all tables
+
 \dt
 
 # Create a docker volume
+
 docker volume create db-data
 
 # When you reset containers you lose all data. To save data to disk use a volume
+
 # Pass this cli arg when starting the db container
+
 -v db-data:/var/lib/postgresql/data
-# This arg maps the volume 
+
+# This arg maps the volume
+
 docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v db-data -d postgres
 
 CREATE TYPE "year" AS ENUM ('1', '2', '3', '4');
 
-CREATE TYPE condition AS ENUM ('Used', 'New'); 
+CREATE TYPE condition AS ENUM ('Used', 'New');
 
 CREATE TYPE HOUSETYPE as ENUM ('Apartment', 'House', 'Bedroom', 'Basement', 'Condo');
 
@@ -30,12 +37,12 @@ CREATE TYPE category as ENUM ('Appliances', 'Arts & Crafts', 'Bicycles', 'Books 
 CREATE TYPE service as ENUM ('Wanted', 'Offering');
 
 create table "users" (
-  "id" serial primary key,
-  "first_name" varchar(255) not null,
-  "last_name" varchar(255) UNIQUE not null,
-  "email" varchar(255) UNIQUE not null,
-  "phone_number" varchar(255) null default NULL,
-  "password" varchar(255) not null
+"id" serial primary key,
+"first_name" varchar(255) not null,
+"last_name" varchar(255) UNIQUE not null,
+"email" varchar(255) UNIQUE not null,
+"phone_number" varchar(255) null default NULL,
+"password" varchar(255) not null
 );
 
 create table "textbooks" (
@@ -85,6 +92,10 @@ create table "misc" (
   "category" category,
   "service" service
 )
+
+CREATE TABLE "misc" ("id" serial primary key, "title" varchar(255), "description" varchar(255), "price" INT not null, "seller" serial REFERENCES users(id) ON DELETE CASCADE, "date_posted" DATE DEFAULT CURRENT_DATE, "photos" BYTEA[] not null, "category" category, "service" service
+);
+
 
 CREATE TABLE "users" ("id" SERIAL PRIMARY KEY, "first_name" VARCHAR(255) NOT NULL, "last_name" VARCHAR(255) NOT NULL, "email" VARCHAR(255) UNIQUE NOT NULL, "phone_number" VARCHAR(255) UNIQUE NOT NULL);
 

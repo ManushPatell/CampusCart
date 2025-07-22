@@ -8,6 +8,7 @@ import {
 } from "../models/userModel.ts";
 import { findRentalsFromUser } from "../models/rentalModel.ts";
 import { findTextbooksFromUser } from "../models/textbookModel.ts";
+import { findMiscFromUser } from "../models/miscModel.ts";
 
 export async function getUserById(
   req: Request,
@@ -80,6 +81,24 @@ export async function getUserTextbooks(req: Request, res: Response) {
   try {
     const userTextbooks = await findTextbooksFromUser(id);
     res.status(200).json(userTextbooks);
+    return;
+  } catch (err) {
+    res.status(500).json(err);
+    return;
+  }
+}
+
+export async function getUserMisc(req: Request, res: Response) {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).json({ error: "Failed to provide an id." });
+    return;
+  }
+
+  try {
+    const userMisc = await findMiscFromUser(parseInt(id));
+    res.status(200).json(userMisc);
     return;
   } catch (err) {
     res.status(500).json(err);

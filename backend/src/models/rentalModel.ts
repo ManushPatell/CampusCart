@@ -1,6 +1,5 @@
 import sql from "./db.ts";
 
-
 export type RentalListing = {
   id: number;
   title: string;
@@ -42,7 +41,6 @@ export interface Rental {
   no_smoking: boolean;
   is_shared: boolean;
 }
-
 
 export async function findAllRentals(): Promise<Rental[]> {
   const result = await sql<Rental[]>`SELECT * FROM rentals`;

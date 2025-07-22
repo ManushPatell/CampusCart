@@ -37,3 +37,15 @@ export interface Rental {
   amenities: string[];
   images: string[]; // Assumes array of image URLs
 }
+
+export interface Miscellaneous {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  seller: number;
+  date_posted: string;
+  photos: string[];
+  condition: string;
+  category: string;
+}
