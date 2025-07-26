@@ -1,4 +1,5 @@
 import { useState } from "react";
+import UnauthenticatedNav from "./Nav";
 
 const AboutSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
