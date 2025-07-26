@@ -2,8 +2,25 @@ import { useState, useRef, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { ChevronDown, Menu } from "lucide-react";
 
+
+
 export default function UnauthenticatedNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsMobileMenuOpen(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
 
   return (
     <div>
@@ -24,14 +41,15 @@ export default function UnauthenticatedNav() {
         </button>
 
         {/* Desktop Nav */}
-        <div className="space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
-          <Link to="/#about" className="text">
+        <div className=" space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
+          <Link to="/#about" className="hover:text-blue-700 transition">
             About Us
-          </Link>
-          <span className="relative inline-block text-primary-fg" ref={useRef<HTMLDivElement>(null)}>
+          </Link> 
+         <span className="relative inline-block text-primary-fg" ref={dropdownRef}>
+
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              className="flex items-center gap-1 px-3 py-2 rounded-md transition"
+              className="flex items-center gap-1 px-3 py-2 rounded-md hover:text-blue-700 transition"
             >
               Listings
               <ChevronDown
@@ -42,37 +60,39 @@ export default function UnauthenticatedNav() {
             </button>
             {/* Dropdown */}
             <div
-              className={`absolute right-0 mt-2 min-w-[160px] bg-white border rounded-xl shadow-lg py-2 flex flex-col transition-all duration-200  ${
-                isMobileMenuOpen
-                  ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 pointer-events-none"
-              }`}
-              style={{ zIndex: 1000 }}
+            className={`absolute right-0 mt-2 min-w-[160px] bg-white border rounded-xl shadow-lg py-2 flex flex-col transition-all duration-200 ${
+              isMobileMenuOpen
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-2 pointer-events-none"
+            }`}
+            style={{ zIndex: 1000 }}
+          >
+            <Link
+              to="/rentals"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-primary-fg"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              <Link
-                to="/rentals"
-                className="px-5 py-2  transition rounded-md  text-primary-fg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Rentals
-              </Link>
-              <Link
-                to="/textbooks"
-                className="px-5 py-2 text-primary-fg transition rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Textbooks
-              </Link>
-              <Link
-                to="/misc"
-                className="px-5 py-2  text-gray-800 transition rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Extras
-              </Link>
-            </div>
+              Rentals
+            </Link>
+            <hr className="my-1 mx-4 border-t border-gray-200" />
+            <Link
+              to="/textbooks"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-primary-fg"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Textbooks
+            </Link>
+            <hr className="my-1 mx-4 border-t border-gray-200" />
+            <Link
+              to="/misc"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Extras
+            </Link>
+          </div>
           </span>
-          <Link to="/register" className="text">
+          <Link to="/register" className="hover:text-blue-700 transition">
             Sign Up
           </Link>
         </div>
@@ -91,19 +111,19 @@ export default function UnauthenticatedNav() {
           ✕
         </button>
         <nav className="flex flex-col mt-16 space-y-6 px-8">
-          <Link to="/#about" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
             About Us
           </Link>
-          <Link to="/rentals" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/rentals" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
             Rentals
           </Link>
-          <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
             Textbooks
           </Link>
-          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
             Extras
           </Link>
-          <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
             Login
           </Link>
         </nav>
