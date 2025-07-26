@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "start": "react-scripts start --host",
 
   "scripts": {
     "dev": "vite",
