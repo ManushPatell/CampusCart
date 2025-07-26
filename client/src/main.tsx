@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route element={<UnauthenticatedNav />}>
+          <Route >
             <Route path="/" element={<Home />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="rentals/:id" element={<HouseDetail />} />

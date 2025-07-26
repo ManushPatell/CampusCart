@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   return {
     server: {
       port: env.VITE_PORT,
+      host: true,
       cors: {
         origin: env.VITE_API_URL,
       },

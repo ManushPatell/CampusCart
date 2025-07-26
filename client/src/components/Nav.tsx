@@ -1,47 +1,133 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
+import { ChevronDown, Menu } from "lucide-react";
+
+
 
 export default function UnauthenticatedNav() {
-  const [isListingsOpen, setIsListingsOpen] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const navLinkClassName = "text";
+  useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsMobileMenuOpen(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+
   return (
     <div>
-      <nav
-        className={`left-0 w-full z-1000 animate-all duration-300 px-6 py-4 flex items-center justify-between backdrop-blur-3xl bg-black/30 sticky top-0`}
-      >
+      <nav className="left-0 w-full z-1000 animate-all duration-300 px-6 py-4 flex items-center justify-between backdrop-blur-3xl bg-white/30 sticky top-0">
         {/* Logo */}
         <h1
-          style={{ fontFamily: '"Press Start 2P", monospace' }}
-          className="text-black text-center text-1xl"
+          className="text-shadow-zinc-900 text-center text-2xl font-['Kavoon'] text-primary-fg"
         >
-          Logo
+          Campus Cart
         </h1>
 
-        {/* Navigation Links */}
-        <div className="space-x-6 text-sm z-50 md:flex">
-          <Link to="/#about" className={navLinkClassName}>
-            About Us
-          </Link>
-          <span className="relative inline-block flex-col items-center">
-            <button onClick={() => setIsListingsOpen((prev) => !prev)}>
-              Listings
-            </button>
-            {isListingsOpen && (
-              <div className="absolute right-[50%] border-4 translate-x-1/2 border-pink-400 flex top-5 flex-col gap-[1rem]">
-                <Link to="/rentals">Rentals</Link>
-                <Link to="/textbooks">Textbooks</Link>
-                <Link to="/extras">Extras</Link>
-                {/*IDK what to call this one yet*/}
-              </div>
-            )}
-          </span>
+        {/* Hamburger Icon for mobile */}
+        <button
+          className="md:hidden text-black"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+        >
+          <Menu className="w-8 h-8" />
+        </button>
 
-          <Link to="/register" className={navLinkClassName}>
+        {/* Desktop Nav */}
+        <div className=" space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
+          <Link to="/#about" className="hover:text-fuchsia-500 transition">
+            About Us
+          </Link> 
+         <span className="relative inline-block text-primary-fg" ref={dropdownRef}>
+
+            <button
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="flex items-center gap-1 px-3 py-2 rounded-md hover:text-fuchsia-500 transition"
+            >
+              Listings
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-200 ${
+                  isMobileMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {/* Dropdown */}
+            <div
+            className={`absolute right-0 mt-2 min-w-[160px] bg-white border rounded-xl shadow-lg py-2 flex flex-col transition-all duration-200 ${
+              isMobileMenuOpen
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-2 pointer-events-none"
+            }`}
+            style={{ zIndex: 1000 }}
+          >
+            <Link
+              to="/rentals"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-primary-fg"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Rentals
+            </Link>
+            <hr className="my-1 mx-4 border-t border-gray-200" />
+            <Link
+              to="/textbooks"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-primary-fg"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Textbooks
+            </Link>
+            <hr className="my-1 mx-4 border-t border-gray-200" />
+            <Link
+              to="/misc"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Extras
+            </Link>
+          </div>
+          </span>
+          <Link to="/register" className="hover:text-fuchsia-500 transition">
             Sign Up
           </Link>
         </div>
       </nav>
+
+      {/* Side Drawer for Mobile */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-[2000] transform transition-transform duration-300 text-primary-fg font-bold ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        } md:hidden`}
+      >
+        <button
+          className="absolute top-4 left-4 text-black"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          ✕
+        </button>
+        <nav className="flex flex-col mt-16 space-y-6 px-8">
+          <Link to="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
+            About Us
+          </Link>
+          <Link to="/rentals" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
+            Rentals
+          </Link>
+          <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
+            Textbooks
+          </Link>
+          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
+            Extras
+          </Link>
+          <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
+            Login
+          </Link>
+        </nav>
+      </div>
       <Outlet />
     </div>
   );
