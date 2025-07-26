@@ -10,8 +10,7 @@ export default function UnauthenticatedNav() {
       <nav className="left-0 w-full z-1000 animate-all duration-300 px-6 py-4 flex items-center justify-between backdrop-blur-3xl bg-white/30 sticky top-0">
         {/* Logo */}
         <h1
-          style={{ fontFamily: '"PT Serif", serif', fontWeight: "bold" }}
-          className="text-black text-center text-2xl"
+          className="text-shadow-zinc-900 text-center text-2xl font-['Kavoon'] text-primary-fg"
         >
           Campus Cart
         </h1>
@@ -25,11 +24,11 @@ export default function UnauthenticatedNav() {
         </button>
 
         {/* Desktop Nav */}
-        <div className="space-x-6 text-sm z-50 md:flex items-center hidden">
+        <div className="space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
           <Link to="/#about" className="text">
             About Us
           </Link>
-          <span className="relative inline-block" ref={useRef<HTMLDivElement>(null)}>
+          <span className="relative inline-block text-primary-fg" ref={useRef<HTMLDivElement>(null)}>
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               className="flex items-center gap-1 px-3 py-2 rounded-md transition"
@@ -43,7 +42,7 @@ export default function UnauthenticatedNav() {
             </button>
             {/* Dropdown */}
             <div
-              className={`absolute right-0 mt-2 min-w-[160px] bg-white border rounded-xl shadow-lg py-2 flex flex-col transition-all duration-200 ${
+              className={`absolute right-0 mt-2 min-w-[160px] bg-white border rounded-xl shadow-lg py-2 flex flex-col transition-all duration-200  ${
                 isMobileMenuOpen
                   ? "opacity-100 translate-y-0 pointer-events-auto"
                   : "opacity-0 -translate-y-2 pointer-events-none"
@@ -52,20 +51,20 @@ export default function UnauthenticatedNav() {
             >
               <Link
                 to="/rentals"
-                className="px-5 py-2 text-gray-800 transition rounded-md"
+                className="px-5 py-2  transition rounded-md  text-primary-fg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Rentals
               </Link>
               <Link
                 to="/textbooks"
-                className="px-5 py-2 text-gray-800 transition rounded-md"
+                className="px-5 py-2 text-primary-fg transition rounded-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Textbooks
               </Link>
               <Link
-                to="/extras"
+                to="/misc"
                 className="px-5 py-2  text-gray-800 transition rounded-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -81,7 +80,7 @@ export default function UnauthenticatedNav() {
 
       {/* Side Drawer for Mobile */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-[2000] transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-[2000] transform transition-transform duration-300 text-primary-fg font-bold ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         } md:hidden`}
       >
@@ -101,11 +100,11 @@ export default function UnauthenticatedNav() {
           <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)}>
             Textbooks
           </Link>
-          <Link to="/extras" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)}>
             Extras
           </Link>
           <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-            Sign Up
+            Login
           </Link>
         </nav>
       </div>
