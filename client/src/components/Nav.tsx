@@ -42,14 +42,14 @@ export default function UnauthenticatedNav() {
 
         {/* Desktop Nav */}
         <div className=" space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
-          <Link to="/#about" className="hover:text-blue-700 transition">
+          <Link to="/#about" className="hover:text-fuchsia-500 transition">
             About Us
           </Link> 
          <span className="relative inline-block text-primary-fg" ref={dropdownRef}>
 
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              className="flex items-center gap-1 px-3 py-2 rounded-md hover:text-blue-700 transition"
+              className="flex items-center gap-1 px-3 py-2 rounded-md hover:text-fuchsia-500 transition"
             >
               Listings
               <ChevronDown
@@ -69,7 +69,7 @@ export default function UnauthenticatedNav() {
           >
             <Link
               to="/rentals"
-              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-primary-fg"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-primary-fg"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Rentals
@@ -77,7 +77,7 @@ export default function UnauthenticatedNav() {
             <hr className="my-1 mx-4 border-t border-gray-200" />
             <Link
               to="/textbooks"
-              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-primary-fg"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-primary-fg"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Textbooks
@@ -85,14 +85,14 @@ export default function UnauthenticatedNav() {
             <hr className="my-1 mx-4 border-t border-gray-200" />
             <Link
               to="/misc"
-              className="px-5 py-2 hover:bg-gray-100 hover:text-blue-700 transition rounded-md text-gray-800"
+              className="px-5 py-2 hover:bg-gray-100 hover:text-fuchsia-500 transition rounded-md text-gray-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Extras
             </Link>
           </div>
           </span>
-          <Link to="/register" className="hover:text-blue-700 transition">
+          <Link to="/register" className="hover:text-fuchsia-500 transition">
             Sign Up
           </Link>
         </div>
@@ -111,19 +111,19 @@ export default function UnauthenticatedNav() {
           ✕
         </button>
         <nav className="flex flex-col mt-16 space-y-6 px-8">
-          <Link to="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
+          <Link to="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
             About Us
           </Link>
-          <Link to="/rentals" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
+          <Link to="/rentals" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
             Rentals
           </Link>
-          <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
+          <Link to="/textbooks" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
             Textbooks
           </Link>
-          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
+          <Link to="/misc" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
             Extras
           </Link>
-          <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-blue-700 transition">
+          <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-fuchsia-500 transition">
             Login
           </Link>
         </nav>
