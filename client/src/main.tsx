@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
+import TextbookDetail from "./pages/TextbookDetail";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/" element={<Home />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="rentals/:id" element={<HouseDetail />} />
+            <Route path="textbooks/:id" element={<TextbookDetail />} />
           </Route>
 
           <Route path="login" element={<Login />} />
