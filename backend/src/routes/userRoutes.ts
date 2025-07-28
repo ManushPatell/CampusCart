@@ -45,7 +45,7 @@ const router = express.Router();
  *                  phoneNumber:
  *                      type: integer
  *       500:
- *           description: An error occured.
+ *           description: An error occurred.
  *           content:
  *           application/json:
  *             schema:

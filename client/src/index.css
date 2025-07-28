@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Kavoon&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,700;1,14..32,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,700;1,14..32,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -9,6 +9,7 @@
   --color-primary-fg: #4a4032;
   --color-primary-bg: #ffffff;
   --color-secondary-fg: #5e5850;
+  --color-accent: oklch(90.3% 0.076 319.62);
 }
 
 body {
@@ -26,9 +27,40 @@ html {
   scroll-behavior: smooth;
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.02rem);
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]:hover {
+  background-color: #e3e3e3;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--color-primary-fg);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
 .pt-serif-bold {
   font-family: "PT Serif", serif;
   font-weight: 700;
   font-style: normal;
 }
-

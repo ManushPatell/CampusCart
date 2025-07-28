@@ -27,7 +27,7 @@ export default function Hero() {
 
         <h2
           style={{ fontFamily: "RetroCustom" }}
-          className="font-extrabold text-xl md:text-3xl text-fuchsia-200 tracking-wide p-2 md:p-5 drop-shadow-md"
+          className="font-extrabold text-xl md:text-3xl text-accent tracking-wide p-2 md:p-5 drop-shadow-md"
         >
           The Marketplace Made For Campus Life
         </h2>
