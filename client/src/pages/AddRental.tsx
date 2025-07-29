@@ -3,11 +3,14 @@ import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useState } from "react";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
+import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
+import ControlledTextarea from "@/components/forms/ControlledTextarea";
+import { useAuth } from "@/context/AuthContext";
 
 type FormInputs = {
   address: string;
   post_date: Date;
-  date_available: Date;
+  date_available: Date | undefined;
   description: string;
   house_type: string; // TODO: Make this an enum
   cost: number;
@@ -27,10 +30,10 @@ type FormInputs = {
 const initialValues: FormInputs = {
   address: "",
   post_date: new Date(),
-  date_available: new Date(),
+  date_available: undefined,
   description: "",
   house_type: "", // TODO: Make this an enum
-  cost: 0,
+  cost: NaN,
   num_beds: 0,
   is_cost_per_room: false,
   is_utilities_included: false,
@@ -60,7 +63,20 @@ export default function AddRental() {
 
   const onSubmit = async (data: FormInputs) => {
     setIsLoading(true);
-    console.log("Login submitted", data);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // TODO: Add description (textarea), add date available with a dat picker also house type dropdown
@@ -78,6 +94,35 @@ export default function AddRental() {
           placeholder="Address"
           rules={{ required: "Field required" }}
         />
+        <ControlledInput
+          control={control}
+          name="cost"
+          type="number"
+          errors={errors}
+          placeholder="Cost of the rental"
+        />
+        <ControlledDatePicker
+          control={control}
+          name="date_available"
+          errors={errors}
+          label="Date available"
+          rules={{ required: "Field required" }}
+        />
+        {/* TODO: MAKE HOUSE TYPE A DROPDOWN/ENUM */}
+        <ControlledInput
+          control={control}
+          name="house_type"
+          errors={errors}
+          placeholder="House type"
+          rules={{ required: "Field required" }}
+        />
+        <ControlledTextarea
+          control={control}
+          name="description"
+          errors={errors}
+          placeholder="Enter a short description about the rental"
+          rules={{ required: "Field required" }}
+        />
         <ControlledCheckbox
           name="is_cost_per_room"
           control={control}
@@ -90,7 +135,6 @@ export default function AddRental() {
           control={control}
           errors={errors}
           label="Shared with other roommates"
-          rules={{ required: "Field required" }}
         />
         {isShared && (
           <ControlledInput
@@ -107,29 +151,24 @@ export default function AddRental() {
           control={control}
           errors={errors}
           label="Utilities"
-          rules={{ required: "Field required" }}
         />
         <ControlledCheckbox
           name="is_sublet"
           control={control}
           errors={errors}
           label="Sublet"
-          rules={{ required: "Field required" }}
         />
-
         <ControlledCheckbox
           name="has_laundry"
           control={control}
           errors={errors}
           label="Laundry"
-          rules={{ required: "Field required" }}
         />
         <ControlledCheckbox
           name="no_smoking"
           control={control}
           errors={errors}
           label="No smoking"
-          rules={{ required: "Field required" }}
         />
         <Submit
           label="Add rental"
