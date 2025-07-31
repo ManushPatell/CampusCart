@@ -2,7 +2,9 @@ import express from "express";
 import {
   getAllRentals,
   getRentalById,
+  postRental,
 } from "../controllers/rentalController.ts";
+import { authenticateToken } from "../middleware/authMiddleware.ts";
 
 const router = express.Router();
 
@@ -58,18 +60,40 @@ router.get("/:id", getRentalById);
 
 /**
  * @swagger
+ * /rentals:
+ *   post:
+ *     summary: Create a new rental
+ *     tags: [Rentals]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: '#/components/schemas/Rental'
+ *
+ *     responses:
+ *       201:
+ *         description: The newly created rental
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Rental'
+ *       500:
+ *         description: Database insert failed
+ */
+router.post("/", authenticateToken, postRental);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Rental:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
  *         seller:
  *           type: string
  *         title:
- *           type: string
- *         image:
  *           type: string
  *         contact:
  *           type: string
@@ -77,17 +101,21 @@ router.get("/:id", getRentalById);
  *           type: string
  *         post_date:
  *           type: string
- *           format: date-time
+ *           format: date
  *         date_available:
  *           type: string
+ *           format: date
  *         description:
  *           type: string
  *         house_type:
  *           type: string
+ *           enum: [Apartment, House, Bedroom, Basement]
  *         cost:
  *           type: integer
  *         num_beds:
  *           type: integer
+ *         is_cost_per_room:
+ *           type: boolean
  *         is_utilities_included:
  *           type: boolean
  *         is_sublet:

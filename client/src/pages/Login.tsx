@@ -4,6 +4,7 @@ import Submit from "../components/forms/Submit";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 

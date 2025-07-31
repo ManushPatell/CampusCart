@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from "express";
 import {
+  addRental,
   findAllRentals,
   findRentalById,
   Rental,
@@ -14,9 +15,8 @@ function transformRentalToHouseView(rental: Rental): RentalListing {
     title: rental.title,
     price: rental.cost.toString(),
     address: rental.address,
-    image: rental.image,
     description: rental.description,
-    date_posted: rental.date_posted,
+    date_posted: rental.post_date,
     house_type: rental.house_type,
     num_beds: rental.num_beds,
     sublet: rental.is_sublet,
@@ -44,7 +44,7 @@ export const getRentalById = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const id = parseInt(req.params.id, 10);
+  const id = req.params.id;
 
   try {
     const house = await findRentalById(id);
@@ -69,7 +69,58 @@ export const getAllRentals = async (
     const rentals = await findAllRentals();
     const transformedRentals = rentals.map(transformRentalToHouseView);
     res.status(200).json(transformedRentals);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to retrieve rentals" });
+  }
+};
+
+export const postRental = async (req: Request, res: Response) => {
+  const { id } = req.user!; // This is guaranteed to exist since this route is protected.
+
+  const {
+    title,
+    address,
+    date_available,
+    description,
+    house_type,
+    cost,
+    num_beds,
+    is_cost_per_room,
+    is_utilities_included,
+    is_sublet,
+    has_laundry,
+    has_cooking,
+    has_parking,
+    no_smoking,
+    is_shared,
+  } = req.body;
+
+  const postedRental: Omit<Rental, "id"> = {
+    title,
+    seller: id,
+    address,
+    date_available,
+    post_date: new Date().toDateString(),
+    description,
+    house_type,
+    cost,
+    num_beds,
+    is_cost_per_room,
+    is_utilities_included,
+    is_sublet,
+    has_laundry,
+    has_cooking,
+    has_parking,
+    no_smoking,
+    is_shared,
+  };
+
+  try {
+    const rental = await addRental(postedRental);
+
+    res.status(200).json({ rental: rental });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to insert rental" });
   }
 };
