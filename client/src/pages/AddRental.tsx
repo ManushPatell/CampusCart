@@ -5,15 +5,17 @@ import { useState } from "react";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
-import { useAuth } from "@/context/AuthContext";
+import ControlledDropdown from "@/components/forms/ControlledDropdown";
+import { HouseType, houseTypeOptions } from "@/types/types";
 
 type FormInputs = {
+  title: string;
   address: string;
   post_date: Date;
   date_available: Date | undefined;
   description: string;
-  house_type: string; // TODO: Make this an enum
-  cost: number;
+  house_type: HouseType | undefined;
+  cost: number | "";
   num_beds: number;
   is_cost_per_room: boolean;
   is_utilities_included: boolean;
@@ -28,12 +30,13 @@ type FormInputs = {
 };
 
 const initialValues: FormInputs = {
+  title: "",
   address: "",
   post_date: new Date(),
   date_available: undefined,
   description: "",
-  house_type: "", // TODO: Make this an enum
-  cost: NaN,
+  house_type: undefined,
+  cost: "",
   num_beds: 0,
   is_cost_per_room: false,
   is_utilities_included: false,
@@ -79,7 +82,6 @@ export default function AddRental() {
     }
   };
 
-  // TODO: Add description (textarea), add date available with a dat picker also house type dropdown
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
       <h1 className="text-xl font-bold">Add rental</h1>
@@ -87,6 +89,13 @@ export default function AddRental() {
         className="flex flex-col gap-[.5rem] my-[2rem]"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <ControlledInput
+          name="title"
+          control={control}
+          errors={errors}
+          placeholder="Title of the listing"
+          rules={{ required: "Field required" }}
+        />
         <ControlledInput
           name="address"
           control={control}
@@ -108,13 +117,13 @@ export default function AddRental() {
           label="Date available"
           rules={{ required: "Field required" }}
         />
-        {/* TODO: MAKE HOUSE TYPE A DROPDOWN/ENUM */}
-        <ControlledInput
-          control={control}
+        {/* TODO: Add rules for dropdown, make it required */}
+        <ControlledDropdown
           name="house_type"
-          errors={errors}
           placeholder="House type"
-          rules={{ required: "Field required" }}
+          optionsLabel="Types"
+          control={control}
+          options={houseTypeOptions}
         />
         <ControlledTextarea
           control={control}
