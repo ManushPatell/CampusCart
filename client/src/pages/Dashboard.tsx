@@ -1,9 +1,9 @@
 import { useAuth } from "../context/AuthContext";
 import { House, LibraryBig, ShoppingBasket } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
