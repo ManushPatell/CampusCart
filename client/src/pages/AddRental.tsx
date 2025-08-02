@@ -8,6 +8,7 @@ import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 type FormInputs = {
   title: string;
@@ -95,6 +96,14 @@ export default function AddRental() {
 
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
+      <span
+        className="flex hover:gap-[.5rem] hover:font-semibold gap-[0rem] transition-all ease-linear duration-100 w-fit h-[1.5rem] items-center mb-[1rem]"
+        onClick={() => navigate("/dashboard")}
+      >
+        <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
+        <p>Go back</p>
+      </span>
+
       <h1 className="text-xl font-bold">Add rental</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"
@@ -122,7 +131,7 @@ export default function AddRental() {
           rules={{
             required: "Field required",
             validate: {
-              numCheck: (v) => !isNaN(v) || "Must be a number",
+              numCheck: (v) => !isNaN(v as number) || "Must be a number",
             },
           }}
         />

@@ -4,6 +4,7 @@ import Submit from "../components/forms/Submit";
 import { useState } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const faculties = Object.freeze([
   "Engineering",
@@ -80,6 +81,13 @@ export default function AddTextbook() {
 
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
+      <span
+        className="flex hover:gap-[.5rem] hover:font-semibold gap-[0rem] transition-all ease-linear duration-100 w-fit h-[1.5rem] items-center mb-[1rem]"
+        onClick={() => navigate("/dashboard")}
+      >
+        <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
+        <p>Go back</p>
+      </span>
       <h1 className="text-xl font-bold">Add textbook</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"

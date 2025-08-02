@@ -13,12 +13,7 @@ export interface Textbook {
   course_code: string;
 }
 
-export const houseTypeOptions = Object.freeze([
-  "Apartment",
-  "House",
-  "Bedroom",
-  "Basement",
-] as string[]);
+export const houseTypeOptions = ["Apartment", "House", "Bedroom", "Basement"];
 export type HouseType = (typeof houseTypeOptions)[number];
 
 export interface Rental {
