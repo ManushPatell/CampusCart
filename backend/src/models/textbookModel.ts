@@ -1,18 +1,16 @@
 import sql from "./db.ts";
 
 interface Textbook {
-  id: number;
+  id: string;
   book_title: string;
   author: string;
   edition: string;
   condition: string;
-  seller: number;
-  date_posted: string;
-  photos: string[];
+  seller: string;
+  date_posted: Date;
   year: number;
   faculty: string;
   price: number;
-  course_code: string;
 }
 
 export async function findAllTextbooks(): Promise<Textbook[]> {
@@ -33,4 +31,21 @@ export async function findTextbooksFromUser(id: string) {
     Textbook[]
   >`SELECT * FROM textbooks WHERE seller = ${id}`;
   return textbooks;
+}
+
+export async function addTextbook(
+  book_title: string,
+  author: string,
+  edition: string,
+  year: string,
+  faculty: string,
+  price: number,
+  condition: string,
+  id: string,
+) {
+  const result = await sql`
+      INSERT INTO textbooks (book_title, seller, author, edition, year, faculty, price, condition)
+      VALUES (${book_title}, ${id}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) 
+      RETURNING book_title, author;`;
+  return result[0];
 }

@@ -122,7 +122,7 @@ input[type="checkbox"]:checked::before {
   --color-accent: oklch(90.3% 0.076 319.62);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: #e8dfd0;
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);

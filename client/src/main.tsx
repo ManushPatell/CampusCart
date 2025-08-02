@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AddRental from "./pages/AddRental";
+import AddTextbook from "./pages/AddTextbook";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<Home />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="rentals/create" element={<AddRental />} />
+              <Route path="textbooks/create" element={<AddTextbook />} />
               <Route path="rentals/:id" element={<HouseDetail />} />
             </Route>
 

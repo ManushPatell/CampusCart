@@ -2,7 +2,9 @@ import express from "express";
 import {
   getTextbookById,
   getAllTextbooks,
+  postTextbook,
 } from "../controllers/textbookController";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 /**
@@ -61,6 +63,77 @@ router.get("/:id", getTextbookById);
 
 /**
  * @swagger
+ * /textbooks:
+ *   post:
+ *     summary: Add a new textbook
+ *     description: Creates a new textbook entry in the system.
+ *     tags:
+ *       - Textbooks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_title
+ *               - price
+ *             properties:
+ *               book_title:
+ *                 type: string
+ *                 example: "Introduction to Algorithms"
+ *               author:
+ *                 type: string
+ *                 example: "Thomas H. Cormen"
+ *               edition:
+ *                 type: string
+ *                 example: "3rd"
+ *               year:
+ *                 type: integer
+ *                 enum: [1, 2, 3, 4]
+ *               faculty:
+ *                 type: string
+ *                 example: "Computer Science"
+ *               price:
+ *                 type: integer
+ *                 example: 80
+ *               condition:
+ *                 type: string
+ *                 enum: [Used, New]
+ *               course_code:
+ *                 type: string
+ *                 example: "CS101"
+ *     responses:
+ *       200:
+ *         description: Textbook successfully created.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 book_title: "Introduction to Algorithms"
+ *                 author: "Andrew I."
+ *       400:
+ *         description: Missing required parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Failed to provide required parameters."
+ *       500:
+ *         description: Server error while posting the textbook.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Error posting new textbook."
+ */
+router.post("/", authenticateToken, postTextbook);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Textbook:
@@ -76,6 +149,7 @@ router.get("/:id", getTextbookById);
  *           type: string
  *         condition:
  *           type: string
+ *           enum: [Used, New]
  *         seller:
  *           type: integer
  *         date_posted:
@@ -87,12 +161,19 @@ router.get("/:id", getTextbookById);
  *             type: string
  *         year:
  *           type: integer
+ *           enum: [1, 2, 3, 4]
  *         faculty:
  *           type: string
  *         price:
- *           type: number
+ *           type: integer
  *         course_code:
- *           type: string
+ *           type: array
+ *           properties:
+ *             course_code:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               description: string
  */
 
 export default router;
