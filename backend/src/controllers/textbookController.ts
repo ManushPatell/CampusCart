@@ -1,6 +1,10 @@
-import express, { type Request, type Response } from "express";
+import { type Request, type Response } from "express";
 
-import { findAllTextbooks, findTextbook } from "../models/textbookModel";
+import {
+  addTextbook,
+  findAllTextbooks,
+  findTextbook,
+} from "../models/textbookModel";
 
 export async function getAllTextbooks(req: Request, res: Response) {
   try {
@@ -28,5 +32,33 @@ export async function getTextbookById(req: Request, res: Response) {
     res
       .status(500)
       .json({ error: "An error occurred while fetching the textbook" });
+  }
+}
+
+export async function postTextbook(req: Request, res: Response) {
+  const textbook = req.body;
+  const { id } = req.user!; // This must be filed since this is a protected route
+
+  if (!textbook?.book_title || !textbook?.price) {
+    res.status(400).json({ error: "Failed to provide required parameters." });
+    return;
+  }
+
+  try {
+    const result = await addTextbook(
+      textbook.book_title,
+      textbook.author,
+      textbook.edition,
+      textbook.year,
+      textbook.faculty,
+      textbook.price,
+      textbook.condition,
+      id,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error while posting new textbook. ", error);
+    res.status(500).json({ error: "Error posting new textbook." });
   }
 }

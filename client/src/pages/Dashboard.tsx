@@ -1,9 +1,9 @@
 import { useAuth } from "../context/AuthContext";
 import { House, LibraryBig, ShoppingBasket } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -17,7 +17,7 @@ export default function Dashboard() {
   if (user === null) return <p>You are not currently logged in.</p>;
 
   const headingBoxContainerClassName =
-    "border-primary-fg border-1 shadow-xl w-full rounded-md bg-primary-bg";
+    "border-border border-2 shadow-xl w-full rounded-md bg-primary-bg";
   const headingBoxClassName =
     "flex gap-[.75rem] py-[.4rem] px-[1rem] items-center text-secondary-fg text-md justify-between";
   const amountClassName =
@@ -56,7 +56,7 @@ export default function Dashboard() {
         </div>
       </span>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[2rem] z-50 border-l-[#DFAF5E] border-l-3 px-[1rem] py-[.4rem]">
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[2rem] z-50 border-l-[#DFAF5E] border-l-3 px-[1rem] py-[.4rem]">
         <span className="flex justify-between">
           <p className="text-primary-fg">Rental listings</p>
           <button
@@ -82,7 +82,7 @@ export default function Dashboard() {
         </span>
       </div>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#416914] border-l-3 px-[1rem] py-[.4rem]">
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#416914] border-l-3 px-[1rem] py-[.4rem]">
         <span className="flex justify-between">
           <p className="text-primary-fg">Textbook listings</p>
           <button
@@ -108,7 +108,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#6D152B] border-l-3 px-[1rem] py-[.4rem]">
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#6D152B] border-l-3 px-[1rem] py-[.4rem]">
         <span className="flex justify-between">
           <p className="text-primary-fg">Miscellaneous listings</p>
           <button

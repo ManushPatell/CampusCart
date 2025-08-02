@@ -7,6 +7,7 @@ import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
+import { useNavigate } from "react-router-dom";
 
 type FormInputs = {
   title: string;
@@ -52,6 +53,7 @@ const initialValues: FormInputs = {
 
 export default function AddRental() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
@@ -61,6 +63,8 @@ export default function AddRental() {
     defaultValues: initialValues,
     mode: "onSubmit",
   });
+
+  const navigate = useNavigate();
 
   const isShared = watch("is_shared");
 
@@ -76,7 +80,14 @@ export default function AddRental() {
         body: JSON.stringify(data),
       });
 
-      console.log(res);
+      if (!res.ok) {
+        if (res.status === 500)
+          setErrorMessage("Something went wrong on our end! Please try again.");
+      } else {
+        navigate("/dashboard");
+      }
+
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -106,9 +117,14 @@ export default function AddRental() {
         <ControlledInput
           control={control}
           name="cost"
-          type="number"
           errors={errors}
           placeholder="Cost of the rental"
+          rules={{
+            required: "Field required",
+            validate: {
+              numCheck: (v) => !isNaN(v) || "Must be a number",
+            },
+          }}
         />
         <ControlledDatePicker
           control={control}
@@ -117,13 +133,14 @@ export default function AddRental() {
           label="Date available"
           rules={{ required: "Field required" }}
         />
-        {/* TODO: Add rules for dropdown, make it required */}
         <ControlledDropdown
           name="house_type"
           placeholder="House type"
           optionsLabel="Types"
           control={control}
+          errors={errors}
           options={houseTypeOptions}
+          rules={{ required: "Field required" }}
         />
         <ControlledTextarea
           control={control}
@@ -137,7 +154,6 @@ export default function AddRental() {
           control={control}
           errors={errors}
           label="Cost is per room"
-          rules={{ required: "Field required" }}
         />
         <ControlledCheckbox
           name="is_shared"
@@ -179,6 +195,7 @@ export default function AddRental() {
           errors={errors}
           label="No smoking"
         />
+        <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
           label="Add rental"
           isLoading={isLoading}
