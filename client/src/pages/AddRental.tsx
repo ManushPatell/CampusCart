@@ -9,6 +9,7 @@ import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { set } from "date-fns";
 
 type FormInputs = {
   title: string;
@@ -55,6 +56,7 @@ const initialValues: FormInputs = {
 export default function AddRental() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [uploadedImage, setUploadedImage] = useState<string[]>([]);
   const {
     handleSubmit,
     formState: { errors },
@@ -64,6 +66,40 @@ export default function AddRental() {
     defaultValues: initialValues,
     mode: "onSubmit",
   });
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+      const files = Array.from(e.target.files);
+
+      for (const file of files){
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/upload`,
+            {
+              method: "POST",
+              body: formData,
+            },
+          );
+
+          if (!res.ok) {
+            setErrorMessage("Failed to upload image. Please try again.");
+            continue;
+          }
+
+          const data = await res.json();
+          setUploadedImage((prev) => [...prev, data.imageUrl]);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setErrorMessage("An error occurred while uploading the image.");
+        }
+      }
+  };
+
+  
+
 
   const navigate = useNavigate();
 
@@ -71,6 +107,12 @@ export default function AddRental() {
 
   const onSubmit = async (data: FormInputs) => {
     setIsLoading(true);
+
+    const fullData = {
+      ...data,
+      images: uploadedImage,
+    };
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
         method: "POST",
@@ -78,7 +120,7 @@ export default function AddRental() {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(data),
+        body: JSON.stringify(fullData), 
       });
 
       if (!res.ok) {
@@ -93,6 +135,7 @@ export default function AddRental() {
       console.error(err);
     }
   };
+
 
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
@@ -170,6 +213,26 @@ export default function AddRental() {
           errors={errors}
           label="Shared with other roommates"
         />
+       <label className = "font-semibold text-primary-fg mt-4"> Upload Images </label>
+        <input 
+          type = "file"
+          multiple
+          onChange={handleImageUpload}
+          accept="image/*"
+          className = "mt-2 mb-4"
+          />
+        
+        <div className = "flex flex-wrap gap-2">
+          {uploadedImage.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`Uploaded ${index + 1}`}
+              className="w-24 h-24 object-cover rounded-lg"
+              />
+          ))}
+        </div>
+
         {isShared && (
           <ControlledInput
             name="num_beds"

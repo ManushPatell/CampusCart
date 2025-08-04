@@ -17,6 +17,7 @@ import rentalRoutes from "./routes/rentalRoutes.ts";
 import authRoutes from "./routes/authRoutes.ts";
 import textbookRoutes from "./routes/textbookRoute.ts";
 import miscRoutes from "./routes/miscRoutes.ts";
+import uploadRoutes from "./routes/uploadRoutes.ts";
 
 import cors from "cors";
 import morgan from "morgan";
@@ -46,6 +47,7 @@ app.use("/users", userRoutes);
 app.use("/rentals", rentalRoutes);
 app.use("/misc", miscRoutes);
 app.use("/textbooks", textbookRoutes);
+app.use("/upload", uploadRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(`Thrown error: ${err.stack}`);
@@ -65,9 +67,16 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use((req, res, next) => {
   res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'",
-  );
+  "Content-Security-Policy",
+  [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: http://localhost:3001",
+    "connect-src 'self' http://localhost:3000 http://localhost:3001",
+    "font-src 'self'",
+  ].join("; ")
+);
   next();
 });
 
