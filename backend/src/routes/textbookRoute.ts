@@ -5,6 +5,7 @@ import {
   postTextbook,
 } from "../controllers/textbookController";
 import { authenticateToken } from "../middleware/authMiddleware";
+import { uploadImage } from "../controllers/uploadController";
 
 const router = express.Router();
 /**

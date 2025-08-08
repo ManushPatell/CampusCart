@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import multer from "multer";
-import { S3Client, PutObjectCommand, ObjectCannedACL } from "@aws-sdk/client-s3";
+
+import { S3Client, PutObjectCommand} from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
+import { Multer } from "multer";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ export const uploadImage = async (req: Request, res: Response) => {
 
   const file = req.file;
   const fileName = `${uuidv4()}-${file.originalname}`;
+  // const key = `${routeIdentity}/${fileName}`;
 
   const uploadParams = {
     Bucket: process.env.AWS_BUCKET_NAME!,
@@ -35,6 +37,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     await s3.send(command);
 
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/uploads/${fileName}`;
+    console.log("File uploaded successfully:", fileUrl);
     res.status(200).json({ message: "File uploaded successfully", url: fileUrl });
   } catch (err) {
     console.error("Upload error:", err);

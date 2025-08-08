@@ -130,6 +130,10 @@ router.post("/", authenticateToken, postRental);
  *           type: boolean
  *         is_shared:
  *           type: boolean
+ *         photos:
+ *          type: array
+ *          items:
+ *            type: string
  */
 
 export default router;

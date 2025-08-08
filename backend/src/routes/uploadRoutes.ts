@@ -39,7 +39,7 @@ const upload = multer({ storage: multer.memoryStorage() });
  *                   example: File uploaded successfully
  *                 url:
  *                   type: string
- *                   example: https://your-bucket-name.s3.your-region.amazonaws.com/uploads/example.jpg
+ *                   example: https://your-bucket-name.s3.your-region.amazonaws.com/rentals/example.jpg
  *       400:
  *         description: No file uploaded
  *         content:

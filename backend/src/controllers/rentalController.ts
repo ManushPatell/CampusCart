@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from "express";
+import {uploadImage} from "../controllers/uploadController";
 import {
   addRental,
   findAllRentals,
@@ -95,6 +96,14 @@ export const postRental = async (req: Request, res: Response) => {
     is_shared,
   } = req.body;
 
+   let photos = req.body.photos;
+    if (typeof photos === "string") {
+      photos = [photos];
+    } else if (!Array.isArray(photos)) {
+      photos = [];
+    } else {
+      photos = photos.filter((p) => typeof p === "string");
+    }
   const postedRental: Omit<Rental, "id"> = {
     title,
     seller: id,
@@ -103,16 +112,17 @@ export const postRental = async (req: Request, res: Response) => {
     post_date: new Date().toDateString(),
     description,
     house_type,
-    cost,
-    num_beds,
-    is_cost_per_room,
-    is_utilities_included,
-    is_sublet,
-    has_laundry,
-    has_cooking,
-    has_parking,
-    no_smoking,
-    is_shared,
+    cost: Number(cost),
+    num_beds: Number(num_beds),
+    is_cost_per_room: Boolean(is_cost_per_room),
+    is_utilities_included: Boolean(is_utilities_included),
+    is_sublet: Boolean(is_sublet),
+    has_laundry: Boolean(has_laundry),
+    has_cooking: Boolean(has_cooking),
+    has_parking: Boolean(has_parking),
+    no_smoking: Boolean(no_smoking),
+    is_shared: Boolean(is_shared),
+    photos,
   };
 
   try {

@@ -9,7 +9,6 @@ import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { set } from "date-fns";
 
 type FormInputs = {
   title: string;
@@ -29,7 +28,7 @@ type FormInputs = {
   no_smoking: boolean;
   is_shared: boolean;
   amenities: string[];
-  images: string[];
+  photos: string[];
 };
 
 const initialValues: FormInputs = {
@@ -50,13 +49,16 @@ const initialValues: FormInputs = {
   no_smoking: false,
   is_shared: false,
   amenities: [],
-  images: [],
+  photos: [],
 };
 
 export default function AddRental() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [uploadedImage, setUploadedImage] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -66,51 +68,51 @@ export default function AddRental() {
     defaultValues: initialValues,
     mode: "onSubmit",
   });
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-      const files = Array.from(e.target.files);
-
-      for (const file of files){
-        const formData = new FormData();
-        formData.append("image", file);
-
-        try {
-          const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/upload`,
-            {
-              method: "POST",
-              body: formData,
-            },
-          );
-
-          if (!res.ok) {
-            setErrorMessage("Failed to upload image. Please try again.");
-            continue;
-          }
-
-          const data = await res.json();
-          setUploadedImage((prev) => [...prev, data.imageUrl]);
-        } catch (error) {
-          console.error("Error uploading image:", error);
-          setErrorMessage("An error occurred while uploading the image.");
-        }
-      }
-  };
-
-  
-
-
-  const navigate = useNavigate();
 
   const isShared = watch("is_shared");
 
-  const onSubmit = async (data: FormInputs) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setSelectedImages(files);
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(previews);
+  };
+
+  const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
+    setErrorMessage("");
+
+    const uploadedUrls: string[] = [];
+
+    try {
+      for (const file of selectedImages) {
+        const imageForm = new FormData();
+        imageForm.append("image", file);
+
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+          method: "POST",
+          body: imageForm,
+        });
+
+        if (!res.ok) throw new Error("Image upload failed");
+
+        const data = await res.json();
+        uploadedUrls.push(data.url); 
+        console.log("Submitting photos:", uploadedUrls); // should be string[]
+
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setErrorMessage("One or more images failed to upload.");
+      setIsLoading(false);
+      return;
+    }
 
     const fullData = {
-      ...data,
-      images: uploadedImage,
+      ...formData,
+      photos: uploadedUrls,
     };
 
     try {
@@ -120,22 +122,23 @@ export default function AddRental() {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(fullData), 
+        body: JSON.stringify(fullData),
       });
 
       if (!res.ok) {
-        if (res.status === 500)
+        if (res.status === 500) {
           setErrorMessage("Something went wrong on our end! Please try again.");
+        }
       } else {
         navigate("/dashboard");
       }
-
-      setIsLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error("Form submission error:", err);
+      setErrorMessage("Failed to submit rental.");
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
@@ -213,23 +216,27 @@ export default function AddRental() {
           errors={errors}
           label="Shared with other roommates"
         />
-       <label className = "font-semibold text-primary-fg mt-4"> Upload Images </label>
-        <input 
-          type = "file"
+
+        {/* Image selection */}
+        <label className="font-semibold text-primary-fg mt-4">
+          Upload Images
+        </label>
+        <input
+          type="file"
           multiple
-          onChange={handleImageUpload}
+          onChange={handleImageSelect}
           accept="image/*"
-          className = "mt-2 mb-4"
-          />
-        
-        <div className = "flex flex-wrap gap-2">
-          {uploadedImage.map((image, index) => (
+          className="mt-2 mb-4"
+        />
+
+        <div className="flex flex-wrap gap-2">
+          {previewUrls.map((url, index) => (
             <img
               key={index}
-              src={image}
-              alt={`Uploaded ${index + 1}`}
+              src={url}
+              alt={`Preview ${index + 1}`}
               className="w-24 h-24 object-cover rounded-lg"
-              />
+            />
           ))}
         </div>
 
@@ -242,6 +249,7 @@ export default function AddRental() {
             rules={{ required: "Field required" }}
           />
         )}
+
         <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
         <ControlledCheckbox
           name="is_utilities_included"

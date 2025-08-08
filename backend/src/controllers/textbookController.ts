@@ -43,7 +43,14 @@ export async function postTextbook(req: Request, res: Response) {
     res.status(400).json({ error: "Failed to provide required parameters." });
     return;
   }
-
+    let photos = req.body.photos; // Ensure photos is an array of strings
+    if (typeof photos === "string") { // If photos is a single string, convert it to an array
+      photos = [photos];
+    } else if (!Array.isArray(photos)) {
+      photos = []; 
+    } else {
+      photos = photos.filter((p) => typeof p === "string"); 
+    }
   try {
     const result = await addTextbook(
       textbook.book_title,
@@ -54,6 +61,7 @@ export async function postTextbook(req: Request, res: Response) {
       textbook.price,
       textbook.condition,
       id,
+      textbook.photos
     );
 
     res.status(200).json(result);

@@ -17,6 +17,6 @@
     
   },
   
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/routes/upload.js"],
   "exclude": ["node_modules"]
 }
