@@ -51,7 +51,14 @@ createRoot(document.getElementById("root")!).render(
                   </ProtectedRoute>
                 }
               />
-              <Route path="misc/create" element={<AddMisc />} />
+              <Route
+                path="misc/create"
+                element={
+                  <ProtectedRoute>
+                    <AddMisc />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="rentals/:id" element={<HouseDetail />} />
             </Route>
 
