@@ -26,6 +26,8 @@ const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
+app.disable("etag");
+
 app.use(
   morgan("dev", {
     skip: () => NODE_ENV !== "development",
