@@ -97,7 +97,7 @@ export async function getUserMisc(req: Request, res: Response) {
   }
 
   try {
-    const userMisc = await findMiscFromUser(parseInt(id));
+    const userMisc = await findMiscFromUser(id);
     res.status(200).json(userMisc);
     return;
   } catch (err) {

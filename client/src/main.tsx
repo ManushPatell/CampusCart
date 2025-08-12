@@ -14,6 +14,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AddRental from "./pages/AddRental";
 import AddTextbook from "./pages/AddTextbook";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import AddMisc from "./pages/AddMisc";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,14 @@ createRoot(document.getElementById("root")!).render(
                 element={
                   <ProtectedRoute>
                     <AddTextbook />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="misc/create"
+                element={
+                  <ProtectedRoute>
+                    <AddMisc />
                   </ProtectedRoute>
                 }
               />
