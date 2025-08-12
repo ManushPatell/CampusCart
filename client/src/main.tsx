@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AddRental from "./pages/AddRental";
 import AddTextbook from "./pages/AddTextbook";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import AddMisc from "./pages/AddMisc";
 
 const queryClient = new QueryClient();
@@ -26,9 +27,30 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route>
               <Route path="/" element={<Home />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="rentals/create" element={<AddRental />} />
-              <Route path="textbooks/create" element={<AddTextbook />} />
+              <Route
+                path="dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="rentals/create"
+                element={
+                  <ProtectedRoute>
+                    <AddRental />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="textbooks/create"
+                element={
+                  <ProtectedRoute>
+                    <AddTextbook />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="misc/create" element={<AddMisc />} />
               <Route path="rentals/:id" element={<HouseDetail />} />
             </Route>
