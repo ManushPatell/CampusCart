@@ -1,5 +1,10 @@
 import { type Request, type Response } from "express";
-import { findMiscById, findAllMisc, addMisc } from "../models/miscModel";
+import {
+  findMiscById,
+  findAllMisc,
+  addMisc,
+  removeMisc,
+} from "../models/miscModel";
 
 export const getMiscById = async (
   req: Request,
@@ -49,5 +54,24 @@ export const postMisc = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const deleteMisc = async (req: Request, res: Response) => {
+  const { id } = req.user!; // Protected route
+  const { id: miscId } = req.params;
+
+  try {
+    const deleted = await removeMisc(miscId, id);
+
+    if (deleted.length === 0) {
+      res.status(401).json({ error: "Invalid delete request" });
+    }
+    if (deleted.length === 1) {
+      res.status(204).json();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete misc" });
   }
 };

@@ -55,5 +55,5 @@ export async function removeTextbook(id: Textbook["id"], user_id: User["id"]) {
   const deleted = await sql<
     Pick<Textbook, "id" | "book_title">[]
   >`DELETE FROM textbooks WHERE id = ${id} AND seller = ${user_id} RETURNING *`;
-  return deleted[0];
+  return deleted;
 }

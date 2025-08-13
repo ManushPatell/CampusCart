@@ -18,7 +18,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (!user) {
+  if (!loading && !user) {
     return <Navigate to="/login" replace />;
   }
 

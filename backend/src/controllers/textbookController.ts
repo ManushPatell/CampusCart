@@ -4,6 +4,7 @@ import {
   addTextbook,
   findAllTextbooks,
   findTextbook,
+  removeTextbook,
 } from "../models/textbookModel";
 
 export async function getAllTextbooks(req: Request, res: Response) {
@@ -62,3 +63,22 @@ export async function postTextbook(req: Request, res: Response) {
     res.status(500).json({ error: "Error posting new textbook." });
   }
 }
+
+export const deleteTextbook = async (req: Request, res: Response) => {
+  const { id } = req.user!; // Protected route
+  const { id: textbookId } = req.params;
+
+  try {
+    const deleted = await removeTextbook(textbookId, id);
+
+    if (deleted.length === 0) {
+      res.status(401).json({ error: "Invalid delete request" });
+    }
+    if (deleted.length === 1) {
+      res.status(204).json();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete textbook" });
+  }
+};
