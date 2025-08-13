@@ -1,4 +1,5 @@
 import sql from "./db.ts";
+import { User } from "./userModel.ts";
 
 export interface Miscellaneous {
   id: number;
@@ -26,9 +27,16 @@ export const findAllMisc = async (): Promise<Miscellaneous[]> => {
   return result;
 };
 
-export const findMiscFromUser = async (id: number) => {
+export const findMiscFromUser = async (id: Miscellaneous["id"]) => {
   const result = await sql<
     Miscellaneous[]
   >`SELECT * FROM misc WHERE id = ${id}`;
   return result;
 };
+
+export async function removeMisc(id: Miscellaneous["id"], user_id: User["id"]) {
+  const deleted = await sql<
+    Pick<Miscellaneous, "id" | "title">[]
+  >`DELETE FROM misc WHERE id = ${id} AND seller = ${user_id} RETURNING *`;
+  return deleted;
+}

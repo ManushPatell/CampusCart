@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteRental,
   getAllRentals,
   getRentalById,
   postRental,
@@ -131,5 +132,58 @@ router.post("/", authenticateToken, postRental);
  *         is_shared:
  *           type: boolean
  */
+
+/**
+ * @swagger
+ * /rentals/{id}:
+ *   delete:
+ *     summary: Delete a rental
+ *     description: Deletes a rental owned by the authenticated user.
+ *     tags:
+ *       - Rentals
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the rental to delete.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The ID of the rental to delete.
+ *     responses:
+ *       204:
+ *         description: Rental successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either rental not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the rental.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete rental
+ */
+router.delete("/:id", authenticateToken, deleteRental);
 
 export default router;

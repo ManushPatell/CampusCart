@@ -1,4 +1,5 @@
 import sql from "./db.ts";
+import { User } from "./userModel.ts";
 
 interface Textbook {
   id: string;
@@ -48,4 +49,11 @@ export async function addTextbook(
       VALUES (${book_title}, ${id}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) 
       RETURNING book_title, author;`;
   return result[0];
+}
+
+export async function removeTextbook(id: Textbook["id"], user_id: User["id"]) {
+  const deleted = await sql<
+    Pick<Textbook, "id" | "book_title">[]
+  >`DELETE FROM textbooks WHERE id = ${id} AND seller = ${user_id} RETURNING *`;
+  return deleted[0];
 }
