@@ -140,7 +140,7 @@ export default function Dashboard() {
         {!isUserMiscLoading ? (
           <span className="flex flex-col gap-[1rem]">
             {userMisc!.length > 0
-              ? userMisc?.map((misc) => <span key={misc.id}>Misc Stuff</span>)
+              ? userMisc?.map((misc) => <div>Title: {misc.title}</div>)
               : "No miscellaneous listings"}
           </span>
         ) : (

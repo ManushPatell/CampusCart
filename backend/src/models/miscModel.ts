@@ -1,16 +1,17 @@
 import sql from "./db.ts";
 import { User } from "./userModel.ts";
 
+type ListingType = "Selling" | "Wanted";
+
 export interface Miscellaneous {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: number;
-  seller: number;
+  seller: string;
   date_posted: string;
-  photos: string[];
-  condition: string;
-  category: string;
+  // photos: string[];
+  listing_type: ListingType;
 }
 
 export const findMiscById = async (
@@ -30,7 +31,15 @@ export const findAllMisc = async (): Promise<Miscellaneous[]> => {
 export const findMiscFromUser = async (id: Miscellaneous["id"]) => {
   const result = await sql<
     Miscellaneous[]
-  >`SELECT * FROM misc WHERE id = ${id}`;
+  >`SELECT * FROM misc WHERE seller = ${id}`;
+  return result;
+};
+
+export const addMisc = async (
+  misc: Omit<Miscellaneous, "id" | "date_posted">,
+) => {
+  const result =
+    await sql`INSERT INTO misc (title, description, price, seller, listing_type) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller}, ${misc.listing_type})`;
   return result;
 };
 
