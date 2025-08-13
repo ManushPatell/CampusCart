@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteMisc,
   getAllMisc,
   getMiscById,
   postMisc,
@@ -155,5 +156,46 @@ router.get("/:id", getMiscById);
  *         description: Internal server error
  */
 router.post("/", authenticateToken, postMisc);
+
+/**
+ * @swagger
+ * /misc/{id}:
+ *   delete:
+ *     summary: Delete a misc
+ *     description: Deletes a misc owned by the authenticated user.
+ *     tags:
+ *       - Misc
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the misc to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Rental successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either rental not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the rental.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete rental
+ */
+router.delete("/:id", authenticateToken, deleteMisc);
 
 export default router;

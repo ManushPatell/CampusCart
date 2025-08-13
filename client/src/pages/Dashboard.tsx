@@ -1,12 +1,14 @@
 import { useAuth } from "../context/AuthContext";
-import { House, LibraryBig, ShoppingBasket } from "lucide-react";
+import { House, LibraryBig, ShoppingBasket, Trash } from "lucide-react";
 import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { userRentals, isUserRentalsLoading } = useUserRentals();
   const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();
@@ -76,6 +78,22 @@ export default function Dashboard() {
                     ${rental.cost}{" "}
                     {rental.is_cost_per_room ? "per room" : "all together"}
                   </p>
+                  <Trash
+                    className="text-red-600"
+                    onClick={() =>
+                      fetch(
+                        `${import.meta.env.VITE_API_URL}/rentals/${rental.id}`,
+                        {
+                          method: "DELETE",
+                          credentials: "include",
+                        },
+                      ).then(() =>
+                        queryClient.invalidateQueries({
+                          queryKey: ["userRentals", user.id],
+                        }),
+                      )
+                    }
+                  />
                 </span>
               ))
             : "No rental listings"}
@@ -99,6 +117,22 @@ export default function Dashboard() {
                   <span key={textbook.id}>
                     <p>Title: {textbook.book_title}</p>
                     <p>Author: {textbook.author}</p>
+                    <Trash
+                      className="text-red-600"
+                      onClick={() =>
+                        fetch(
+                          `${import.meta.env.VITE_API_URL}/textbooks/${textbook.id}`,
+                          {
+                            method: "DELETE",
+                            credentials: "include",
+                          },
+                        ).then(() =>
+                          queryClient.invalidateQueries({
+                            queryKey: ["userTextbooks", user.id],
+                          }),
+                        )
+                      }
+                    />
                   </span>
                 ))
               : "No textbook listings"}
@@ -122,7 +156,27 @@ export default function Dashboard() {
         {!isUserMiscLoading ? (
           <span className="flex flex-col gap-[1rem]">
             {userMisc!.length > 0
-              ? userMisc?.map((misc) => <div>Title: {misc.title}</div>)
+              ? userMisc?.map((misc) => (
+                  <div>
+                    Title: {misc.title}
+                    <Trash
+                      className="text-red-600"
+                      onClick={() =>
+                        fetch(
+                          `${import.meta.env.VITE_API_URL}/misc/${misc.id}`,
+                          {
+                            method: "DELETE",
+                            credentials: "include",
+                          },
+                        ).then(() =>
+                          queryClient.invalidateQueries({
+                            queryKey: ["userMisc", user.id],
+                          }),
+                        )
+                      }
+                    />
+                  </div>
+                ))
               : "No miscellaneous listings"}
           </span>
         ) : (

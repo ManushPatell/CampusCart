@@ -1,8 +1,9 @@
-import express, { type Request, type Response } from "express";
+import { type Request, type Response } from "express";
 import {
   addRental,
   findAllRentals,
   findRentalById,
+  removeRental,
   Rental,
   RentalListing,
 } from "../models/rentalModel";
@@ -122,5 +123,24 @@ export const postRental = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to insert rental" });
+  }
+};
+
+export const deleteRental = async (req: Request, res: Response) => {
+  const { id } = req.user!; // Protected route
+  const { id: rentalId } = req.params;
+
+  try {
+    const deleted = await removeRental(rentalId, id);
+
+    if (deleted.length === 0) {
+      res.status(401).json({ error: "Invalid delete request" });
+    }
+    if (deleted.length === 1) {
+      res.status(204).json();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete rental" });
   }
 };
