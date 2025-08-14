@@ -1,6 +1,10 @@
 import express from "express";
-import { type Request, type Response, type NextFunction } from "express";
-import { getAllMisc, getMiscById } from "../controllers/miscController";
+import {
+  getAllMisc,
+  getMiscById,
+  postMisc,
+} from "../controllers/miscController";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -85,5 +89,76 @@ router.get("/:id", getMiscById);
  *         category:
  *           type: string
  */
+
+/**
+ * @swagger
+ * /misc:
+ *   post:
+ *     summary: Create a miscellaneous listing
+ *     description: Creates a miscellaneous posting. You must be signed in to create a listing.
+ *     tags:
+ *       - Miscellaneous
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Electric guitar for sale"
+ *               description:
+ *                 type: string
+ *                 example: "A Fender Stratocaster in excellent condition."
+ *               price:
+ *                 type: number
+ *                 example: 250
+ *               listing_type:
+ *                 type: string
+ *                 enum: [Selling, Wanted]
+ *                 example: Selling
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                  type: string
+ *             required:
+ *               - title
+ *               - description
+ *               - price
+ *               - listing_type
+ *     responses:
+ *       200:
+ *         description: Miscellaneous listing successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                   example: "550e8400-e29b-41d4-a716-446655440000"
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 seller:
+ *                   type: string
+ *                   format: uuid
+ *                   example: "550e8400-e29b-41d4-a716"
+ *                 listing_type:
+ *                   type: string
+ *                   enum: [Buying, Selling]
+ *       400:
+ *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized - user must be signed in
+ *       500:
+ *         description: Internal server error
+ */
+router.post("/", authenticateToken, postMisc);
 
 export default router;

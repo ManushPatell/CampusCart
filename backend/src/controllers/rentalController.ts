@@ -1,5 +1,4 @@
 import express, { type Request, type Response } from "express";
-import {uploadImage} from "../controllers/uploadController";
 import {
   addRental,
   findAllRentals,

@@ -5,6 +5,7 @@ import {
   postRental,
 } from "../controllers/rentalController.ts";
 import { authenticateToken } from "../middleware/authMiddleware.ts";
+import { uploadImage } from "../controllers/uploadController.ts";
 
 const router = express.Router();
 

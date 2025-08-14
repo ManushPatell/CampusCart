@@ -27,6 +27,8 @@ const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
+app.disable("etag");
+
 app.use(
   morgan("dev", {
     skip: () => NODE_ENV !== "development",
@@ -73,7 +75,7 @@ app.use((req, res, next) => {
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: http://localhost:3001",
-    "connect-src 'self' http://localhost:3000 http://localhost:3001",
+    "connect-src 'self': http://localhost:3001 http://localhost:4321",
     "font-src 'self'",
   ].join("; ")
 );
