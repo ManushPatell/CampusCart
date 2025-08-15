@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 type FormInputs = {
@@ -53,11 +53,16 @@ const initialValues: FormInputs = {
 };
 
 export default function AddRental() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const [isFetchingRental, setIsFetchingRental] = useState<boolean>(false);
+
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
+    reset,
     control,
     watch,
   } = useForm<FormInputs>({
@@ -69,17 +74,51 @@ export default function AddRental() {
 
   const isShared = watch("is_shared");
 
+  useEffect(() => {
+    if (id) {
+      setIsFetchingRental(true);
+      fetch(`${import.meta.env.VITE_API_URL}/rentals/${id}`)
+        .then((res) => res.json())
+        .then((body) => {
+          setIsFetchingRental(false);
+          console.log(body.date_available);
+          reset({
+            title: body.title,
+            address: body.address,
+            date_available: new Date(body.date_available),
+            description: body.description,
+            house_type: body.house_type,
+            cost: parseInt(body.cost),
+            num_beds: body.num_beds,
+            is_cost_per_room: body.is_cost_per_room,
+            is_utilities_included: body.is_utilities_included,
+            is_sublet: body.is_sublet,
+            has_laundry: body.has_laundry,
+            has_cooking: body.has_cooking,
+            has_parking: body.has_parking,
+            no_smoking: body.no_smoking,
+            is_shared: body.is_shared,
+            amenities: body.amenities,
+            images: body.images,
+          });
+        });
+    }
+  }, []);
+
   const onSubmit = async (data: FormInputs) => {
-    setIsLoading(true);
+    setIsButtonLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/rentals${id ? "/" + id : ""}`,
+        {
+          method: id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
         },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      );
 
       if (!res.ok) {
         if (res.status === 500)
@@ -88,7 +127,7 @@ export default function AddRental() {
         navigate("/dashboard");
       }
 
-      setIsLoading(false);
+      setIsButtonLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -104,7 +143,7 @@ export default function AddRental() {
         <p>Go back</p>
       </span>
 
-      <h1 className="text-xl font-bold">Add rental</h1>
+      <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} rental</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"
         onSubmit={handleSubmit(onSubmit)}
@@ -206,8 +245,8 @@ export default function AddRental() {
         />
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
-          label="Add rental"
-          isLoading={isLoading}
+          label={`${id ? "Edit" : "Add"} rental`}
+          isLoading={isButtonLoading}
           className="mt-[2rem]"
         />
       </form>

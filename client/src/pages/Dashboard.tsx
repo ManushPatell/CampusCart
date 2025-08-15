@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import { House, LibraryBig, ShoppingBasket, Trash } from "lucide-react";
+import { House, LibraryBig, Pencil, ShoppingBasket, Trash } from "lucide-react";
 import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
@@ -78,6 +78,12 @@ export default function Dashboard() {
                     ${rental.cost}{" "}
                     {rental.is_cost_per_room ? "per room" : "all together"}
                   </p>
+                  <Pencil
+                    className="text-gray-500"
+                    onClick={() => {
+                      navigate(`/rentals/create?id=${rental.id}`);
+                    }}
+                  />
                   <Trash
                     className="text-red-600"
                     onClick={() =>
@@ -157,8 +163,9 @@ export default function Dashboard() {
           <span className="flex flex-col gap-[1rem]">
             {userMisc!.length > 0
               ? userMisc?.map((misc) => (
-                  <div>
+                  <div key={misc.id}>
                     Title: {misc.title}
+                    <Pencil className="text-gray-500" />
                     <Trash
                       className="text-red-600"
                       onClick={() =>
