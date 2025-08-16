@@ -45,8 +45,8 @@ export default function AddMisc() {
   const onSubmit = async (data: FormInputs) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc`, {
-        method: "POST",
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`, {
+        method: id ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
