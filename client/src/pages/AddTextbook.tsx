@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 const faculties = Object.freeze([
@@ -42,10 +42,15 @@ const initialValues: FormInputs = {
 
 export default function AddTextbook() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingTextbook, setIsLoadingTextbook] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+
   const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
+    reset,
     control,
   } = useForm<FormInputs>({
     defaultValues: initialValues,
@@ -57,14 +62,17 @@ export default function AddTextbook() {
   const onSubmit = async (data: FormInputs) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/textbooks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/textbooks/${id}`,
+        {
+          method: id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
         },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      );
 
       if (!res.ok) {
         if (res.status === 500)
@@ -79,6 +87,27 @@ export default function AddTextbook() {
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      setIsLoadingTextbook(true);
+      fetch(`${import.meta.env.VITE_API_URL}/textbooks/${id}`)
+        .then((res) => res.json())
+        .then((body) => {
+          setIsLoadingTextbook(false);
+          console.log(body.date_available);
+          reset({
+            book_title: body.book_title,
+            author: body.author,
+            edition: body.edition,
+            year: parseInt(body.year),
+            faculty: body.faculty,
+            price: parseInt(body.price),
+            condition: body.condition,
+          });
+        });
+    }
+  }, []);
+
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
       <span
@@ -88,7 +117,7 @@ export default function AddTextbook() {
         <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
         <p>Go back</p>
       </span>
-      <h1 className="text-xl font-bold">Add textbook</h1>
+      <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} textbook</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"
         onSubmit={handleSubmit(onSubmit)}
@@ -153,7 +182,7 @@ export default function AddTextbook() {
 
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
-          label="Add textbook"
+          label={`${id ? "Edit" : "Add"} textbook`}
           isLoading={isLoading}
           className="mt-[2rem]"
         />

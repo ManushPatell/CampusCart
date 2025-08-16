@@ -1,26 +1,26 @@
 import sql from "./db.ts";
 import { User } from "./userModel.ts";
 
-export type RentalListing = {
-  id: string;
-  title: string;
-  price: string;
-  address: string;
-  image?: string;
-  description: string;
-  date_posted: string;
-  house_type: string;
-  num_beds: number;
-  utilities_included: boolean;
-  sublet: boolean;
-  details: {
-    available: string;
-  };
-  amenities: string[];
-  seller: {
-    name: string;
-  };
-};
+// export type RentalListing = {
+//   id: string;
+//   title: string;
+//   cost: string;
+//   address: string;
+//   image?: string;
+//   description: string;
+//   date_posted: string;
+//   house_type: string;
+//   num_beds: number;
+//   utilities_included: boolean;
+//   sublet: boolean;
+//   details: {
+//     available: string;
+//   };
+//   amenities: string[];
+//   seller: {
+//     name: string;
+//   };
+// };
 
 export interface Rental {
   id: string;
@@ -65,6 +65,13 @@ export async function addRental(rental: Omit<Rental, "id">) {
     await sql`INSERT INTO rentals (title, seller, address, post_date, date_available, description, house_type, cost, num_beds, is_cost_per_room, is_utilities_included, is_sublet, has_laundry, has_cooking, has_parking, no_smoking, is_shared) VALUES (${rental.title}, ${rental.seller}, ${rental.address}, ${rental.post_date}, ${rental.date_available}, ${rental.description}, ${rental.house_type}, ${rental.cost}, ${rental.num_beds}, ${rental.is_cost_per_room}, ${rental.is_utilities_included}, ${rental.is_sublet}, ${rental.has_laundry}, ${rental.has_cooking}, ${rental.has_parking}, ${rental.no_smoking}, ${rental.is_shared});`;
 
   return result;
+}
+
+export async function editRental(rental: Omit<Rental, "post_date">) {
+  const result =
+    await sql`UPDATE rentals SET (title, address, date_available, description, house_type, cost, num_beds, is_cost_per_room, is_utilities_included, is_sublet, has_laundry, has_cooking, has_parking, no_smoking, is_shared) = (${rental.title}, ${rental.address}, ${rental.date_available}, ${rental.description}, ${rental.house_type}, ${rental.cost}, ${rental.num_beds}, ${rental.is_cost_per_room}, ${rental.is_utilities_included}, ${rental.is_sublet}, ${rental.has_laundry}, ${rental.has_cooking}, ${rental.has_parking}, ${rental.no_smoking}, ${rental.is_shared}) WHERE id = ${rental.id} AND seller = ${rental.seller} RETURNING *;`;
+
+  return result[0];
 }
 
 export async function removeRental(id: Rental["id"], user_id: User["id"]) {

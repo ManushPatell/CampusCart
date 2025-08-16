@@ -4,6 +4,7 @@ import {
   getAllRentals,
   getRentalById,
   postRental,
+  putRental,
 } from "../controllers/rentalController.ts";
 import { authenticateToken } from "../middleware/authMiddleware.ts";
 
@@ -125,6 +126,8 @@ router.post("/", authenticateToken, postRental);
  *                   example: Failed to delete rental
  */
 router.delete("/:id", authenticateToken, deleteRental);
+
+router.put("/:id", authenticateToken, putRental);
 
 export default router;
 

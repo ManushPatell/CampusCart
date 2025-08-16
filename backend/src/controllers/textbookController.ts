@@ -2,8 +2,10 @@ import { type Request, type Response } from "express";
 
 import {
   addTextbook,
+  editTextbook,
   findAllTextbooks,
   findTextbook,
+  removeTextbook,
   removeTextbook,
 } from "../models/textbookModel";
 
@@ -21,9 +23,12 @@ export async function getAllTextbooks(req: Request, res: Response) {
 
 export async function getTextbookById(req: Request, res: Response) {
   const { id } = req.params;
+  if (!id) {
+    res.status(500).json({ error: "Invalid request, no id was given." });
+  }
   try {
-    const textbook = await findTextbook(parseInt(id));
-    if (isNaN(Number(id)) || !textbook) {
+    const textbook = await findTextbook(id);
+    if (!textbook) {
       res.status(404).json({ error: "Textbook not found" });
       return;
     }
@@ -61,6 +66,36 @@ export async function postTextbook(req: Request, res: Response) {
   } catch (error) {
     console.error("Error while posting new textbook. ", error);
     res.status(500).json({ error: "Error posting new textbook." });
+  }
+}
+
+export async function putTextbook(req: Request, res: Response) {
+  const textbook = req.body;
+  const { id } = req.params;
+  const { id: userId } = req.user!; // This must be filed since this is a protected route
+
+  if (!textbook?.book_title || !textbook?.price) {
+    res.status(400).json({ error: "Failed to provide required parameters." });
+    return;
+  }
+
+  try {
+    const editedTextbook = await editTextbook(
+      textbook.book_title,
+      textbook.author,
+      textbook.edition,
+      textbook.year,
+      textbook.faculty,
+      parseInt(textbook.price),
+      textbook.condition,
+      id,
+      userId,
+    );
+
+    res.status(200).json(editedTextbook);
+  } catch (error) {
+    console.error("Error while editing new textbook. ", error);
+    res.status(500).json({ error: "Error editing new textbook." });
   }
 }
 

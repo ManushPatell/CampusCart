@@ -4,6 +4,7 @@ import {
   getAllTextbooks,
   postTextbook,
   deleteTextbook,
+  putTextbook,
 } from "../controllers/textbookController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -132,6 +133,8 @@ router.get("/:id", getTextbookById);
  *                 error: "Error posting new textbook."
  */
 router.post("/", authenticateToken, postTextbook);
+
+router.put("/:id", authenticateToken, putTextbook);
 
 /**
  * @swagger

@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FormInputs = {
   firstName: string;
@@ -36,7 +36,7 @@ export default function SignUp() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { refetchUser } = useAuth();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
@@ -79,7 +79,7 @@ export default function SignUp() {
           credentials: "include",
         });
         if (res.status === 200) {
-          refetchUser();
+          queryClient.invalidateQueries({ queryKey: ["auth"] });
           navigate(`/dashboard`);
         }
         if (res.status === 400) {

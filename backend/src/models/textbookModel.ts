@@ -19,7 +19,7 @@ export async function findAllTextbooks(): Promise<Textbook[]> {
   return result;
 }
 
-export async function findTextbook(id: number): Promise<Textbook | null> {
+export async function findTextbook(id: string): Promise<Textbook | null> {
   const result = await sql<Textbook[]>`
     SELECT * FROM textbooks WHERE id = ${id}
   `;
@@ -48,6 +48,22 @@ export async function addTextbook(
       INSERT INTO textbooks (book_title, seller, author, edition, year, faculty, price, condition)
       VALUES (${book_title}, ${id}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) 
       RETURNING book_title, author;`;
+  return result[0];
+}
+
+export async function editTextbook(
+  book_title: string,
+  author: string,
+  edition: string,
+  year: string,
+  faculty: string,
+  price: number,
+  condition: string,
+  textbookId: string,
+  sellerId: string,
+) {
+  const result = await sql`
+      UPDATE textbooks SET (book_title, author, edition, year, faculty, price, condition) = (${book_title}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) WHERE id = ${textbookId} AND seller = ${sellerId} RETURNING *;`;
   return result[0];
 }
 

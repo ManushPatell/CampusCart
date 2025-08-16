@@ -4,9 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import useFetch from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 type User = {
   id: number;
@@ -18,30 +20,57 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  loading: boolean;
-  refetchUser: () => void;
+  isLoading: boolean;
+  error: Error | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate();
+const refreshTokenInterval = 25 * 60 * 1000;
 
-  const options: RequestInit = useMemo(
-    () => ({
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    }),
-    [],
-  );
-  const { data, loading, refetch } = useFetch<User>(
-    `${import.meta.env.VITE_API_URL}/auth/me`,
-    options,
-  ); // The error field doesn't matter here
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEnabled(true), refreshTokenInterval);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const { data, isLoading, error } = useQuery<User>({
+    queryKey: ["auth"],
+    queryFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json();
+      return data.error ? null : data;
+    },
+  });
+  const {
+    data: refreshData,
+    isLoading: isLoadingRefresh,
+    error: refreshError,
+  } = useQuery({
+    queryKey: ["refreshToken"],
+    queryFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      return data.error ? null : data;
+    },
+    enabled,
+    refetchInterval: refreshTokenInterval,
+    refetchIntervalInBackground: true,
+  });
 
   return (
-    <AuthContext.Provider value={{ user: data, loading, refetchUser: refetch }}>
+    <AuthContext.Provider
+      value={{ user: data ?? null, isLoading: isLoading, error }}
+    >
       {children}
     </AuthContext.Provider>
   );
