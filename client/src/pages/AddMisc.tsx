@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
@@ -25,11 +25,16 @@ const initialValues: FormInputs = {
 
 export default function AddMisc() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingMisc, setIsLoadingMisc] = useState<boolean>(false);
+
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
     control,
+    reset,
   } = useForm<FormInputs>({
     defaultValues: initialValues,
     mode: "onSubmit",
@@ -67,6 +72,23 @@ export default function AddMisc() {
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      setIsLoadingMisc(true);
+      fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`)
+        .then((res) => res.json())
+        .then((body) => {
+          setIsLoadingMisc(false);
+          reset({
+            title: body.title,
+            description: body.description,
+            price: parseInt(body.price),
+            listing_type: body.listing_type,
+          });
+        });
+    }
+  }, []);
+
   return (
     <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
       <span
@@ -76,7 +98,7 @@ export default function AddMisc() {
         <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
         <p>Go back</p>
       </span>
-      <h1 className="text-xl font-bold">Add textbook</h1>
+      <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} miscellaneous</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"
         onSubmit={handleSubmit(onSubmit)}
@@ -117,7 +139,7 @@ export default function AddMisc() {
 
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
-          label="Add textbook"
+          label={`${id ? "Edit" : "Add"} miscellaneous`}
           isLoading={isLoading}
           className="mt-[2rem]"
         />

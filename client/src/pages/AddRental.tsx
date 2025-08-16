@@ -144,112 +144,116 @@ export default function AddRental() {
       </span>
 
       <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} rental</h1>
-      <form
-        className="flex flex-col gap-[.5rem] my-[2rem]"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <ControlledInput
-          name="title"
-          control={control}
-          errors={errors}
-          placeholder="Title of the listing"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledInput
-          name="address"
-          control={control}
-          errors={errors}
-          placeholder="Address"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledInput
-          control={control}
-          name="cost"
-          errors={errors}
-          placeholder="Cost of the rental"
-          rules={{
-            required: "Field required",
-            validate: {
-              numCheck: (v) => !isNaN(v as number) || "Must be a number",
-            },
-          }}
-        />
-        <ControlledDatePicker
-          control={control}
-          name="date_available"
-          errors={errors}
-          label="Date available"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledDropdown
-          name="house_type"
-          placeholder="House type"
-          optionsLabel="Types"
-          control={control}
-          errors={errors}
-          options={houseTypeOptions}
-          rules={{ required: "Field required" }}
-        />
-        <ControlledTextarea
-          control={control}
-          name="description"
-          errors={errors}
-          placeholder="Enter a short description about the rental"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledCheckbox
-          name="is_cost_per_room"
-          control={control}
-          errors={errors}
-          label="Cost is per room"
-        />
-        <ControlledCheckbox
-          name="is_shared"
-          control={control}
-          errors={errors}
-          label="Shared with other roommates"
-        />
-        {isShared && (
+      {!isFetchingRental ? (
+        <form
+          className="flex flex-col gap-[.5rem] my-[2rem]"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <ControlledInput
-            name="num_beds"
+            name="title"
             control={control}
             errors={errors}
-            label="Number of other rooms in the house"
+            placeholder="Title of the listing"
             rules={{ required: "Field required" }}
           />
-        )}
-        <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
-        <ControlledCheckbox
-          name="is_utilities_included"
-          control={control}
-          errors={errors}
-          label="Utilities"
-        />
-        <ControlledCheckbox
-          name="is_sublet"
-          control={control}
-          errors={errors}
-          label="Sublet"
-        />
-        <ControlledCheckbox
-          name="has_laundry"
-          control={control}
-          errors={errors}
-          label="Laundry"
-        />
-        <ControlledCheckbox
-          name="no_smoking"
-          control={control}
-          errors={errors}
-          label="No smoking"
-        />
-        <p className="text-red-500 text-[1rem]">{errorMessage}</p>
-        <Submit
-          label={`${id ? "Edit" : "Add"} rental`}
-          isLoading={isButtonLoading}
-          className="mt-[2rem]"
-        />
-      </form>
+          <ControlledInput
+            name="address"
+            control={control}
+            errors={errors}
+            placeholder="Address"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledInput
+            control={control}
+            name="cost"
+            errors={errors}
+            placeholder="Cost of the rental"
+            rules={{
+              required: "Field required",
+              validate: {
+                numCheck: (v) => !isNaN(v as number) || "Must be a number",
+              },
+            }}
+          />
+          <ControlledDatePicker
+            control={control}
+            name="date_available"
+            errors={errors}
+            label="Date available"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledDropdown
+            name="house_type"
+            placeholder="House type"
+            optionsLabel="Types"
+            control={control}
+            errors={errors}
+            options={houseTypeOptions}
+            rules={{ required: "Field required" }}
+          />
+          <ControlledTextarea
+            control={control}
+            name="description"
+            errors={errors}
+            placeholder="Enter a short description about the rental"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledCheckbox
+            name="is_cost_per_room"
+            control={control}
+            errors={errors}
+            label="Cost is per room"
+          />
+          <ControlledCheckbox
+            name="is_shared"
+            control={control}
+            errors={errors}
+            label="Shared with other roommates"
+          />
+          {isShared && (
+            <ControlledInput
+              name="num_beds"
+              control={control}
+              errors={errors}
+              label="Number of other rooms in the house"
+              rules={{ required: "Field required" }}
+            />
+          )}
+          <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
+          <ControlledCheckbox
+            name="is_utilities_included"
+            control={control}
+            errors={errors}
+            label="Utilities"
+          />
+          <ControlledCheckbox
+            name="is_sublet"
+            control={control}
+            errors={errors}
+            label="Sublet"
+          />
+          <ControlledCheckbox
+            name="has_laundry"
+            control={control}
+            errors={errors}
+            label="Laundry"
+          />
+          <ControlledCheckbox
+            name="no_smoking"
+            control={control}
+            errors={errors}
+            label="No smoking"
+          />
+          <p className="text-red-500 text-[1rem]">{errorMessage}</p>
+          <Submit
+            label={`${id ? "Edit" : "Add"} rental`}
+            isLoading={isButtonLoading}
+            className="mt-[2rem]"
+          />
+        </form>
+      ) : (
+        <p>Loading rental...</p>
+      )}
     </div>
   );
 }

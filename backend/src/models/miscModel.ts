@@ -15,7 +15,7 @@ export interface Miscellaneous {
 }
 
 export const findMiscById = async (
-  id: number,
+  id: string,
 ): Promise<Miscellaneous | null> => {
   const result = await sql<Miscellaneous[]>`
         SELECT * FROM misc WHERE id = ${id}
@@ -40,6 +40,12 @@ export const addMisc = async (
 ) => {
   const result =
     await sql`INSERT INTO misc (title, description, price, seller, listing_type) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller}, ${misc.listing_type})`;
+  return result;
+};
+
+export const editMisc = async (misc: Omit<Miscellaneous, "date_posted">) => {
+  const result =
+    await sql`UPDATE misc SET (title, description, price, listing_type) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}) WHERE id = ${misc.id} AND seller = ${misc.seller}`;
   return result;
 };
 

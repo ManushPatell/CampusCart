@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
+import { useQueryClient } from "@tanstack/react-query";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
@@ -15,7 +16,8 @@ type FormInputs = {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { refetchUser, user } = useAuth();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const {
     handleSubmit,
@@ -44,7 +46,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (res.status === 200) {
-      refetchUser();
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
       navigate("/dashboard");
     }
     if (res.status === 400) {
