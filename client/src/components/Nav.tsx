@@ -32,7 +32,6 @@ export default function UnauthenticatedNav() {
           flex items-center justify-between
           px-6
           bg-white/30 backdrop-blur-3xl
-          border-b border-gray-200
           z-50
         "
       >
