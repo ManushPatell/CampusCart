@@ -1,11 +1,11 @@
 import sql from "./db.ts";
 
 export type RentalListing = {
-  id: number;
+  id: string;
   title: string;
   price: string;
   address: string;
-  image?: string;
+  photos?: string[];
   description: string;
   date_posted: string;
   house_type: string;
@@ -22,7 +22,7 @@ export type RentalListing = {
 };
 
 export interface Rental {
-  id: number;
+  id: string;
   title: string;
   seller: string;
   address: string;

@@ -16,12 +16,6 @@ export default function Home() {
       >
         <Content />
       </section>
-      <section 
-        id = "houses-section"
-        className="min-h-screen bg-[#F5F1EA] p-8"
-      >
-        <Houses />
-      </section>
     </div>
   );
 }

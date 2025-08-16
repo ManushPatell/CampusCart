@@ -1,9 +1,97 @@
 import { useAuth } from "../context/AuthContext";
-import { House, LibraryBig, ShoppingBasket } from "lucide-react";
+import {
+  House,
+  LibraryBig,
+  ShoppingBasket,
+  Plus,
+  MapPin,
+  Banknote,
+  BedDouble,
+  Calendar,
+  GraduationCap,
+  BookOpen,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+// Small, reliable image box with built-in fallback, no forced aspect/crop
+function CardImage({
+  src,
+  alt,
+  onClick,
+}: {
+  src?: string;
+  alt: string;
+  onClick?: () => void;
+}) {
+  const [broken, setBroken] = useState(false);
+  const show = !!src && !broken;
+
+  return (
+    <div
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      className={`relative overflow-hidden rounded-md border border-border bg-border/30 ${
+        onClick ? "cursor-pointer" : ""
+      }`}
+    >
+      {show ? (
+        <img
+          src={src}
+          alt={alt}
+          onError={() => setBroken(true)}
+          className="max-w-full h-auto rounded-md"
+        />
+      ) : (
+        <div className="flex items-center justify-center text-secondary-fg/70 text-sm p-4">
+          No photo
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Reusable action bar for cards
+function ActionButtons({
+  onEdit,
+  onDelete,
+}: {
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="mt-3 flex items-center gap-2">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit();
+        }}
+        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm
+                   bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition"
+      >
+        <Pencil className="h-5 w-5" />
+        Edit
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm
+                   bg-red-600 text-white hover:bg-red-700 active:bg-red-800 transition"
+      >
+        <Trash2 className="h-5 w-5" />
+        Delete
+      </button>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -12,123 +100,348 @@ export default function Dashboard() {
   const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();
   const { userMisc, isUserMiscLoading } = useUserMisc();
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return <div className="px-8 py-12 text-secondary-fg">Loading…</div>;
+  if (user === null)
+    return (
+      <div className="px-8 py-12 text-secondary-fg">
+        You are not currently logged in.
+      </div>
+    );
 
-  if (user === null) return <p>You are not currently logged in.</p>;
+  // ---- Delete helpers (adjust endpoints if different) ----
+  async function del(path: string) {
+    const ok = window.confirm("Delete this listing? This cannot be undone.");
+    if (!ok) return;
+    try {
+      const res = await fetch(path, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error(`Delete failed (${res.status})`);
+      // simplest: reload to refetch hooks
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete. Please try again.");
+    }
+  }
+  const deleteRental = (id: string) => del(`/api/rentals/${id}`);
+  const deleteTextbook = (id: string) => del(`/api/textbooks/${id}`);
+  const deleteMisc = (id: string) => del(`/api/misc/${id}`);
 
-  const headingBoxContainerClassName =
-    "border-border border-2 shadow-xl w-full rounded-md bg-primary-bg";
-  const headingBoxClassName =
-    "flex gap-[.75rem] py-[.4rem] px-[1rem] items-center text-secondary-fg text-md justify-between";
-  const amountClassName =
-    "font-bold text-2xl px-[1rem] pb-[.4rem] min-w-[10rem]";
+  const FlatStat = ({
+    label,
+    value,
+    icon: Icon,
+  }: {
+    label: string;
+    value?: number;
+    icon: React.ComponentType<{ className?: string }>;
+  }) => (
+    <div className="w-full rounded-xl border-2 border-border bg-primary-bg shadow-sm">
+      <div className="flex items-center justify-between p-4">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-secondary-fg/80">
+            {label}
+          </p>
+          <div className="text-4xl font-extrabold text-primary-fg">
+            {value ?? 0}
+          </div>
+        </div>
+        <div className="rounded-lg p-3 bg-border/40 text-primary-fg">
+          <Icon className="h-6 w-6" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const Section = ({
+    title,
+    onAdd,
+    children,
+  }: {
+    title: string;
+    onAdd: () => void;
+    children: React.ReactNode;
+  }) => (
+    <div className="rounded-xl border-2 border-border bg-primary-bg shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border/70">
+        <p className="text-primary-fg font-semibold text-xl">{title}</p>
+        <button
+          onClick={onAdd}
+          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 bg-primary-fg text-primary-bg text-sm hover:bg-primary-fg/85 transition"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="hidden sm:inline">Add</span>
+        </button>
+      </div>
+      <div className="p-4">{children}</div>
+    </div>
+  );
+
+  const Chip = ({ children }: { children: React.ReactNode }) => (
+    <span className="text-xs px-2 py-1 rounded-full bg-border/50 text-secondary-fg">
+      {children}
+    </span>
+  );
+
+  const Row = ({
+    children,
+    onClick,
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+  }) => (
+    <div
+      className={`rounded-lg border border-border bg-primary-bg p-4 shadow-sm hover:shadow-md transition ${
+        onClick ? "cursor-pointer hover:-translate-y-[1px]" : ""
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
 
   return (
-    <div className="px-[2rem] py-[3rem]">
-      <h1 className="text-2xl font-bold mb-[.5rem] text-primary-fg">
-        Dashboard
-      </h1>
-      <p className="text-md mb-[1rem] text-secondary-fg">
-        Welcome {user.firstName}! You can view current your current listings and
-        post more items below.
-      </p>
-      <span className="flex justify-between gap-[.75rem] flex-wrap sm:flex-nowrap">
-        <div className={headingBoxContainerClassName}>
-          <span className={headingBoxClassName}>
-            <p className="text-secondary-fg">Rentals</p>
-            <House className="rounded-md bg-[#DFAF5E]/30 text-[#DFAF5E] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
-          </span>
-          <h3 className={amountClassName}>{userRentals?.length}</h3>
-        </div>
-        <div className={headingBoxContainerClassName}>
-          <span className={headingBoxClassName}>
-            <p className="text-secondary-fg">Textbooks</p>
-            <LibraryBig className="rounded-md bg-[#416914]/30 text-[#416914] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
-          </span>
-          <h3 className={amountClassName}>{userTextbooks?.length}</h3>
-        </div>
-        <div className={headingBoxContainerClassName}>
-          <span className={headingBoxClassName}>
-            <p className="text-secondary-fg">Miscellaneous</p>
-            <ShoppingBasket className="rounded-md bg-[#6D152B]/30 text-[#6D152B] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
-          </span>
-          <h3 className={amountClassName}>{userMisc?.length}</h3>
-        </div>
-      </span>
-
-      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[2rem] z-50 border-l-[#DFAF5E] border-l-3 px-[1rem] py-[.4rem]">
-        <span className="flex justify-between">
-          <p className="text-primary-fg">Rental listings</p>
-          <button
-            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
-            onClick={() => navigate("/rentals/create")}
-          >
-            +
-          </button>
-        </span>
-
-        <span className="flex flex-col gap-[1rem]">
-          {!isUserRentalsLoading
-            ? userRentals?.map((rental) => (
-                <span key={rental.id}>
-                  <p>Address: {rental.address}</p>
-                  <p>
-                    ${rental.cost}{" "}
-                    {rental.is_cost_per_room ? "per room" : "all together"}
-                  </p>
-                </span>
-              ))
-            : "No rental listings"}
-        </span>
+    <div className="px-6 sm:px-8 py-10 space-y-6">
+      <div>
+        <h1 className="text-4xl font-extrabold text-primary-fg">Dashboard</h1>
+        <p className="text-base text-secondary-fg mt-1">
+          Welcome <span className="font-semibold">{user.firstName}</span> —
+          manage your listings or add new ones below.
+        </p>
       </div>
 
-      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#416914] border-l-3 px-[1rem] py-[.4rem]">
-        <span className="flex justify-between">
-          <p className="text-primary-fg">Textbook listings</p>
-          <button
-            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
-            onClick={() => navigate("/textbooks/create")}
-          >
-            +
-          </button>
-        </span>
-        {!isUserTextbooksLoading ? (
-          <span className="flex flex-col gap-[1rem]">
-            {userTextbooks!.length > 0
-              ? userTextbooks?.map((textbook) => (
-                  <span key={textbook.id}>
-                    <p>Title: {textbook.book_title}</p>
-                    <p>Author: {textbook.author}</p>
-                  </span>
-                ))
-              : "No textbook listings"}
-          </span>
+      {/* Stats (flat) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <FlatStat label="Rentals" value={userRentals?.length} icon={House} />
+        <FlatStat
+          label="Textbooks"
+          value={userTextbooks?.length}
+          icon={LibraryBig}
+        />
+        <FlatStat
+          label="Miscellaneous"
+          value={userMisc?.length}
+          icon={ShoppingBasket}
+        />
+      </div>
+
+      {/* Rentals */}
+      <Section
+        title="Rental listings"
+        onAdd={() => navigate("/rentals/create")}
+      >
+        {isUserRentalsLoading ? (
+          <div className="text-secondary-fg">Loading…</div>
+        ) : userRentals && userRentals.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {userRentals.map((rental) => (
+              <Row
+                key={rental.id}
+                onClick={() => navigate(`/rentals/${rental.id}`)}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* LEFT: Details */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-primary-fg">
+                      <MapPin className="h-6 w-6 opacity-70" />
+                      <span className="font-semibold text-lg">
+                        {rental.address}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 text-secondary-fg">
+                      <span className="inline-flex items-center gap-1 font-medium">
+                        <Banknote className="h-6 w-6 opacity-70" /> $
+                        {rental.cost}
+                      </span>
+                      <Chip>
+                        {rental.is_cost_per_room ? "per room" : "total"}
+                      </Chip>
+                      {rental.house_type ? (
+                        <Chip>{rental.house_type}</Chip>
+                      ) : null}
+                      {rental.num_beds ? (
+                        <span className="inline-flex items-center gap-1 text-sm">
+                          <BedDouble className="h-6 w-6 opacity-70" />{" "}
+                          {rental.num_beds} bed(s)
+                        </span>
+                      ) : null}
+                      {rental.is_utilities_included ? (
+                        <Chip>Utilities</Chip>
+                      ) : null}
+                      {rental.has_parking ? <Chip>Parking</Chip> : null}
+                      {rental.has_laundry ? <Chip>Laundry</Chip> : null}
+                    </div>
+
+                    <div className="text-xs text-secondary-fg">
+                      {rental.post_date ? (
+                        <span className="inline-flex items-center gap-1">
+                          <Calendar className="h-5 w-5 opacity-70" />
+                          {String(rental.post_date)}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {/* Actions */}
+                    <ActionButtons
+                      onEdit={() => navigate(`/rentals/${rental.id}/edit`)}
+                      onDelete={() => deleteRental(rental.id)}
+                    />
+                  </div>
+
+                  {/* RIGHT: Photo (first photo) */}
+                  <CardImage
+                    src={rental.photos?.[0]}
+                    alt="rental image"
+                    onClick={(e) => {
+                      e?.stopPropagation?.();
+                      navigate(`/rentals/${rental.id}`);
+                    }}
+                  />
+                </div>
+              </Row>
+            ))}
+          </div>
         ) : (
-          "Loading..."
+          <div className="text-secondary-fg text-sm">
+            No rental listings yet. Click{" "}
+            <span className="font-semibold">Add</span> to create one.
+          </div>
         )}
-      </div>
+      </Section>
 
-      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#6D152B] border-l-3 px-[1rem] py-[.4rem]">
-        <span className="flex justify-between">
-          <p className="text-primary-fg">Miscellaneous listings</p>
-          <button
-            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
-            onClick={() => navigate("/misc/create")}
-          >
-            +
-          </button>
-        </span>
+      {/* Textbooks */}
+      <Section
+        title="Textbook listings"
+        onAdd={() => navigate("/textbooks/create")}
+      >
+        {isUserTextbooksLoading ? (
+          <div className="text-secondary-fg">Loading…</div>
+        ) : userTextbooks && userTextbooks.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {userTextbooks.map((t) => (
+              <Row key={t.id} onClick={() => navigate(`/textbooks/${t.id}`)}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* LEFT: Details */}
+                  <div className="space-y-2">
+                    <div className="text-primary-fg font-semibold text-lg">
+                      {t.book_title}
+                    </div>
+                    <div className="text-secondary-fg text-base">
+                      by {t.author}
+                    </div>
 
-        {!isUserMiscLoading ? (
-          <span className="flex flex-col gap-[1rem]">
-            {userMisc!.length > 0
-              ? userMisc?.map((misc) => <div>Title: {misc.title}</div>)
-              : "No miscellaneous listings"}
-          </span>
+                    <div className="flex flex-wrap gap-2 text-secondary-fg text-xs">
+                      {t.edition ? (
+                        <Chip>
+                          <BookOpen className="h-5 w-5 inline-block mr-1" />
+                          Edition {t.edition}
+                        </Chip>
+                      ) : null}
+                      {t.year ? (
+                        <Chip>
+                          <Calendar className="h-5 w-5 inline-block mr-1" />
+                          {t.year}
+                        </Chip>
+                      ) : null}
+                      {t.faculty ? (
+                        <Chip>
+                          <GraduationCap className="h-5 w-5 inline-block mr-1" />
+                          {t.faculty}
+                        </Chip>
+                      ) : null}
+                      {t.condition ? <Chip>{t.condition}</Chip> : null}
+                    </div>
+
+                    {/* Actions */}
+                    <ActionButtons
+                      onEdit={() => navigate(`/textbooks/${t.id}/edit`)}
+                      onDelete={() => deleteTextbook(t.id)}
+                    />
+                  </div>
+
+                  {/* RIGHT: Photo (first photo) */}
+                  <CardImage
+                    src={t.photos?.[0]}
+                    alt="textbook image"
+                    onClick={(e) => {
+                      e?.stopPropagation?.();
+                      navigate(`/textbooks/${t.id}`);
+                    }}
+                  />
+                </div>
+              </Row>
+            ))}
+          </div>
         ) : (
-          "Loading..."
+          <div className="text-secondary-fg text-sm">
+            No textbook listings yet. Click{" "}
+            <span className="font-semibold">Add</span>.
+          </div>
         )}
-      </div>
+      </Section>
+
+      {/* Misc */}
+      <Section
+        title="Miscellaneous listings"
+        onAdd={() => navigate("/misc/create")}
+      >
+        {isUserMiscLoading ? (
+          <div className="text-secondary-fg">Loading…</div>
+        ) : userMisc && userMisc.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {userMisc.map((m) => (
+              <Row key={m.id} onClick={() => navigate(`/misc/${m.id}`)}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* LEFT: Details */}
+                  <div className="space-y-2">
+                    <div className="text-primary-fg font-semibold text-lg">
+                      {m.title}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 text-secondary-fg">
+                      {typeof (m as any).price !== "undefined" ? (
+                        <span className="inline-flex items-center gap-1 font-medium">
+                          <Banknote className="h-6 w-6 opacity-70" /> $
+                          {(m as any).price}
+                        </span>
+                      ) : null}
+                      {(m as any).listing_type ? (
+                        <Chip>{(m as any).listing_type}</Chip>
+                      ) : null}
+                    </div>
+
+                    {/* Actions */}
+                    <ActionButtons
+                      onEdit={() => navigate(`/misc/${m.id}/edit`)}
+                      onDelete={() => deleteMisc(m.id)}
+                    />
+                  </div>
+
+                  {/* RIGHT: Photo (first photo) */}
+                  <CardImage
+                    src={(m as any).photos?.[0]}
+                    alt={`${m.title} preview`}
+                    onClick={(e) => {
+                      e?.stopPropagation?.();
+                      navigate(`/misc/${m.id}`);
+                    }}
+                  />
+                </div>
+              </Row>
+            ))}
+          </div>
+        ) : (
+          <div className="text-secondary-fg text-sm">
+            No miscellaneous listings yet. Click{" "}
+            <span className="font-semibold">Add</span>.
+          </div>
+        )}
+      </Section>
     </div>
   );
 }

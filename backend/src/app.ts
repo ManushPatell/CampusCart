@@ -21,6 +21,7 @@ import uploadRoutes from "./routes/uploadRoutes.ts";
 
 import cors from "cors";
 import morgan from "morgan";
+import { fromCamel } from "postgres";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -67,6 +68,9 @@ app.get("/", (req: Request, res: Response) => {
   );
 });
 
+const img_host = ["'self'", "data:", "blob:", "http://localhost:3001", "https://*.amazonaws.com", "https://*.s3.amazonaws.com", "https://photo-storage-system.s3.ca-us-east-2.amazonaws.com"];
+
+
 app.use((req, res, next) => {
   res.setHeader(
   "Content-Security-Policy",
@@ -74,8 +78,8 @@ app.use((req, res, next) => {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: http://localhost:3001",
-    "connect-src 'self': http://localhost:3001 http://localhost:4321",
+    `img-src ${img_host.join(" ")}`,
+    `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGIN}`,
     "font-src 'self'",
   ].join("; ")
 );

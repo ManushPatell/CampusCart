@@ -37,6 +37,7 @@ function transformRentalToHouseView(rental: Rental): RentalListing {
     seller: {
       name: rental.seller,
     },
+    photos: rental.photos,
   };
 }
 
