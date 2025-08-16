@@ -26,7 +26,16 @@ export default function UnauthenticatedNav() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full flex items-center justify-between px-6 py-4 z-50">
+      <header
+        className="
+          fixed top-0 left-0 w-full h-16
+          flex items-center justify-between
+          px-6
+          bg-white/30 backdrop-blur-3xl
+          border-b border-gray-200
+          z-50
+        "
+      >
         {/* Logo */}
         <h1 className="text-2xl font-['Kavoon'] text-primary-fg cursor-pointer select-none">
           Campus Cart
