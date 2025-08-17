@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 type FormInputs = {
@@ -53,11 +53,16 @@ const initialValues: FormInputs = {
 };
 
 export default function AddRental() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const [isFetchingRental, setIsFetchingRental] = useState<boolean>(false);
+
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
+    reset,
     control,
     watch,
   } = useForm<FormInputs>({
@@ -69,17 +74,51 @@ export default function AddRental() {
 
   const isShared = watch("is_shared");
 
+  useEffect(() => {
+    if (id) {
+      setIsFetchingRental(true);
+      fetch(`${import.meta.env.VITE_API_URL}/rentals/${id}`)
+        .then((res) => res.json())
+        .then((body) => {
+          setIsFetchingRental(false);
+          console.log(body.date_available);
+          reset({
+            title: body.title,
+            address: body.address,
+            date_available: new Date(body.date_available),
+            description: body.description,
+            house_type: body.house_type,
+            cost: parseInt(body.cost),
+            num_beds: body.num_beds,
+            is_cost_per_room: body.is_cost_per_room,
+            is_utilities_included: body.is_utilities_included,
+            is_sublet: body.is_sublet,
+            has_laundry: body.has_laundry,
+            has_cooking: body.has_cooking,
+            has_parking: body.has_parking,
+            no_smoking: body.no_smoking,
+            is_shared: body.is_shared,
+            amenities: body.amenities,
+            images: body.images,
+          });
+        });
+    }
+  }, []);
+
   const onSubmit = async (data: FormInputs) => {
-    setIsLoading(true);
+    setIsButtonLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/rentals${id ? "/" + id : ""}`,
+        {
+          method: id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
         },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      );
 
       if (!res.ok) {
         if (res.status === 500)
@@ -88,7 +127,7 @@ export default function AddRental() {
         navigate("/dashboard");
       }
 
-      setIsLoading(false);
+      setIsButtonLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -104,113 +143,117 @@ export default function AddRental() {
         <p>Go back</p>
       </span>
 
-      <h1 className="text-xl font-bold">Add rental</h1>
-      <form
-        className="flex flex-col gap-[.5rem] my-[2rem]"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <ControlledInput
-          name="title"
-          control={control}
-          errors={errors}
-          placeholder="Title of the listing"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledInput
-          name="address"
-          control={control}
-          errors={errors}
-          placeholder="Address"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledInput
-          control={control}
-          name="cost"
-          errors={errors}
-          placeholder="Cost of the rental"
-          rules={{
-            required: "Field required",
-            validate: {
-              numCheck: (v) => !isNaN(v as number) || "Must be a number",
-            },
-          }}
-        />
-        <ControlledDatePicker
-          control={control}
-          name="date_available"
-          errors={errors}
-          label="Date available"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledDropdown
-          name="house_type"
-          placeholder="House type"
-          optionsLabel="Types"
-          control={control}
-          errors={errors}
-          options={houseTypeOptions}
-          rules={{ required: "Field required" }}
-        />
-        <ControlledTextarea
-          control={control}
-          name="description"
-          errors={errors}
-          placeholder="Enter a short description about the rental"
-          rules={{ required: "Field required" }}
-        />
-        <ControlledCheckbox
-          name="is_cost_per_room"
-          control={control}
-          errors={errors}
-          label="Cost is per room"
-        />
-        <ControlledCheckbox
-          name="is_shared"
-          control={control}
-          errors={errors}
-          label="Shared with other roommates"
-        />
-        {isShared && (
+      <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} rental</h1>
+      {!isFetchingRental ? (
+        <form
+          className="flex flex-col gap-[.5rem] my-[2rem]"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <ControlledInput
-            name="num_beds"
+            name="title"
             control={control}
             errors={errors}
-            label="Number of other rooms in the house"
+            placeholder="Title of the listing"
             rules={{ required: "Field required" }}
           />
-        )}
-        <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
-        <ControlledCheckbox
-          name="is_utilities_included"
-          control={control}
-          errors={errors}
-          label="Utilities"
-        />
-        <ControlledCheckbox
-          name="is_sublet"
-          control={control}
-          errors={errors}
-          label="Sublet"
-        />
-        <ControlledCheckbox
-          name="has_laundry"
-          control={control}
-          errors={errors}
-          label="Laundry"
-        />
-        <ControlledCheckbox
-          name="no_smoking"
-          control={control}
-          errors={errors}
-          label="No smoking"
-        />
-        <p className="text-red-500 text-[1rem]">{errorMessage}</p>
-        <Submit
-          label="Add rental"
-          isLoading={isLoading}
-          className="mt-[2rem]"
-        />
-      </form>
+          <ControlledInput
+            name="address"
+            control={control}
+            errors={errors}
+            placeholder="Address"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledInput
+            control={control}
+            name="cost"
+            errors={errors}
+            placeholder="Cost of the rental"
+            rules={{
+              required: "Field required",
+              validate: {
+                numCheck: (v) => !isNaN(v as number) || "Must be a number",
+              },
+            }}
+          />
+          <ControlledDatePicker
+            control={control}
+            name="date_available"
+            errors={errors}
+            label="Date available"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledDropdown
+            name="house_type"
+            placeholder="House type"
+            optionsLabel="Types"
+            control={control}
+            errors={errors}
+            options={houseTypeOptions}
+            rules={{ required: "Field required" }}
+          />
+          <ControlledTextarea
+            control={control}
+            name="description"
+            errors={errors}
+            placeholder="Enter a short description about the rental"
+            rules={{ required: "Field required" }}
+          />
+          <ControlledCheckbox
+            name="is_cost_per_room"
+            control={control}
+            errors={errors}
+            label="Cost is per room"
+          />
+          <ControlledCheckbox
+            name="is_shared"
+            control={control}
+            errors={errors}
+            label="Shared with other roommates"
+          />
+          {isShared && (
+            <ControlledInput
+              name="num_beds"
+              control={control}
+              errors={errors}
+              label="Number of other rooms in the house"
+              rules={{ required: "Field required" }}
+            />
+          )}
+          <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
+          <ControlledCheckbox
+            name="is_utilities_included"
+            control={control}
+            errors={errors}
+            label="Utilities"
+          />
+          <ControlledCheckbox
+            name="is_sublet"
+            control={control}
+            errors={errors}
+            label="Sublet"
+          />
+          <ControlledCheckbox
+            name="has_laundry"
+            control={control}
+            errors={errors}
+            label="Laundry"
+          />
+          <ControlledCheckbox
+            name="no_smoking"
+            control={control}
+            errors={errors}
+            label="No smoking"
+          />
+          <p className="text-red-500 text-[1rem]">{errorMessage}</p>
+          <Submit
+            label={`${id ? "Edit" : "Add"} rental`}
+            isLoading={isButtonLoading}
+            className="mt-[2rem]"
+          />
+        </form>
+      ) : (
+        <p>Loading rental...</p>
+      )}
     </div>
   );
 }

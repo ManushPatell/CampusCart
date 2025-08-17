@@ -1,6 +1,11 @@
 import express from "express";
-import { type Request, type Response, type NextFunction } from "express";
-import { getAllMisc, getMiscById } from "../controllers/miscController";
+import {
+  deleteMisc,
+  getAllMisc,
+  getMiscById,
+  postMisc,
+} from "../controllers/miscController";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -85,5 +90,112 @@ router.get("/:id", getMiscById);
  *         category:
  *           type: string
  */
+
+/**
+ * @swagger
+ * /misc:
+ *   post:
+ *     summary: Create a miscellaneous listing
+ *     description: Creates a miscellaneous posting. You must be signed in to create a listing.
+ *     tags:
+ *       - Miscellaneous
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Electric guitar for sale"
+ *               description:
+ *                 type: string
+ *                 example: "A Fender Stratocaster in excellent condition."
+ *               price:
+ *                 type: number
+ *                 example: 250
+ *               listing_type:
+ *                 type: string
+ *                 enum: [Selling, Wanted]
+ *                 example: Selling
+ *             required:
+ *               - title
+ *               - description
+ *               - price
+ *               - listing_type
+ *     responses:
+ *       200:
+ *         description: Miscellaneous listing successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                   example: "550e8400-e29b-41d4-a716-446655440000"
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 seller:
+ *                   type: integer
+ *                   example: 42
+ *                 listing_type:
+ *                   type: string
+ *                   enum: [Buying, Selling]
+ *       400:
+ *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized - user must be signed in
+ *       500:
+ *         description: Internal server error
+ */
+router.post("/", authenticateToken, postMisc);
+
+/**
+ * @swagger
+ * /misc/{id}:
+ *   delete:
+ *     summary: Delete a misc
+ *     description: Deletes a misc owned by the authenticated user.
+ *     tags:
+ *       - Misc
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the misc to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Rental successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either rental not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the rental.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete rental
+ */
+router.delete("/:id", authenticateToken, deleteMisc);
 
 export default router;
