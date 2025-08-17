@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import TextbookCard from "../components/TextbookCard"; 
-import mockTextbooks from "../data/mockTextbooks"; 
+import TextbookCard from "../components/TextbookCard";
+import mockTextbooks from "../data/mockTextbooks";
+
+const mcmasterFaculties = [
+  "Engineering",
+  "Health Sciences",
+  "Humanities",
+  "Business (DeGroote School of Business)",
+  "Science",
+  "Social Sciences",
+];
 
 const Textbooks = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,10 +27,12 @@ const Textbooks = () => {
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesFaculty =
-      !filters.faculty || book.faculty.toLowerCase().includes(filters.faculty.toLowerCase());
+      !filters.faculty ||
+      book.faculty.toLowerCase() === filters.faculty.toLowerCase();
 
     const matchesCondition =
-      !filters.condition || book.condition.toLowerCase() === filters.condition.toLowerCase();
+      !filters.condition ||
+      book.condition.toLowerCase() === filters.condition.toLowerCase();
 
     const matchesPrice = book.price <= filters.currentPrice;
 
@@ -30,10 +41,14 @@ const Textbooks = () => {
 
   return (
     <div className="min-h-screen bg-bg">
+      {/* Header */}
       <div className="py-8 px-4">
-        <h1 className="text-4xl font-extrabold text-[#4A4032]">Textbook Listings</h1>
+        <h1 className="text-4xl font-extrabold text-[#4A4032]">
+          Textbook Listings
+        </h1>
       </div>
 
+      {/* Search + Filters Button */}
       <section className="px-4 py-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-8">
           <div className="flex-1">
@@ -61,6 +76,7 @@ const Textbooks = () => {
         </div>
       </section>
 
+      {/* Filter Drawer */}
       <div
         className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out ${
           isFilterOpen ? "translate-x-0" : "translate-x-full"
@@ -68,28 +84,42 @@ const Textbooks = () => {
       >
         <div className="flex justify-between items-center p-4 border-b pt-[4.5rem]">
           <h3 className="text-xl font-bold text-[#4A4032]">Filters</h3>
-          <button onClick={() => setIsFilterOpen(false)} className="text-[#4A4032] text-lg">
+          <button
+            onClick={() => setIsFilterOpen(false)}
+            className="text-[#4A4032] text-lg"
+          >
             ✕
           </button>
         </div>
 
         <div className="p-6 space-y-4">
+          {/* Faculty (McMaster) */}
           <div>
             <label className="text-primary-fg block mb-2">Faculty</label>
-            <input
-              type="text"
-              placeholder="e.g. Engineering"
+            <select
               value={filters.faculty}
-              onChange={(e) => setFilters({ ...filters, faculty: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, faculty: e.target.value })
+              }
               className="w-full border px-3 py-2 rounded-md text-[#4A4032]"
-            />
+            >
+              <option value="">Any</option>
+              {mcmasterFaculties.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </select>
           </div>
 
+          {/* Condition */}
           <div>
             <label className="text-primary-fg block mb-2">Condition</label>
             <select
               value={filters.condition}
-              onChange={(e) => setFilters({ ...filters, condition: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, condition: e.target.value })
+              }
               className="w-full border px-3 py-2 rounded-md text-[#4A4032]"
             >
               <option value="">Any</option>
@@ -100,10 +130,13 @@ const Textbooks = () => {
             </select>
           </div>
 
+          {/* Price Slider */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <p className="text-primary-fg mb-2">Max Price</p>
-              <span className="text-secondary-fg font-medium">${filters.currentPrice}</span>
+              <span className="text-secondary-fg font-medium">
+                ${filters.currentPrice}
+              </span>
             </div>
             <input
               type="range"
@@ -139,6 +172,7 @@ const Textbooks = () => {
         </div>
       </div>
 
+      {/* Listings */}
       <div className="px-4 py-8">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
           {filteredTextbooks.map((book) => (
