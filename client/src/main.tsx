@@ -11,6 +11,8 @@ import HouseDetail from "./pages/HouseDetail";
 import TextbookDetail from "./pages/TextbookDetail";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
+import Textbooks from "./components/Textbooks";
+import Houses from "./components/Houses";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -23,7 +25,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="rentals/:id" element={<HouseDetail />} />
             <Route path="textbooks/:id" element={<TextbookDetail />} />
           </Route>
-
+          <Route path="textbooks" element={<Textbooks />} />
+          <Route path="rentals" element={<Houses />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Signup />} />
         </Routes>

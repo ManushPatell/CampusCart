@@ -7,7 +7,6 @@ const Textbooks = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     faculty: "",
-    course_code: "",
     condition: "",
     maxPrice: 200,
     currentPrice: 200,
@@ -21,15 +20,12 @@ const Textbooks = () => {
     const matchesFaculty =
       !filters.faculty || book.faculty.toLowerCase().includes(filters.faculty.toLowerCase());
 
-    const matchesCourseCode =
-      !filters.course_code || book.course_code.toLowerCase().includes(filters.course_code.toLowerCase());
-
     const matchesCondition =
       !filters.condition || book.condition.toLowerCase() === filters.condition.toLowerCase();
 
     const matchesPrice = book.price <= filters.currentPrice;
 
-    return matchesSearch && matchesFaculty && matchesCourseCode && matchesCondition && matchesPrice;
+    return matchesSearch && matchesFaculty && matchesCondition && matchesPrice;
   });
 
   return (
@@ -85,17 +81,6 @@ const Textbooks = () => {
               placeholder="e.g. Engineering"
               value={filters.faculty}
               onChange={(e) => setFilters({ ...filters, faculty: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md text-[#4A4032]"
-            />
-          </div>
-
-          <div>
-            <label className="text-primary-fg block mb-2">Course Code</label>
-            <input
-              type="text"
-              placeholder="e.g. MATH 1B03"
-              value={filters.course_code}
-              onChange={(e) => setFilters({ ...filters, course_code: e.target.value })}
               className="w-full border px-3 py-2 rounded-md text-[#4A4032]"
             />
           </div>
