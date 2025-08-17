@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../components/Nav.js";
 import { useParams } from "react-router-dom";
-import { Rental } from "../types/types.js";
+import { RentalListing } from "../types/types";
 
 export default function HouseDetail() {
   const { id } = useParams();
-  const [house, setHouse] = useState<Rental | null>(null);
+  const [house, setHouse] = useState<RentalListing | null>(null);
   const [error, setError] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 

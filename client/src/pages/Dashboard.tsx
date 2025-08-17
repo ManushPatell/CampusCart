@@ -1,36 +1,25 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { House, LibraryBig, ShoppingBasket } from "lucide-react";
-import { Miscellaneous, Rental, Textbook } from "../types/types";
+import { House, LibraryBig, Pencil, ShoppingBasket, Trash } from "lucide-react";
+import useUserRentals from "../hooks/useUserRentals";
+import useUserTextbooks from "../hooks/useUserTextbooks";
+import useUserMisc from "../hooks/useUserMisc";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
-  const [rentalsData, setRentalsData] = useState<Rental[] | null>(null);
-  const [textbooksData, setTextbooksData] = useState<Textbook[] | null>(null);
-  const [miscData, setMiscData] = useState<Miscellaneous[] | null>(null);
-
-  useEffect(() => {
-    if (loading || !user) return;
-
-    fetch(`${import.meta.env.VITE_API_URL}/users/${user.id}/rentals`)
-      .then((res) => res.json())
-      .then((body) => setRentalsData(body));
-
-    fetch(`${import.meta.env.VITE_API_URL}/users/${user.id}/textbooks`)
-      .then((res) => res.json())
-      .then((body) => setTextbooksData(body));
-
-    fetch(`${import.meta.env.VITE_API_URL}/users/${user.id}/misc`)
-      .then((res) => res.json())
-      .then((body) => setMiscData(body));
-  }, [loading, user]);
+  const { user, isLoading: loading } = useAuth();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { userRentals, isUserRentalsLoading } = useUserRentals();
+  const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();
+  const { userMisc, isUserMiscLoading } = useUserMisc();
 
   if (loading) return <p>Loading...</p>;
 
   if (user === null) return <p>You are not currently logged in.</p>;
 
   const headingBoxContainerClassName =
-    "border-primary-fg border-1 shadow-xl w-full rounded-md bg-primary-bg";
+    "border-border border-2 shadow-xl w-full rounded-md bg-primary-bg";
   const headingBoxClassName =
     "flex gap-[.75rem] py-[.4rem] px-[1rem] items-center text-secondary-fg text-md justify-between";
   const amountClassName =
@@ -51,48 +40,111 @@ export default function Dashboard() {
             <p className="text-secondary-fg">Rentals</p>
             <House className="rounded-md bg-[#DFAF5E]/30 text-[#DFAF5E] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
           </span>
-          <h3 className={amountClassName}>{rentalsData?.length}</h3>
+          <h3 className={amountClassName}>{userRentals?.length}</h3>
         </div>
         <div className={headingBoxContainerClassName}>
           <span className={headingBoxClassName}>
             <p className="text-secondary-fg">Textbooks</p>
             <LibraryBig className="rounded-md bg-[#416914]/30 text-[#416914] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
           </span>
-          <h3 className={amountClassName}>{textbooksData?.length}</h3>
+          <h3 className={amountClassName}>{userTextbooks?.length}</h3>
         </div>
         <div className={headingBoxContainerClassName}>
           <span className={headingBoxClassName}>
             <p className="text-secondary-fg">Miscellaneous</p>
             <ShoppingBasket className="rounded-md bg-[#6D152B]/30 text-[#6D152B] p-[.3rem] h-[1.75rem] w-[1.75rem]" />
           </span>
-          <h3 className={amountClassName}>{miscData?.length}</h3>
+          <h3 className={amountClassName}>{userMisc?.length}</h3>
         </div>
       </span>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[2rem] z-50 border-l-[#DFAF5E] border-l-3 px-[1rem] py-[.4rem]">
-        <p className="text-primary-fg">Rental listings</p>
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[2rem] z-50 border-l-[#DFAF5E] border-l-3 px-[1rem] py-[.4rem]">
+        <span className="flex justify-between">
+          <p className="text-primary-fg">Rental listings</p>
+          <button
+            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
+            onClick={() => navigate("/rentals/create")}
+          >
+            +
+          </button>
+        </span>
+
         <span className="flex flex-col gap-[1rem]">
-          {rentalsData?.map((rental) => (
-            <span key={rental.id}>
-              <p>Address: {rental.address}</p>
-              <p>
-                ${rental.cost}{" "}
-                {rental.is_cost_per_room ? "per room" : "all together"}
-              </p>
-            </span>
-          ))}
+          {!isUserRentalsLoading
+            ? userRentals?.map((rental) => (
+                <span key={rental.id}>
+                  <p>Address: {rental.address}</p>
+                  <p>
+                    ${rental.cost}{" "}
+                    {rental.is_cost_per_room ? "per room" : "all together"}
+                  </p>
+                  <Pencil
+                    className="text-gray-500"
+                    onClick={() => {
+                      navigate(`/rentals/create?id=${rental.id}`);
+                    }}
+                  />
+                  <Trash
+                    className="text-red-600"
+                    onClick={() =>
+                      fetch(
+                        `${import.meta.env.VITE_API_URL}/rentals/${rental.id}`,
+                        {
+                          method: "DELETE",
+                          credentials: "include",
+                        },
+                      ).then(() =>
+                        queryClient.invalidateQueries({
+                          queryKey: ["userRentals", user.id],
+                        }),
+                      )
+                    }
+                  />
+                </span>
+              ))
+            : "No rental listings"}
         </span>
       </div>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#416914] border-l-3 px-[1rem] py-[.4rem]">
-        <p className="text-primary-fg">Textbook listings</p>
-        {textbooksData !== null ? (
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#416914] border-l-3 px-[1rem] py-[.4rem]">
+        <span className="flex justify-between">
+          <p className="text-primary-fg">Textbook listings</p>
+          <button
+            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
+            onClick={() => navigate("/textbooks/create")}
+          >
+            +
+          </button>
+        </span>
+        {!isUserTextbooksLoading ? (
           <span className="flex flex-col gap-[1rem]">
-            {textbooksData.length > 0
-              ? textbooksData?.map((textbook) => (
+            {userTextbooks!.length > 0
+              ? userTextbooks?.map((textbook) => (
                   <span key={textbook.id}>
                     <p>Title: {textbook.book_title}</p>
                     <p>Author: {textbook.author}</p>
+                    <Pencil
+                      className="text-gray-500"
+                      onClick={() => {
+                        navigate(`/textbooks/create?id=${textbook.id}`);
+                      }}
+                    />
+                    <Trash
+                      className="text-red-600"
+                      onClick={() =>
+                        fetch(
+                          `${import.meta.env.VITE_API_URL}/textbooks/${textbook.id}`,
+                          {
+                            method: "DELETE",
+                            credentials: "include",
+                          },
+                        ).then(() =>
+                          queryClient.invalidateQueries({
+                            queryKey: ["userTextbooks", user.id],
+                          }),
+                        )
+                      }
+                    />
                   </span>
                 ))
               : "No textbook listings"}
@@ -102,13 +154,46 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="bg-primary-bg border-primary-fg border-1 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#6D152B] border-l-3 px-[1rem] py-[.4rem]">
-        <p className="text-primary-fg">Miscellaneous listings</p>
-        {miscData !== null ? (
+      <div className="bg-primary-bg border-border border-2 rounded-md shadow-lg mt-[1rem] z-50 border-l-[#6D152B] border-l-3 px-[1rem] py-[.4rem]">
+        <span className="flex justify-between">
+          <p className="text-primary-fg">Miscellaneous listings</p>
+          <button
+            className="bg-primary-fg text-primary-bg rounded-md w-[1.5rem] h-[1.5rem] hover:bg-primary-fg/75"
+            onClick={() => navigate("/misc/create")}
+          >
+            +
+          </button>
+        </span>
+
+        {!isUserMiscLoading ? (
           <span className="flex flex-col gap-[1rem]">
-            {miscData.length > 0
-              ? textbooksData?.map((misc) => (
-                  <span key={misc.id}>Misc Stuff</span>
+            {userMisc!.length > 0
+              ? userMisc?.map((misc) => (
+                  <div key={misc.id}>
+                    Title: {misc.title}
+                    <Pencil
+                      className="text-gray-500"
+                      onClick={() => {
+                        navigate(`/misc/create?id=${misc.id}`);
+                      }}
+                    />
+                    <Trash
+                      className="text-red-600"
+                      onClick={() =>
+                        fetch(
+                          `${import.meta.env.VITE_API_URL}/misc/${misc.id}`,
+                          {
+                            method: "DELETE",
+                            credentials: "include",
+                          },
+                        ).then(() =>
+                          queryClient.invalidateQueries({
+                            queryKey: ["userMisc", user.id],
+                          }),
+                        )
+                      }
+                    />
+                  </div>
                 ))
               : "No miscellaneous listings"}
           </span>

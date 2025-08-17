@@ -2,255 +2,317 @@
 export const mockListings = [
   {
     id: 1,
-    title: 'Modern 2-Bedroom Apartment',
-    location: 'Guelph, ON',
-    price: '$1,200/month',
-    image: 'https://via.placeholder.com/300x200?text=Listing+1',
-    description: 'Newly renovated apartment perfect for students. Features in-unit laundry, high-speed internet, and a spacious living area. Walking distance to campus and grocery stores.',
-    amenities: ['In-unit laundry', 'High-speed internet', 'Dishwasher', 'Central heating'],
+    title: "Modern 2-Bedroom Apartment",
+    location: "Guelph, ON",
+    price: "$1,200/month",
+    image: "https://via.placeholder.com/300x200?text=Listing+1",
+    description:
+      "Newly renovated apartment perfect for students. Features in-unit laundry, high-speed internet, and a spacious living area. Walking distance to campus and grocery stores.",
+    amenities: [
+      "In-unit laundry",
+      "High-speed internet",
+      "Dishwasher",
+      "Central heating",
+    ],
     seller: {
-      name: 'John Smith',
-      contact: 'john.s@email.com',
-      joinedDate: 'Member since 2023'
+      name: "John Smith",
+      contact: "john.s@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 2,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'September 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "12 months",
+      available: "September 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 2,
-    title: 'Cozy Basement Suite',
-    location: 'Waterloo, ON',
-    price: '$900/month',
-    image: 'https://via.placeholder.com/300x180?text=Listing+2',
-    description: 'Private entrance basement suite in a quiet neighborhood. Recently updated with new flooring and appliances. Includes utilities and basic furnishings.',
-    amenities: ['Private entrance', 'Furnished', 'Utilities included', 'Street parking'],
+    title: "Cozy Basement Suite",
+    location: "Waterloo, ON",
+    price: "$900/month",
+    image: "https://via.placeholder.com/300x180?text=Listing+2",
+    description:
+      "Private entrance basement suite in a quiet neighborhood. Recently updated with new flooring and appliances. Includes utilities and basic furnishings.",
+    amenities: [
+      "Private entrance",
+      "Furnished",
+      "Utilities included",
+      "Street parking",
+    ],
     seller: {
-      name: 'Sarah Chen',
-      contact: 'sarah.c@email.com',
-      joinedDate: 'Member since 2024'
+      name: "Sarah Chen",
+      contact: "sarah.c@email.com",
+      joinedDate: "Member since 2024",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '8 months',
-      available: 'August 15, 2024',
-      utilities: 'Included'
-    }
+      lease: "8 months",
+      available: "August 15, 2024",
+      utilities: "Included",
+    },
   },
   {
     id: 3,
-    title: 'Loft with Skylight',
-    location: 'Toronto, ON',
-    price: '$1,600/month',
-    image: 'https://via.placeholder.com/300x250?text=Listing+3',
-    description: 'Spacious loft with a beautiful skylight. Located in the heart of the city, close to public transport and shopping areas.',
-    amenities: ['Skylight', 'Hardwood floors', 'Air conditioning', 'Elevator access'],
+    title: "Loft with Skylight",
+    location: "Toronto, ON",
+    price: "$1,600/month",
+    image: "https://via.placeholder.com/300x250?text=Listing+3",
+    description:
+      "Spacious loft with a beautiful skylight. Located in the heart of the city, close to public transport and shopping areas.",
+    amenities: [
+      "Skylight",
+      "Hardwood floors",
+      "Air conditioning",
+      "Elevator access",
+    ],
     seller: {
-      name: 'Mike Johnson',
-      contact: 'mike.j@email.com',
-      joinedDate: 'Member since 2022'
+      name: "Mike Johnson",
+      contact: "mike.j@email.com",
+      joinedDate: "Member since 2022",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'October 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "12 months",
+      available: "October 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 4,
-    title: 'Shared 4-Bedroom House',
-    location: 'Hamilton, ON',
-    price: '$650/month/room',
-    image: 'https://via.placeholder.com/300x220?text=Listing+4',
-    description: 'Room available in a shared 4-bedroom house. Ideal for students. Close to campus and local amenities.',
-    amenities: ['Shared kitchen', 'Wi-Fi', 'Laundry facilities', 'Parking available'],
+    title: "Shared 4-Bedroom House",
+    location: "Hamilton, ON",
+    price: "$650/month/room",
+    image: "https://via.placeholder.com/300x220?text=Listing+4",
+    description:
+      "Room available in a shared 4-bedroom house. Ideal for students. Close to campus and local amenities.",
+    amenities: [
+      "Shared kitchen",
+      "Wi-Fi",
+      "Laundry facilities",
+      "Parking available",
+    ],
     seller: {
-      name: 'Emily Davis',
-      contact: 'emily.d@email.com',
-      joinedDate: 'Member since 2023'
+      name: "Emily Davis",
+      contact: "emily.d@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 4,
       bathrooms: 2,
-      lease: '12 months',
-      available: 'September 1, 2024',
-      utilities: 'Shared'
-    }
+      lease: "12 months",
+      available: "September 1, 2024",
+      utilities: "Shared",
+    },
   },
   {
     id: 5,
-    title: 'Furnished Studio Unit',
-    location: 'Ottawa, ON',
-    price: '$1,050/month',
-    image: 'https://via.placeholder.com/300x210?text=Listing+5',
-    description: 'Cozy studio unit, fully furnished. Perfect for singles or couples. Near downtown Ottawa.',
-    amenities: ['Furnished', 'High-speed internet', 'Air conditioning', 'Balcony'],
+    title: "Furnished Studio Unit",
+    location: "Ottawa, ON",
+    price: "$1,050/month",
+    image: "https://via.placeholder.com/300x210?text=Listing+5",
+    description:
+      "Cozy studio unit, fully furnished. Perfect for singles or couples. Near downtown Ottawa.",
+    amenities: [
+      "Furnished",
+      "High-speed internet",
+      "Air conditioning",
+      "Balcony",
+    ],
     seller: {
-      name: 'David Wilson',
-      contact: 'david.w@email.com',
-      joinedDate: 'Member since 2024'
+      name: "David Wilson",
+      contact: "david.w@email.com",
+      joinedDate: "Member since 2024",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '6 months',
-      available: 'August 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "6 months",
+      available: "August 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 6,
-    title: 'All-Inclusive Basement Apartment',
-    location: 'Mississauga, ON',
-    price: '$1,000/month',
-    image: 'https://via.placeholder.com/300x240?text=Listing+6',
-    description: 'Spacious basement apartment with separate entrance. All utilities included. Close to public transport.',
-    amenities: ['All-inclusive', 'Private entrance', 'Laundry facilities', 'Street parking'],
+    title: "All-Inclusive Basement Apartment",
+    location: "Mississauga, ON",
+    price: "$1,000/month",
+    image: "https://via.placeholder.com/300x240?text=Listing+6",
+    description:
+      "Spacious basement apartment with separate entrance. All utilities included. Close to public transport.",
+    amenities: [
+      "All-inclusive",
+      "Private entrance",
+      "Laundry facilities",
+      "Street parking",
+    ],
     seller: {
-      name: 'Laura Brown',
-      contact: 'laura.b@email.com',
-      joinedDate: 'Member since 2023'
+      name: "Laura Brown",
+      contact: "laura.b@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'September 15, 2024',
-      utilities: 'Included'
-    }
+      lease: "12 months",
+      available: "September 15, 2024",
+      utilities: "Included",
+    },
   },
   {
     id: 7,
-    title: 'Private Room in Student House',
-    location: 'Guelph, ON',
-    price: '$700/month',
-    image: 'https://via.placeholder.com/300x170?text=Listing+7',
-    description: 'Private room available in a student house. Shared amenities include kitchen and bathroom. Close to campus.',
-    amenities: ['Private room', 'Shared kitchen', 'Wi-Fi', 'Laundry facilities'],
+    title: "Private Room in Student House",
+    location: "Guelph, ON",
+    price: "$700/month",
+    image: "https://via.placeholder.com/300x170?text=Listing+7",
+    description:
+      "Private room available in a student house. Shared amenities include kitchen and bathroom. Close to campus.",
+    amenities: [
+      "Private room",
+      "Shared kitchen",
+      "Wi-Fi",
+      "Laundry facilities",
+    ],
     seller: {
-      name: 'James Smith',
-      contact: 'james.s@email.com',
-      joinedDate: 'Member since 2024'
+      name: "James Smith",
+      contact: "james.s@email.com",
+      joinedDate: "Member since 2024",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '8 months',
-      available: 'August 1, 2024',
-      utilities: 'Shared'
-    }
+      lease: "8 months",
+      available: "August 1, 2024",
+      utilities: "Shared",
+    },
   },
   {
     id: 8,
-    title: 'Downtown 1-Bedroom Condo',
-    location: 'Toronto, ON',
-    price: '$1,800/month',
-    image: 'https://via.placeholder.com/300x230?text=Listing+8',
-    description: 'Luxury 1-bedroom condo in downtown Toronto. Close to all amenities and public transport.',
-    amenities: ['Gym', 'Pool', 'Concierge', 'Balcony'],
+    title: "Downtown 1-Bedroom Condo",
+    location: "Toronto, ON",
+    price: "$1,800/month",
+    image: "https://via.placeholder.com/300x230?text=Listing+8",
+    description:
+      "Luxury 1-bedroom condo in downtown Toronto. Close to all amenities and public transport.",
+    amenities: ["Gym", "Pool", "Concierge", "Balcony"],
     seller: {
-      name: 'Patricia Green',
-      contact: 'patricia.g@email.com',
-      joinedDate: 'Member since 2023'
+      name: "Patricia Green",
+      contact: "patricia.g@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'October 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "12 months",
+      available: "October 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 9,
-    title: 'Pet-Friendly Basement Unit',
-    location: 'Kitchener, ON',
-    price: '$950/month',
-    image: 'https://via.placeholder.com/300x200?text=Listing+9',
-    description: 'Basement unit available in a quiet neighborhood. Pet-friendly with a private backyard.',
-    amenities: ['Pet-friendly', 'Private backyard', 'Laundry facilities', 'Street parking'],
+    title: "Pet-Friendly Basement Unit",
+    location: "Kitchener, ON",
+    price: "$950/month",
+    image: "https://via.placeholder.com/300x200?text=Listing+9",
+    description:
+      "Basement unit available in a quiet neighborhood. Pet-friendly with a private backyard.",
+    amenities: [
+      "Pet-friendly",
+      "Private backyard",
+      "Laundry facilities",
+      "Street parking",
+    ],
     seller: {
-      name: 'Robert White',
-      contact: 'robert.w@email.com',
-      joinedDate: 'Member since 2024'
+      name: "Robert White",
+      contact: "robert.w@email.com",
+      joinedDate: "Member since 2024",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '10 months',
-      available: 'September 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "10 months",
+      available: "September 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 10,
-    title: 'Room Near Campus with Parking',
-    location: 'Waterloo, ON',
-    price: '$725/month',
-    image: 'https://via.placeholder.com/300x190?text=Listing+10',
-    description: 'Room available in a quiet house near campus. Includes parking space and access to backyard.',
-    amenities: ['Parking included', 'Shared kitchen', 'Wi-Fi', 'Laundry facilities'],
+    title: "Room Near Campus with Parking",
+    location: "Waterloo, ON",
+    price: "$725/month",
+    image: "https://via.placeholder.com/300x190?text=Listing+10",
+    description:
+      "Room available in a quiet house near campus. Includes parking space and access to backyard.",
+    amenities: [
+      "Parking included",
+      "Shared kitchen",
+      "Wi-Fi",
+      "Laundry facilities",
+    ],
     seller: {
-      name: 'Linda Black',
-      contact: 'linda.b@email.com',
-      joinedDate: 'Member since 2023'
+      name: "Linda Black",
+      contact: "linda.b@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'September 1, 2024',
-      utilities: 'Shared'
-    }
+      lease: "12 months",
+      available: "September 1, 2024",
+      utilities: "Shared",
+    },
   },
   {
     id: 11,
-    title: '2-Bedroom Main Floor Unit',
-    location: 'London, ON',
-    price: '$1,250/month',
-    image: 'https://via.placeholder.com/300x260?text=Listing+11',
-    description: 'Spacious 2-bedroom unit on the main floor. Ideal for families or roommates. Close to schools and parks.',
-    amenities: ['Private entrance', 'In-unit laundry', 'Dishwasher', 'Central heating'],
+    title: "2-Bedroom Main Floor Unit",
+    location: "London, ON",
+    price: "$1,250/month",
+    image: "https://via.placeholder.com/300x260?text=Listing+11",
+    description:
+      "Spacious 2-bedroom unit on the main floor. Ideal for families or roommates. Close to schools and parks.",
+    amenities: [
+      "Private entrance",
+      "In-unit laundry",
+      "Dishwasher",
+      "Central heating",
+    ],
     seller: {
-      name: 'Michael Scott',
-      contact: 'michael.s@email.com',
-      joinedDate: 'Member since 2024'
+      name: "Michael Scott",
+      contact: "michael.s@email.com",
+      joinedDate: "Member since 2024",
     },
     details: {
       bedrooms: 2,
       bathrooms: 1,
-      lease: '12 months',
-      available: 'October 1, 2024',
-      utilities: 'Not included'
-    }
+      lease: "12 months",
+      available: "October 1, 2024",
+      utilities: "Not included",
+    },
   },
   {
     id: 12,
-    title: 'Bright Basement Studio',
-    location: 'Brampton, ON',
-    price: '$880/month',
-    image: 'https://via.placeholder.com/300x210?text=Listing+12',
-    description: 'Bright and cozy basement studio. Perfect for students or young professionals. Close to public transport.',
-    amenities: ['Bright', 'Cozy', 'Wi-Fi', 'Laundry facilities'],
+    title: "Bright Basement Studio",
+    location: "Brampton, ON",
+    price: "$880/month",
+    image: "https://via.placeholder.com/300x210?text=Listing+12",
+    description:
+      "Bright and cozy basement studio. Perfect for students or young professionals. Close to public transport.",
+    amenities: ["Bright", "Cozy", "Wi-Fi", "Laundry facilities"],
     seller: {
-      name: 'Sarah Connor',
-      contact: 'sarah.connor@email.com',
-      joinedDate: 'Member since 2023'
+      name: "Sarah Connor",
+      contact: "sarah.connor@email.com",
+      joinedDate: "Member since 2023",
     },
     details: {
       bedrooms: 1,
       bathrooms: 1,
-      lease: '6 months',
-      available: 'August 15, 2024',
-      utilities: 'Not included'
-    }
+      lease: "6 months",
+      available: "August 15, 2024",
+      utilities: "Not included",
+    },
   },
 ];
 export default mockListings;

@@ -2,7 +2,11 @@ import express from "express";
 import {
   getTextbookById,
   getAllTextbooks,
+  postTextbook,
+  deleteTextbook,
+  putTextbook,
 } from "../controllers/textbookController";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 /**
@@ -61,6 +65,79 @@ router.get("/:id", getTextbookById);
 
 /**
  * @swagger
+ * /textbooks:
+ *   post:
+ *     summary: Add a new textbook
+ *     description: Creates a new textbook entry in the system.
+ *     tags:
+ *       - Textbooks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_title
+ *               - price
+ *             properties:
+ *               book_title:
+ *                 type: string
+ *                 example: "Introduction to Algorithms"
+ *               author:
+ *                 type: string
+ *                 example: "Thomas H. Cormen"
+ *               edition:
+ *                 type: string
+ *                 example: "3rd"
+ *               year:
+ *                 type: integer
+ *                 enum: [1, 2, 3, 4]
+ *               faculty:
+ *                 type: string
+ *                 example: "Computer Science"
+ *               price:
+ *                 type: integer
+ *                 example: 80
+ *               condition:
+ *                 type: string
+ *                 enum: [Used, New]
+ *               course_code:
+ *                 type: string
+ *                 example: "CS101"
+ *     responses:
+ *       200:
+ *         description: Textbook successfully created.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 book_title: "Introduction to Algorithms"
+ *                 author: "Andrew I."
+ *       400:
+ *         description: Missing required parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Failed to provide required parameters."
+ *       500:
+ *         description: Server error while posting the textbook.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Error posting new textbook."
+ */
+router.post("/", authenticateToken, postTextbook);
+
+router.put("/:id", authenticateToken, putTextbook);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Textbook:
@@ -76,6 +153,7 @@ router.get("/:id", getTextbookById);
  *           type: string
  *         condition:
  *           type: string
+ *           enum: [Used, New]
  *         seller:
  *           type: integer
  *         date_posted:
@@ -87,12 +165,60 @@ router.get("/:id", getTextbookById);
  *             type: string
  *         year:
  *           type: integer
+ *           enum: [1, 2, 3, 4]
  *         faculty:
  *           type: string
  *         price:
- *           type: number
+ *           type: integer
  *         course_code:
- *           type: string
+ *           type: array
+ *           properties:
+ *             course_code:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               description: string
  */
+
+/**
+ * @swagger
+ * /textbooks/{id}:
+ *   delete:
+ *     summary: Delete a textbook
+ *     description: Deletes a textbook owned by the authenticated user.
+ *     tags:
+ *       - Textbooks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the textbook to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Textbook successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either textbook not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the textbook.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete textbook
+ */
+router.delete("/:id", authenticateToken, deleteTextbook);
 
 export default router;

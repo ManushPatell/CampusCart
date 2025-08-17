@@ -34,7 +34,7 @@ const AboutSection = () => {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className="relative mb-20 mx-auto border-2 border-[#E8DFD0] rounded-xl bg-[#FAF9F6] shadow-xl w-full max-w-[2400px] overflow-hidden"
+            className="relative mb-20 mx-auto border-2 border-border rounded-xl bg-[#faf9f6] shadow-xl w-full max-w-[2400px] overflow-hidden"
           >
             <div
               className={`p-6 flex flex-col-reverse ${

@@ -1,9 +1,11 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ControlledCheckbox from "../components/forms/ControlledCheckbox";
+import { useQueryClient } from "@tanstack/react-query";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
@@ -14,7 +16,9 @@ type FormInputs = {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { refetchUser } = useAuth();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -42,7 +46,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (res.status === 200) {
-      refetchUser();
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
       navigate("/dashboard");
     }
     if (res.status === 400) {
@@ -56,6 +60,12 @@ export default function Login() {
       setErrorMessage("An error occurred on our end. Please try again.");
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  });
 
   return (
     <div className="flex min-h-screen bg-bg text-primary-fg">

@@ -13,7 +13,31 @@ export interface Textbook {
   course_code: string;
 }
 
+export const houseTypeOptions = ["Apartment", "House", "Bedroom", "Basement"];
+export type HouseType = (typeof houseTypeOptions)[number];
+
 export interface Rental {
+  id: number;
+  title: string;
+  seller: string;
+  address: string;
+  post_date: string;
+  date_available: string;
+  description: string;
+  house_type: HouseType;
+  cost: number;
+  num_beds: number;
+  is_cost_per_room: boolean;
+  is_utilities_included: boolean;
+  is_sublet: boolean;
+  has_laundry: boolean;
+  has_cooking: boolean;
+  has_parking: boolean;
+  no_smoking: boolean;
+  is_shared: boolean;
+}
+
+export interface RentalListing {
   id: number;
   seller: {
     name: string;
