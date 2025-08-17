@@ -14,6 +14,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AddRental from "./pages/AddRental";
 import AddTextbook from "./pages/AddTextbook";
 import UnauthenticatedNav from "./components/Nav";
+import Textbooks from "./components/Textbooks";
+import Houses from "./components/Houses";
+
 
 const queryClient = new QueryClient();
 
@@ -24,17 +27,17 @@ function App() {
   return (
     <>
       {!hideNavbar && <UnauthenticatedNav/>}
-      <Routes>
-        <Route>
-          <Route path="/" element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="rentals/create" element={<AddRental />} />
-          <Route path="textbooks/create" element={<AddTextbook />} />
-          <Route path="rentals/:id" element={<HouseDetail />} />
-        </Route>
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Signup />} />
-      </Routes>
+        <Routes>
+          <Route >
+            <Route path="/" element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="rentals/:id" element={<HouseDetail />} />
+          </Route>
+          <Route path="textbooks" element={<Textbooks />} />
+          <Route path="rentals" element={<Houses />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Signup />} />
+        </Routes>
     </>
   );
 }
