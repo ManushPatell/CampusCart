@@ -94,7 +94,6 @@ export default function AddTextbook() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingTextbook(false);
-          console.log(body.date_available);
           reset({
             book_title: body.book_title,
             author: body.author,

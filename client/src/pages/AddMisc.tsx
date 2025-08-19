@@ -60,7 +60,7 @@ export default function AddMisc() {
         if (res.status === 500) {
           setErrorMessage("Something went wrong on our end! Please try again.");
         } else {
-          setErrorMessage(body.error);
+          setErrorMessage(String(body.error));
         }
       } else {
         navigate("/dashboard");
@@ -68,7 +68,7 @@ export default function AddMisc() {
 
       setIsLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error(`Updating miscellaneous: ${err}`);
     }
   };
 

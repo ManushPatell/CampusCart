@@ -4,6 +4,7 @@ import {
   getAllMisc,
   getMiscById,
   postMisc,
+  putMisc,
 } from "../controllers/miscController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -156,6 +157,8 @@ router.get("/:id", getMiscById);
  *         description: Internal server error
  */
 router.post("/", authenticateToken, postMisc);
+
+router.put("/:id", authenticateToken, putMisc);
 
 /**
  * @swagger
