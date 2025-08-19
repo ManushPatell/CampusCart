@@ -34,24 +34,23 @@ export const getAllMisc = async (
 };
 
 export const postMisc = async (req: Request, res: Response) => {
-  
   const { title, description, price, listing_type } = req.body;
   let photos = req.body.photos;
-    if (typeof photos === "string") {
-      photos = [photos];
-    } else if (!Array.isArray(photos)) {
-      photos = [];
-    } else {
-      photos = photos.filter((p) => typeof p === "string");
-    }
-    const miscPosting = {
+  if (typeof photos === "string") {
+    photos = [photos];
+  } else if (!Array.isArray(photos)) {
+    photos = [];
+  } else {
+    photos = photos.filter((p) => typeof p === "string");
+  }
+  const miscPosting = {
     title,
     description,
     price,
     seller: req.user!.id!, // we must be signed in
     listing_type,
     photos,
-    };
+  };
 
   try {
     const result = addMisc(miscPosting);
@@ -60,5 +59,4 @@ export const postMisc = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
-   
 };

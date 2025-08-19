@@ -96,14 +96,14 @@ export const postRental = async (req: Request, res: Response) => {
     is_shared,
   } = req.body;
 
-   let photos = req.body.photos;
-    if (typeof photos === "string") {
-      photos = [photos];
-    } else if (!Array.isArray(photos)) {
-      photos = [];
-    } else {
-      photos = photos.filter((p) => typeof p === "string");
-    }
+  let photos = req.body.photos;
+  if (typeof photos === "string") {
+    photos = [photos];
+  } else if (!Array.isArray(photos)) {
+    photos = [];
+  } else {
+    photos = photos.filter((p) => typeof p === "string");
+  }
   const postedRental: Omit<Rental, "id"> = {
     title,
     seller: id,

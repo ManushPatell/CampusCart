@@ -66,9 +66,4 @@ const upload = multer({ storage: multer.memoryStorage() });
  */
 router.post("/", upload.single("image"), uploadImage);
 
-
-
-
-
-
 export default router;

@@ -43,7 +43,7 @@ export async function addTextbook(
   price: number,
   condition: string,
   id: string,
-  photos: string[]
+  photos: string[],
 ) {
   const photosArray =
     photos && photos.length > 0

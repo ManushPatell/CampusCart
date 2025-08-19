@@ -61,8 +61,7 @@ export async function findRentalsFromUser(id: string) {
 }
 
 export async function addRental(rental: Omit<Rental, "id">) {
-  const result =
-   await sql`
+  const result = await sql`
   INSERT INTO rentals (
     title, seller, address, post_date, date_available, description,
     house_type, cost, num_beds, is_cost_per_room, is_utilities_included,
