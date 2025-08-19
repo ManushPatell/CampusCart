@@ -114,7 +114,7 @@ export default function AddRental() {
             no_smoking: body.no_smoking,
             is_shared: body.is_shared,
             amenities: body.amenities,
-            images: body.images,
+            photos: body.photos,
           });
         });
     }
@@ -130,7 +130,7 @@ export default function AddRental() {
   };
 
   const onSubmit = async (formData: FormInputs) => {
-    setIsLoading(true);
+    setIsButtonLoading(true);
     setErrorMessage("");
 
     const uploadedUrls: string[] = [];
@@ -153,13 +153,13 @@ export default function AddRental() {
       }
       if (selectedImages.length === 0) {
         setErrorMessage("Please add at least one image.");
-        setIsLoading(false);
+        setIsButtonLoading(false);
         return;
       }
     } catch (err) {
       console.error("Upload error:", err);
       setErrorMessage("One or more images failed to upload.");
-      setIsLoading(false);
+      setIsButtonLoading(false);
       return;
     }
 
@@ -177,7 +177,7 @@ export default function AddRental() {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify(data),
+          body: JSON.stringify(fullData),
         },
       );
 
@@ -192,7 +192,7 @@ export default function AddRental() {
       console.error("Form submission error:", err);
       setErrorMessage("Failed to submit rental.");
     } finally {
-      setIsLoading(false);
+      setIsButtonLoading(false);
     }
   };
 

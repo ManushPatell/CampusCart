@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Select } from "react-day-picker";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
 type ListingType = (typeof listingType)[number];
