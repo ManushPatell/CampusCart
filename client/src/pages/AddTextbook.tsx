@@ -95,7 +95,7 @@ export default function AddTextbook() {
             const json = await res.json();
             if (!json?.url) throw new Error("Upload response missing url");
             uploadedUrls.push(json.url);
-          })
+          }),
         );
       }
     } catch (err) {
@@ -151,7 +151,10 @@ export default function AddTextbook() {
       </span>
       <h1 className="text-xl font-bold">Add textbook</h1>
 
-      <form className="flex flex-col gap-[.5rem] my-[2rem]" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col gap-[.5rem] my-[2rem]"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <ControlledInput
           name="book_title"
           control={control}
@@ -211,7 +214,9 @@ export default function AddTextbook() {
         />
 
         {/* ---------- Image Uploader (same look/feel as other pages) ---------- */}
-        <label className="font-semibold text-primary-fg mt-4 mb-2 block">Images</label>
+        <label className="font-semibold text-primary-fg mt-4 mb-2 block">
+          Images
+        </label>
 
         {/* Dropzone */}
         <div
@@ -222,21 +227,33 @@ export default function AddTextbook() {
           }}
           onDrop={(e) => {
             e.preventDefault();
-            const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith("image/"));
+            const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+              f.type.startsWith("image/"),
+            );
             if (!files.length) return;
-            setSelectedImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
+            setSelectedImages((prev) =>
+              [...prev, ...files].slice(0, MAX_IMAGES),
+            );
           }}
           className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
                      hover:border-zinc-400 transition-colors p-6 text-center cursor-pointer"
         >
           <div className="flex flex-col items-center gap-2 text-zinc-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M19 15v4H5v-4H3v6h18v-6zM11 3v10.17l-3.59-3.58L6 11l6 6 6-6-1.41-1.41L13 13.17V3z" />
             </svg>
             <p className="text-sm">
-              Drag & drop images here, or <span className="underline">browse</span>
+              Drag & drop images here, or{" "}
+              <span className="underline">browse</span>
             </p>
-            <p className="text-xs text-zinc-500">PNG/JPG · up to {MAX_IMAGES} files</p>
+            <p className="text-xs text-zinc-500">
+              PNG/JPG · up to {MAX_IMAGES} files
+            </p>
           </div>
           <input
             ref={fileInputRef}
@@ -247,7 +264,9 @@ export default function AddTextbook() {
             onChange={(e) => {
               if (!e.target.files) return;
               const files = Array.from(e.target.files);
-              setSelectedImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
+              setSelectedImages((prev) =>
+                [...prev, ...files].slice(0, MAX_IMAGES),
+              );
               if (fileInputRef.current) fileInputRef.current.value = "";
             }}
           />
@@ -256,8 +275,14 @@ export default function AddTextbook() {
         {/* Selected summary + clear */}
         {previewUrls.length > 0 && (
           <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
-            <span>{previewUrls.length}/{MAX_IMAGES} selected</span>
-            <button type="button" onClick={() => setSelectedImages([])} className="underline hover:opacity-80">
+            <span>
+              {previewUrls.length}/{MAX_IMAGES} selected
+            </span>
+            <button
+              type="button"
+              onClick={() => setSelectedImages([])}
+              className="underline hover:opacity-80"
+            >
               Remove all
             </button>
           </div>
@@ -269,11 +294,19 @@ export default function AddTextbook() {
             {previewUrls.map((url, index) => {
               const f = selectedImages[index];
               return (
-                <div key={index} className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm">
-                  <img src={url} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover" />
+                <div
+                  key={index}
+                  className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
+                >
+                  <img
+                    src={url}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-32 object-cover"
+                  />
                   {f && (
                     <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
-                      {(f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name)} · {formatMB(f.size)}
+                      {f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name}{" "}
+                      · {formatMB(f.size)}
                     </div>
                   )}
                   <button
@@ -299,7 +332,11 @@ export default function AddTextbook() {
         {/* ------------------------------------------------------------------- */}
 
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
-        <Submit label="Add Textbook" isLoading={isLoading} className="mt-[2rem]" />
+        <Submit
+          label="Add Textbook"
+          isLoading={isLoading}
+          className="mt-[2rem]"
+        />
       </form>
     </div>
   );

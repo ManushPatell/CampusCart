@@ -17,7 +17,7 @@ import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 
 // Small, reliable image box with built-in fallback, no forced aspect/crop
 function CardImage({
@@ -27,7 +27,7 @@ function CardImage({
 }: {
   src?: string;
   alt: string;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
   const [broken, setBroken] = useState(false);
   const show = !!src && !broken;
@@ -127,9 +127,12 @@ export default function Dashboard() {
       alert("Failed to delete. Please try again.");
     }
   }
-  const deleteRental = (id: string) => del(`/api/rentals/${id}`);
-  const deleteTextbook = (id: string) => del(`/api/textbooks/${id}`);
-  const deleteMisc = (id: string) => del(`/api/misc/${id}`);
+  const deleteRental = (id: string) =>
+    del(`${import.meta.env.VITE_API_URL}/rentals/${id}`);
+  const deleteTextbook = (id: string) =>
+    del(`${import.meta.env.VITE_API_URL}/textbooks/${id}`);
+  const deleteMisc = (id: string) =>
+    del(`${import.meta.env.VITE_API_URL}/misc/${id}`);
 
   const FlatStat = ({
     label,
@@ -288,8 +291,8 @@ export default function Dashboard() {
 
                     {/* Actions */}
                     <ActionButtons
-                      onEdit={() => navigate(`/rentals/${rental.id}/edit`)}
-                      onDelete={() => deleteRental(rental.id)}
+                      onEdit={() => navigate(`/rentals/create?id=${rental.id}`)}
+                      onDelete={() => deleteRental(String(rental.id))}
                     />
                   </div>
 
@@ -359,7 +362,7 @@ export default function Dashboard() {
 
                     {/* Actions */}
                     <ActionButtons
-                      onEdit={() => navigate(`/textbooks/${t.id}/edit`)}
+                      onEdit={() => navigate(`/textbooks/create?id=${t.id}`)}
                       onDelete={() => deleteTextbook(t.id)}
                     />
                   </div>
@@ -417,7 +420,7 @@ export default function Dashboard() {
 
                     {/* Actions */}
                     <ActionButtons
-                      onEdit={() => navigate(`/misc/${m.id}/edit`)}
+                      onEdit={() => navigate(`/misc/create?id=${m.id}`)}
                       onDelete={() => deleteMisc(m.id)}
                     />
                   </div>
