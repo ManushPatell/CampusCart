@@ -40,7 +40,7 @@ export default function ControlledCheckbox<T extends FieldValues>({
             <input
               onChange={onChange}
               onBlur={onBlur}
-              value={value}
+              checked={value}
               type="checkbox"
               className={`transition-all duration-200  accent-accent  ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-primary-fg/50 border-2 focus:border-primary-fg/50"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
             />

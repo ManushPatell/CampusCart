@@ -18,6 +18,7 @@ import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
 import { MouseEventHandler, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Small, reliable image box with built-in fallback, no forced aspect/crop
 function CardImage({
@@ -94,7 +95,8 @@ function ActionButtons({
 }
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, isLoading: loading } = useAuth();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { userRentals, isUserRentalsLoading } = useUserRentals();
   const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();

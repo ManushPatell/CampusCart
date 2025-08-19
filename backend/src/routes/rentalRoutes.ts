@@ -1,8 +1,10 @@
 import express from "express";
 import {
+  deleteRental,
   getAllRentals,
   getRentalById,
   postRental,
+  putRental,
 } from "../controllers/rentalController.ts";
 import { authenticateToken } from "../middleware/authMiddleware.ts";
 import { uploadImage } from "../controllers/uploadController.ts";
@@ -87,6 +89,51 @@ router.post("/", authenticateToken, postRental);
 
 /**
  * @swagger
+ * /rentals/{id}:
+ *   delete:
+ *     summary: Delete a rental
+ *     description: Deletes a rental owned by the authenticated user.
+ *     tags:
+ *       - Rentals
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the rental to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Rental successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either rental not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the rental.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete rental
+ */
+router.delete("/:id", authenticateToken, deleteRental);
+
+router.put("/:id", authenticateToken, putRental);
+
+export default router;
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Rental:
@@ -136,5 +183,3 @@ router.post("/", authenticateToken, postRental);
  *          items:
  *            type: string
  */
-
-export default router;

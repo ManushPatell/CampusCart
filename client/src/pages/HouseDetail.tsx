@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../components/Nav.js";
 import { useParams } from "react-router-dom";
-import { RentalListing } from "../types/types.js";
+import { RentalListing } from "../types/types";
 
 export default function HouseDetail() {
   const { id } = useParams();

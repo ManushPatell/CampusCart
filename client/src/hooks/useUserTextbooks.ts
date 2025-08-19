@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Textbook } from "../types/types";
 
 export default function useUserRentals() {
-  const { user, loading } = useAuth();
+  const { user, isLoading: loading } = useAuth();
   const { data, isLoading, error } = useQuery<Textbook[]>({
     queryKey: ["userTextbooks", user?.id],
     queryFn: async () => {
