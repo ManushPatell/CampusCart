@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextbookCard from "../components/TextbookCard";
-import mockTextbooks from "../data/mockTextbooks";
+// import mockTextbooks from "../data/mockTextbooks"; // not used; remove if unused
 
 const mcmasterFaculties = [
   "Engineering",
@@ -14,6 +14,10 @@ const mcmasterFaculties = [
 const Textbooks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [listings, setListings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [filters, setFilters] = useState({
     faculty: "",
     condition: "",
@@ -21,23 +25,43 @@ const Textbooks = () => {
     currentPrice: 200,
   });
 
-  const filteredTextbooks = mockTextbooks.filter((book) => {
-    const matchesSearch =
-      book.book_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    fetch("/api/textbooks")
+      .then((r) => r.json())
+      .then((data) => setListings(Array.isArray(data) ? data : []))
+      .catch((e) => setError(String(e)))
+      .finally(() => setLoading(false));
+  }, []);
 
+  const filteredTextbooks = listings.filter((book) => {
+    const title = String(book.book_title ?? "").toLowerCase();
+    const author = String(book.author ?? "").toLowerCase();
+    const matchesSearch =
+      title.includes(searchTerm.toLowerCase()) ||
+      author.includes(searchTerm.toLowerCase());
+
+    const faculty = String(book.faculty ?? "");
     const matchesFaculty =
       !filters.faculty ||
-      book.faculty.toLowerCase() === filters.faculty.toLowerCase();
+      faculty.toLowerCase() === filters.faculty.toLowerCase();
 
+    const condition = String(book.condition ?? "");
     const matchesCondition =
       !filters.condition ||
-      book.condition.toLowerCase() === filters.condition.toLowerCase();
+      condition.toLowerCase() === filters.condition.toLowerCase();
 
-    const matchesPrice = book.price <= filters.currentPrice;
+    const price =
+      typeof book.price === "number"
+        ? book.price
+        : parseFloat(String(book.price ?? "0")) || 0;
+
+    const matchesPrice = price <= filters.currentPrice;
 
     return matchesSearch && matchesFaculty && matchesCondition && matchesPrice;
   });
+
+  if (loading) return <div className="p-4">Loading…</div>;
+  if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
     <div className="min-h-screen bg-bg">
@@ -146,7 +170,7 @@ const Textbooks = () => {
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  currentPrice: parseInt(e.target.value),
+                  currentPrice: parseInt(e.target.value, 10),
                 }))
               }
               className="w-full h-2 bg-[#E8DFD0] rounded-lg appearance-none cursor-pointer
@@ -176,7 +200,7 @@ const Textbooks = () => {
       <div className="px-4 py-8">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
           {filteredTextbooks.map((book) => (
-            <TextbookCard key={book.id} textbook={book} />
+            <TextbookCard key={book.id || book._id} textbook={book} />
           ))}
         </div>
       </div>

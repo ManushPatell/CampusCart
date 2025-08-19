@@ -21,6 +21,7 @@ import uploadRoutes from "./routes/uploadRoutes.ts";
 
 import cors from "cors";
 import morgan from "morgan";
+import { getAllRentals } from "./controllers/rentalController.ts";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -46,9 +47,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/rentals", rentalRoutes);
-app.use("/misc", miscRoutes);
-app.use("/textbooks", textbookRoutes);
+app.use("/api/rentals", rentalRoutes);
+app.use("/api/misc", miscRoutes);
+app.use("/api/textbooks", textbookRoutes);
 app.use("/upload", uploadRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -85,7 +86,7 @@ app.use((req, res, next) => {
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       `img-src ${img_host.join(" ")}`,
-      `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGIN}`,
+      `connect-src 'self' http://localhost:3001 ${FRONTEND_ORIGIN}`,
       "font-src 'self'",
     ].join("; "),
   );

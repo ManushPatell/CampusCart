@@ -121,7 +121,7 @@ export default function AddTextbook() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/textbooks/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/textbooks`,
         {
           method: id ? "PUT" : "POST",
           headers: {
