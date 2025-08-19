@@ -30,6 +30,7 @@ const refreshTokenInterval = 25 * 60 * 1000;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [enabled, setEnabled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setEnabled(true), refreshTokenInterval);

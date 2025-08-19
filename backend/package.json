@@ -18,6 +18,7 @@
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.864.0",
         "bcrypt": "^5.1.1",
         "body-parser": "^2.2.0",
         "cookie-parser": "^1.4.7",
@@ -27,6 +28,7 @@
         "express-async-errors": "^3.1.1",
         "jsonwebtoken": "^9.0.2",
         "morgan": "^1.10.1",
+        "multer": "^2.0.2",
         "postgres": "^3.4.5",
         "swagger-jsdoc": "^6.2.8"
     },
@@ -37,6 +39,7 @@
         "@types/express": "^5.0.1",
         "@types/jsonwebtoken": "^9.0.9",
         "@types/morgan": "^1.9.10",
+        "@types/multer": "^2.0.0",
         "@types/node": "^22.15.3",
         "@types/swagger-jsdoc": "^6.0.4",
         "@types/swagger-ui-express": "^4.1.8",
@@ -50,7 +53,7 @@
         "swagger-ui-express": "^5.0.1",
         "ts-node": "^10.9.2",
         "ts-node-dev": "^2.0.0",
-        "tsx": "^4.19.4",
+        "tsx": "^4.20.3",
         "typescript": "^5.8.3"
     }
 }

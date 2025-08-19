@@ -7,6 +7,7 @@ import {
   putRental,
 } from "../controllers/rentalController.ts";
 import { authenticateToken } from "../middleware/authMiddleware.ts";
+import { uploadImage } from "../controllers/uploadController.ts";
 
 const router = express.Router();
 
@@ -177,4 +178,8 @@ export default router;
  *           type: boolean
  *         is_shared:
  *           type: boolean
+ *         photos:
+ *          type: array
+ *          items:
+ *            type: string
  */

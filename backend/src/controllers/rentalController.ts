@@ -6,40 +6,40 @@ import {
   findRentalById,
   removeRental,
   Rental,
+  RentalListing,
 } from "../models/rentalModel";
 
-//Transformer function
+function transformRentalToHouseView(rental: Rental): RentalListing {
+  return {
+    id: rental.id,
+    title: rental.title,
+    price: rental.cost.toString(),
+    address: rental.address,
+    description: rental.description,
+    date_posted: rental.post_date,
+    house_type: rental.house_type,
+    num_beds: rental.num_beds,
+    sublet: rental.is_sublet,
+    utilities_included: rental.is_utilities_included,
 
-// function transformRentalToHouseView(rental: Rental): RentalListing {
-//   return {
-//     id: rental.id,
-//     title: rental.title,
-//     cost: rental.cost.toString(),
-//     address: rental.address,
-//     description: rental.description,
-//     date_posted: rental.post_date,
-//     house_type: rental.house_type,
-//     num_beds: rental.num_beds,
-//     sublet: rental.is_sublet,
-//     utilities_included: rental.is_utilities_included,
+    details: {
+      available: rental.date_available,
+    },
 
-//     details: {
-//       available: rental.date_available,
-//     },
+    amenities: [
+      rental.has_laundry ? "Laundry" : "",
+      rental.has_cooking ? "Cooking" : "",
+      rental.has_parking ? "Parking" : "",
+      rental.no_smoking ? "No Smoking" : "",
+      rental.is_shared ? "Shared" : "",
+    ].filter(Boolean) as string[],
 
-//     amenities: [
-//       rental.has_laundry ? "Laundry" : "",
-//       rental.has_cooking ? "Cooking" : "",
-//       rental.has_parking ? "Parking" : "",
-//       rental.no_smoking ? "No Smoking" : "",
-//       rental.is_shared ? "Shared" : "",
-//     ].filter(Boolean) as string[],
-
-//     seller: {
-//       name: rental.seller,
-//     },
-//   };
-// }
+    seller: {
+      name: rental.seller,
+    },
+    photos: rental.photos,
+  };
+}
 
 export const getRentalById = async (
   req: Request,
@@ -94,6 +94,14 @@ export const postRental = async (req: Request, res: Response) => {
     is_shared,
   } = req.body;
 
+  let photos = req.body.photos;
+  if (typeof photos === "string") {
+    photos = [photos];
+  } else if (!Array.isArray(photos)) {
+    photos = [];
+  } else {
+    photos = photos.filter((p) => typeof p === "string");
+  }
   const postedRental: Omit<Rental, "id"> = {
     title,
     seller: id,
@@ -102,16 +110,17 @@ export const postRental = async (req: Request, res: Response) => {
     post_date: new Date().toDateString(),
     description,
     house_type,
-    cost,
-    num_beds,
-    is_cost_per_room,
-    is_utilities_included,
-    is_sublet,
-    has_laundry,
-    has_cooking,
-    has_parking,
-    no_smoking,
-    is_shared,
+    cost: Number(cost),
+    num_beds: Number(num_beds),
+    is_cost_per_room: Boolean(is_cost_per_room),
+    is_utilities_included: Boolean(is_utilities_included),
+    is_sublet: Boolean(is_sublet),
+    has_laundry: Boolean(has_laundry),
+    has_cooking: Boolean(has_cooking),
+    has_parking: Boolean(has_parking),
+    no_smoking: Boolean(no_smoking),
+    is_shared: Boolean(is_shared),
+    photos,
   };
 
   try {
@@ -144,6 +153,7 @@ export const putRental = async (req: Request, res: Response) => {
     has_parking,
     no_smoking,
     is_shared,
+    photos,
   } = req.body;
 
   const postedRental: Rental = {
@@ -155,16 +165,17 @@ export const putRental = async (req: Request, res: Response) => {
     post_date: new Date().toDateString(),
     description,
     house_type,
-    cost,
-    num_beds,
-    is_cost_per_room,
-    is_utilities_included,
-    is_sublet,
-    has_laundry,
-    has_cooking,
-    has_parking,
-    no_smoking,
-    is_shared,
+    cost: Number(cost),
+    num_beds: Number(num_beds),
+    is_cost_per_room: Boolean(is_cost_per_room),
+    is_utilities_included: Boolean(is_utilities_included),
+    is_sublet: Boolean(is_sublet),
+    has_laundry: Boolean(has_laundry),
+    has_cooking: Boolean(has_cooking),
+    has_parking: Boolean(has_parking),
+    no_smoking: Boolean(no_smoking),
+    is_shared: Boolean(is_shared),
+    photos,
   };
 
   try {

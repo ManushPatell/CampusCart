@@ -10,7 +10,7 @@ export interface Miscellaneous {
   price: number;
   seller: string;
   date_posted: string;
-  // photos: string[];
+  photos: string[];
   listing_type: ListingType;
 }
 
@@ -39,7 +39,7 @@ export const addMisc = async (
   misc: Omit<Miscellaneous, "id" | "date_posted">,
 ) => {
   const result =
-    await sql`INSERT INTO misc (title, description, price, seller, listing_type) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller}, ${misc.listing_type})`;
+    await sql`INSERT INTO misc (title, description, price, seller, listing_type, photos) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller}, ${misc.listing_type}, ${misc.photos})`;
   return result;
 };
 

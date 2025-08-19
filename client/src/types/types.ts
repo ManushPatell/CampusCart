@@ -1,5 +1,5 @@
 export interface Textbook {
-  id: number;
+  id: string;
   book_title: string;
   author: string;
   edition: string;
@@ -17,7 +17,7 @@ export const houseTypeOptions = ["Apartment", "House", "Bedroom", "Basement"];
 export type HouseType = (typeof houseTypeOptions)[number];
 
 export interface Rental {
-  id: number;
+  id: string;
   title: string;
   seller: string;
   address: string;
@@ -38,7 +38,7 @@ export interface Rental {
 }
 
 export interface RentalListing {
-  id: number;
+  id: string;
   seller: {
     name: string;
     contact: string;
@@ -59,11 +59,11 @@ export interface RentalListing {
   no_smoking: boolean;
   is_shared: boolean;
   amenities: string[];
-  images: string[]; // Assumes array of image URLs
+  photos: string[]; // Assumes array of image URLs
 }
 
 export interface Miscellaneous {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: number;

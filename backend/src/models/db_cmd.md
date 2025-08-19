@@ -25,7 +25,9 @@ docker volume create db-data
 docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v db-data -d postgres
 
 # In postgres container
+
 \d <table_name> # shows table and columns
 
 # To build the backend image
+
 docker build -f Dockerfile.dev -t backend .

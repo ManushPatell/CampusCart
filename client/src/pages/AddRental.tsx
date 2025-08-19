@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
@@ -28,7 +28,7 @@ type FormInputs = {
   no_smoking: boolean;
   is_shared: boolean;
   amenities: string[];
-  images: string[];
+  photos: string[];
 };
 
 const initialValues: FormInputs = {
@@ -49,7 +49,7 @@ const initialValues: FormInputs = {
   no_smoking: false,
   is_shared: false,
   amenities: [],
-  images: [],
+  photos: [],
 };
 
 export default function AddRental() {
@@ -57,8 +57,25 @@ export default function AddRental() {
   const id = searchParams.get("id");
   const [isFetchingRental, setIsFetchingRental] = useState<boolean>(false);
 
-  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
+
+  const MAX_IMAGES = 10;
+
+  function formatMB(bytes: number) {
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  useEffect(() => {
+    const urls = selectedImages.map((f) => URL.createObjectURL(f));
+    setPreviewUrls(urls);
+    return () => urls.forEach((u) => URL.revokeObjectURL(u)); // cleanup
+  }, [selectedImages]);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -69,8 +86,6 @@ export default function AddRental() {
     defaultValues: initialValues,
     mode: "onSubmit",
   });
-
-  const navigate = useNavigate();
 
   const isShared = watch("is_shared");
 
@@ -99,14 +114,60 @@ export default function AddRental() {
             no_smoking: body.no_smoking,
             is_shared: body.is_shared,
             amenities: body.amenities,
-            images: body.images,
+            photos: body.photos,
           });
         });
     }
   }, []);
 
-  const onSubmit = async (data: FormInputs) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setSelectedImages(files);
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(previews);
+  };
+
+  const onSubmit = async (formData: FormInputs) => {
     setIsButtonLoading(true);
+    setErrorMessage("");
+
+    const uploadedUrls: string[] = [];
+
+    try {
+      for (const file of selectedImages) {
+        const imageForm = new FormData();
+        imageForm.append("image", file);
+
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+          method: "POST",
+          body: imageForm,
+        });
+
+        if (!res.ok) throw new Error("Image upload failed");
+
+        const data = await res.json();
+        uploadedUrls.push(data.url);
+        console.log("Submitting photos:", uploadedUrls); // should be string[]
+      }
+      if (selectedImages.length === 0) {
+        setErrorMessage("Please add at least one image.");
+        setIsButtonLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setErrorMessage("One or more images failed to upload.");
+      setIsButtonLoading(false);
+      return;
+    }
+
+    const fullData = {
+      ...formData,
+      photos: uploadedUrls,
+    };
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/rentals${id ? "/" + id : ""}`,
@@ -116,20 +177,22 @@ export default function AddRental() {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify(data),
+          body: JSON.stringify(fullData),
         },
       );
 
       if (!res.ok) {
-        if (res.status === 500)
+        if (res.status === 500) {
           setErrorMessage("Something went wrong on our end! Please try again.");
+        }
       } else {
         navigate("/dashboard");
       }
-
-      setIsButtonLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error("Form submission error:", err);
+      setErrorMessage("Failed to submit rental.");
+    } finally {
+      setIsButtonLoading(false);
     }
   };
 
@@ -219,6 +282,129 @@ export default function AddRental() {
               rules={{ required: "Field required" }}
             />
           )}
+
+          {/* Images */}
+          <label className="font-semibold text-primary-fg mt-4 mb-2 block">
+            Images
+          </label>
+
+          {/* Dropzone */}
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "copy";
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+                f.type.startsWith("image/"),
+              );
+              if (!files.length) return;
+              // append instead of replace, cap at MAX_IMAGES
+              setSelectedImages((prev) =>
+                [...prev, ...files].slice(0, MAX_IMAGES),
+              );
+            }}
+            className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
+                  hover:border-zinc-400 transition-colors p-6 text-center cursor-pointer"
+          >
+            <div className="flex flex-col items-center gap-2 text-zinc-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-7 w-7"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M19 15v4H5v-4H3v6h18v-6zM11 3v10.17l-3.59-3.58L6 11l6 6 6-6-1.41-1.41L13 13.17V3z" />
+              </svg>
+              <p className="text-sm">
+                Drag & drop images here, or{" "}
+                <span className="underline">browse</span>
+              </p>
+              <p className="text-xs text-zinc-500">
+                PNG/JPG · up to {MAX_IMAGES} files
+              </p>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                if (!e.target.files) return;
+                const files = Array.from(e.target.files);
+                setSelectedImages((prev) =>
+                  [...prev, ...files].slice(0, MAX_IMAGES),
+                );
+                if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-selecting the same file
+              }}
+            />
+          </div>
+
+          {/* Selected summary + clear */}
+          {previewUrls.length > 0 && (
+            <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
+              <span>
+                {previewUrls.length}/{MAX_IMAGES} selected
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedImages([])}
+                className="underline hover:opacity-80"
+              >
+                Remove all
+              </button>
+            </div>
+          )}
+
+          {/* Previews grid */}
+          {previewUrls.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {previewUrls.map((url, index) => {
+                const f = selectedImages[index];
+                return (
+                  <div
+                    key={index}
+                    className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
+                  >
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover"
+                    />
+                    {/* file meta chip */}
+                    {f && (
+                      <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
+                        {f.name.length > 18
+                          ? f.name.slice(0, 18) + "…"
+                          : f.name}{" "}
+                        · {formatMB(f.size)}
+                      </div>
+                    )}
+                    {/* remove button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedImages((prev) => {
+                          const next = [...prev];
+                          next.splice(index, 1);
+                          return next;
+                        });
+                      }}
+                      className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
+                            opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
+                      aria-label={`Remove image ${index + 1}`}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
           <ControlledCheckbox
             name="is_utilities_included"
