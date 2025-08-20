@@ -15,6 +15,7 @@ import AddRental from "./pages/AddRental";
 import AddTextbook from "./pages/AddTextbook";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AddMisc from "./pages/AddMisc";
+import AboutUs from "./pages/AboutUs"; 
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ createRoot(document.getElementById("root")!).render(
 
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Signup />} />
+            <Route path="about" element={<AboutUs />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

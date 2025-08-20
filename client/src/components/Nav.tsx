@@ -40,7 +40,7 @@ export default function UnauthenticatedNav() {
 
         {/* Desktop Nav */}
         <div className=" space-x-6 text-m z-50 md:flex items-center hidden font-semibold text-primary-fg ">
-          <Link to="/#about" className="hover:text-fuchsia-500 transition">
+          <Link to="/about" className="hover:text-fuchsia-500 transition">
             About Us
           </Link>
           <span
@@ -112,7 +112,7 @@ export default function UnauthenticatedNav() {
         </button>
         <nav className="flex flex-col mt-16 space-y-6 px-8">
           <Link
-            to="/#about"
+            to="/about"
             onClick={() => setIsMobileMenuOpen(false)}
             className="hover:text-fuchsia-500 transition"
           >
