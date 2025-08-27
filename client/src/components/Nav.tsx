@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
-export default function UnauthenticatedNav() {
+export default function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { user } = useAuth();
 
   // Close dropdown if clicking outside
   useEffect(() => {
@@ -90,9 +94,15 @@ export default function UnauthenticatedNav() {
             )}
           </div>
 
-          <Link to="/register" className="hover:text-fuchsia-500 transition">
-            Sign Up
-          </Link>
+          {user ? (
+            <Link to="/dashboard" className="hover:text-fuchsia-500 transition">
+              Dashboard
+            </Link>
+          ) : (
+            <Link to="/register" className="hover:text-fuchsia-500 transition">
+              Sign Up
+            </Link>
+          )}
         </nav>
 
         {/* Mobile Hamburger */}
@@ -153,6 +163,7 @@ export default function UnauthenticatedNav() {
               Sign Up
             </Link>
           </nav>
+          <Outlet />
         </div>
       )}
     </>
