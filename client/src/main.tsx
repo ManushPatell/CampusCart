@@ -18,6 +18,7 @@ import Textbooks from "./components/Textbooks";
 import Houses from "./components/Houses";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AddMisc from "./pages/AddMisc";
+import AboutUs from "./pages/AboutUs";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route element={<Nav />}>
               <Route path="/" element={<Home />} />
+              <Route path="about" element={<AboutUs />} />
 
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Signup />} />
