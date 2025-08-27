@@ -4,6 +4,7 @@ import {
   getAllMisc,
   getMiscById,
   postMisc,
+  putMisc,
 } from "../controllers/miscController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -119,6 +120,10 @@ router.get("/:id", getMiscById);
  *                 type: string
  *                 enum: [Selling, Wanted]
  *                 example: Selling
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                  type: string
  *             required:
  *               - title
  *               - description
@@ -143,8 +148,9 @@ router.get("/:id", getMiscById);
  *                 price:
  *                   type: number
  *                 seller:
- *                   type: integer
- *                   example: 42
+ *                   type: string
+ *                   format: uuid
+ *                   example: "550e8400-e29b-41d4-a716"
  *                 listing_type:
  *                   type: string
  *                   enum: [Buying, Selling]
@@ -156,6 +162,8 @@ router.get("/:id", getMiscById);
  *         description: Internal server error
  */
 router.post("/", authenticateToken, postMisc);
+
+router.put("/:id", authenticateToken, putMisc);
 
 /**
  * @swagger

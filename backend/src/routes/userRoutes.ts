@@ -119,7 +119,7 @@ router.get("/", authenticateToken, getAllUsers);
  *                  password:
  *                      type: string
  *                  phoneNumber:
- *                      type: integer
+ *                      type: string
  *     responses:
  *       201:
  *         description: Single user.

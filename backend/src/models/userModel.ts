@@ -34,7 +34,7 @@ export const addUser = async (
   firstName: string,
   lastName: string,
   email: string,
-  phoneNumber: number,
+  phoneNumber: string,
   password: string,
   role: "admin" | "user" | "banned" = "user",
 ): Promise<
