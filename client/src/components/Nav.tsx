@@ -32,7 +32,8 @@ export default function Nav() {
     <>
       <header
         className="
-          fixed top-0 left-0 w-full h-16
+        fixed top-0
+         w-full h-16
           flex items-center justify-between
           px-6
           bg-white/30 backdrop-blur-3xl
@@ -155,17 +156,28 @@ export default function Nav() {
             >
               Extras
             </Link>
-            <Link
-              to="/register"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-fuchsia-500 transition"
-            >
-              Sign Up
-            </Link>
+
+            {user ? (
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-fuchsia-500 transition"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-fuchsia-500 transition"
+              >
+                Sign Up
+              </Link>
+            )}
           </nav>
-          <Outlet />
         </div>
       )}
+      <Outlet />
     </>
   );
 }

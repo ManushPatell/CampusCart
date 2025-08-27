@@ -212,7 +212,9 @@ export default function Dashboard() {
   return (
     <div className="px-6 sm:px-8 py-10 space-y-6">
       <div>
-        <h1 className="text-4xl font-extrabold text-primary-fg">Dashboard</h1>
+        <h1 className="text-4xl font-extrabold text-primary-fg mt-[5rem]">
+          Dashboard
+        </h1>
         <p className="text-base text-secondary-fg mt-1">
           Welcome <span className="font-semibold">{user.firstName}</span> —
           manage your listings or add new ones below.

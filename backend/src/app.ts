@@ -25,7 +25,7 @@ import morgan from "morgan";
 const app = express();
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:4321";
 
 app.disable("etag");
 

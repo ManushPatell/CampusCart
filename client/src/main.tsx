@@ -28,9 +28,12 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
-
             <Route element={<Nav />}>
+              <Route path="/" element={<Home />} />
+
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Signup />} />
+
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="rentals/:id" element={<HouseDetail />} />
@@ -41,9 +44,6 @@ createRoot(document.getElementById("root")!).render(
 
               <Route path="textbooks" element={<Textbooks />} />
               <Route path="rentals" element={<Houses />} />
-
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Signup />} />
             </Route>
           </Routes>
         </AuthProvider>
