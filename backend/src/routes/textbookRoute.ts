@@ -3,8 +3,11 @@ import {
   getTextbookById,
   getAllTextbooks,
   postTextbook,
+  deleteTextbook,
+  putTextbook,
 } from "../controllers/textbookController";
 import { authenticateToken } from "../middleware/authMiddleware";
+import { uploadImage } from "../controllers/uploadController";
 
 const router = express.Router();
 /**
@@ -132,6 +135,8 @@ router.get("/:id", getTextbookById);
  */
 router.post("/", authenticateToken, postTextbook);
 
+router.put("/:id", authenticateToken, putTextbook);
+
 /**
  * @swagger
  * components:
@@ -175,5 +180,46 @@ router.post("/", authenticateToken, postTextbook);
  *                 type: string
  *               description: string
  */
+
+/**
+ * @swagger
+ * /textbooks/{id}:
+ *   delete:
+ *     summary: Delete a textbook
+ *     description: Deletes a textbook owned by the authenticated user.
+ *     tags:
+ *       - Textbooks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the textbook to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Textbook successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either textbook not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the textbook.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete textbook
+ */
+router.delete("/:id", authenticateToken, deleteTextbook);
 
 export default router;

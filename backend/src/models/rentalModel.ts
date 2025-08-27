@@ -1,11 +1,12 @@
 import sql from "./db.ts";
+import { User } from "./userModel.ts";
 
 export type RentalListing = {
-  id: number;
+  id: string;
   title: string;
   price: string;
   address: string;
-  image?: string;
+  photos?: string[];
   description: string;
   date_posted: string;
   house_type: string;
@@ -22,7 +23,7 @@ export type RentalListing = {
 };
 
 export interface Rental {
-  id: number;
+  id: string;
   title: string;
   seller: string;
   address: string;
@@ -40,6 +41,7 @@ export interface Rental {
   has_parking: boolean;
   no_smoking: boolean;
   is_shared: boolean;
+  photos: string[];
 }
 
 export async function findAllRentals(): Promise<Rental[]> {
@@ -60,8 +62,34 @@ export async function findRentalsFromUser(id: string) {
 }
 
 export async function addRental(rental: Omit<Rental, "id">) {
-  const result =
-    await sql`INSERT INTO rentals (title, seller, address, post_date, date_available, description, house_type, cost, num_beds, is_cost_per_room, is_utilities_included, is_sublet, has_laundry, has_cooking, has_parking, no_smoking, is_shared) VALUES (${rental.title}, ${rental.seller}, ${rental.address}, ${rental.post_date}, ${rental.date_available}, ${rental.description}, ${rental.house_type}, ${rental.cost}, ${rental.num_beds}, ${rental.is_cost_per_room}, ${rental.is_utilities_included}, ${rental.is_sublet}, ${rental.has_laundry}, ${rental.has_cooking}, ${rental.has_parking}, ${rental.no_smoking}, ${rental.is_shared});`;
+  const result = await sql`
+  INSERT INTO rentals (
+    title, seller, address, post_date, date_available, description,
+    house_type, cost, num_beds, is_cost_per_room, is_utilities_included,
+    is_sublet, has_laundry, has_cooking, has_parking, no_smoking,
+    is_shared, photos
+  )
+  VALUES (${rental.title}, ${rental.seller}, ${rental.address}, ${rental.post_date}, ${rental.date_available}, ${rental.description},
+    ${rental.house_type}, ${rental.cost}, ${rental.num_beds},
+    ${rental.is_cost_per_room}, ${rental.is_utilities_included},
+    ${rental.is_sublet}, ${rental.has_laundry}, ${rental.has_cooking},
+    ${rental.has_parking}, ${rental.no_smoking}, ${rental.is_shared},
+    ARRAY[${sql.array(rental.photos)}])
+    `;
 
-  return result;
+  return result[0];
+}
+
+export async function editRental(rental: Omit<Rental, "post_date">) {
+  const result =
+    await sql`UPDATE rentals SET (title, address, date_available, description, house_type, cost, num_beds, is_cost_per_room, is_utilities_included, is_sublet, has_laundry, has_cooking, has_parking, no_smoking, is_shared) = (${rental.title}, ${rental.address}, ${rental.date_available}, ${rental.description}, ${rental.house_type}, ${rental.cost}, ${rental.num_beds}, ${rental.is_cost_per_room}, ${rental.is_utilities_included}, ${rental.is_sublet}, ${rental.has_laundry}, ${rental.has_cooking}, ${rental.has_parking}, ${rental.no_smoking}, ${rental.is_shared}) WHERE id = ${rental.id} AND seller = ${rental.seller} RETURNING *;`;
+
+  return result[0];
+}
+
+export async function removeRental(id: Rental["id"], user_id: User["id"]) {
+  const deleted = await sql<
+    Pick<Rental, "id" | "title">[]
+  >`DELETE FROM rentals WHERE id = ${id} AND seller = ${user_id} RETURNING *`;
+  return deleted;
 }

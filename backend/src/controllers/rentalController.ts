@@ -1,13 +1,13 @@
-import express, { type Request, type Response } from "express";
+import { type Request, type Response } from "express";
 import {
   addRental,
+  editRental,
   findAllRentals,
   findRentalById,
+  removeRental,
   Rental,
   RentalListing,
 } from "../models/rentalModel";
-
-//Transformer function
 
 function transformRentalToHouseView(rental: Rental): RentalListing {
   return {
@@ -37,6 +37,7 @@ function transformRentalToHouseView(rental: Rental): RentalListing {
     seller: {
       name: rental.seller,
     },
+    photos: rental.photos,
   };
 }
 
@@ -52,9 +53,8 @@ export const getRentalById = async (
       res.status(404).json({ error: "Not found" });
       return;
     }
-    const transformedHouse = transformRentalToHouseView(house);
 
-    res.status(200).json(transformedHouse);
+    res.status(200).json(house);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
@@ -67,8 +67,7 @@ export const getAllRentals = async (
 ): Promise<void> => {
   try {
     const rentals = await findAllRentals();
-    const transformedRentals = rentals.map(transformRentalToHouseView);
-    res.status(200).json(transformedRentals);
+    res.status(200).json(rentals);
   } catch {
     res.status(500).json({ error: "Failed to retrieve rentals" });
   }
@@ -95,12 +94,53 @@ export const postRental = async (req: Request, res: Response) => {
     is_shared,
   } = req.body;
 
+  let photos = req.body.photos;
+  if (typeof photos === "string") {
+    photos = [photos];
+  } else if (!Array.isArray(photos)) {
+    photos = [];
+  } else {
+    photos = photos.filter((p) => typeof p === "string");
+  }
   const postedRental: Omit<Rental, "id"> = {
     title,
     seller: id,
     address,
     date_available,
     post_date: new Date().toDateString(),
+    description,
+    house_type,
+    cost: Number(cost),
+    num_beds: Number(num_beds),
+    is_cost_per_room: Boolean(is_cost_per_room),
+    is_utilities_included: Boolean(is_utilities_included),
+    is_sublet: Boolean(is_sublet),
+    has_laundry: Boolean(has_laundry),
+    has_cooking: Boolean(has_cooking),
+    has_parking: Boolean(has_parking),
+    no_smoking: Boolean(no_smoking),
+    is_shared: Boolean(is_shared),
+    photos,
+  };
+
+  try {
+    const rental = await addRental(postedRental);
+
+    res.status(200).json({ rental: rental });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to insert rental" });
+  }
+};
+
+export const putRental = async (req: Request, res: Response) => {
+  const { id } = req.user!; // This is guaranteed to exist since this route is protected.
+  const { id: rentalId } = req.params;
+
+  const {
+    title,
+    address,
+    date_available,
     description,
     house_type,
     cost,
@@ -113,14 +153,58 @@ export const postRental = async (req: Request, res: Response) => {
     has_parking,
     no_smoking,
     is_shared,
+    photos,
+  } = req.body;
+
+  const postedRental: Rental = {
+    id: rentalId,
+    title,
+    seller: id,
+    address,
+    date_available,
+    post_date: new Date().toDateString(),
+    description,
+    house_type,
+    cost: Number(cost),
+    num_beds: Number(num_beds),
+    is_cost_per_room: Boolean(is_cost_per_room),
+    is_utilities_included: Boolean(is_utilities_included),
+    is_sublet: Boolean(is_sublet),
+    has_laundry: Boolean(has_laundry),
+    has_cooking: Boolean(has_cooking),
+    has_parking: Boolean(has_parking),
+    no_smoking: Boolean(no_smoking),
+    is_shared: Boolean(is_shared),
+    photos,
   };
 
   try {
-    const rental = await addRental(postedRental);
-
+    const rental = await editRental(postedRental);
+    if (!rental) {
+      res.status(401).json({ error: "Not authorized to edit this rental" });
+    }
     res.status(200).json({ rental: rental });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to insert rental" });
+  }
+};
+
+export const deleteRental = async (req: Request, res: Response) => {
+  const { id } = req.user!; // Protected route
+  const { id: rentalId } = req.params;
+
+  try {
+    const deleted = await removeRental(rentalId, id);
+
+    if (deleted.length === 0) {
+      res.status(401).json({ error: "Invalid delete request" });
+    }
+    if (deleted.length === 1) {
+      res.status(204).json();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete rental" });
   }
 };

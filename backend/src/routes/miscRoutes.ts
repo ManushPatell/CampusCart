@@ -1,8 +1,10 @@
 import express from "express";
 import {
+  deleteMisc,
   getAllMisc,
   getMiscById,
   postMisc,
+  putMisc,
 } from "../controllers/miscController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -118,6 +120,10 @@ router.get("/:id", getMiscById);
  *                 type: string
  *                 enum: [Selling, Wanted]
  *                 example: Selling
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                  type: string
  *             required:
  *               - title
  *               - description
@@ -142,8 +148,9 @@ router.get("/:id", getMiscById);
  *                 price:
  *                   type: number
  *                 seller:
- *                   type: integer
- *                   example: 42
+ *                   type: string
+ *                   format: uuid
+ *                   example: "550e8400-e29b-41d4-a716"
  *                 listing_type:
  *                   type: string
  *                   enum: [Buying, Selling]
@@ -155,5 +162,48 @@ router.get("/:id", getMiscById);
  *         description: Internal server error
  */
 router.post("/", authenticateToken, postMisc);
+
+router.put("/:id", authenticateToken, putMisc);
+
+/**
+ * @swagger
+ * /misc/{id}:
+ *   delete:
+ *     summary: Delete a misc
+ *     description: Deletes a misc owned by the authenticated user.
+ *     tags:
+ *       - Misc
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the misc to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Rental successfully deleted. No content returned.
+ *       401:
+ *         description: Invalid delete request (either rental not found or unauthorized).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid delete request
+ *       500:
+ *         description: Internal server error while deleting the rental.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to delete rental
+ */
+router.delete("/:id", authenticateToken, deleteMisc);
 
 export default router;

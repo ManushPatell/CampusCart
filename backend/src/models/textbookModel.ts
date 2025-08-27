@@ -1,7 +1,8 @@
 import sql from "./db.ts";
+import { User } from "./userModel.ts";
 
-interface Textbook {
-  id: string;
+export interface Textbook {
+  id: number;
   book_title: string;
   author: string;
   edition: string;
@@ -11,6 +12,7 @@ interface Textbook {
   year: number;
   faculty: string;
   price: number;
+  photos: string[];
 }
 
 export async function findAllTextbooks(): Promise<Textbook[]> {
@@ -18,7 +20,7 @@ export async function findAllTextbooks(): Promise<Textbook[]> {
   return result;
 }
 
-export async function findTextbook(id: number): Promise<Textbook | null> {
+export async function findTextbook(id: string): Promise<Textbook | null> {
   const result = await sql<Textbook[]>`
     SELECT * FROM textbooks WHERE id = ${id}
   `;
@@ -37,15 +39,44 @@ export async function addTextbook(
   book_title: string,
   author: string,
   edition: string,
-  year: string,
+  year: number,
   faculty: string,
   price: number,
   condition: string,
   id: string,
+  photos: string[],
+) {
+  const photosArray =
+    photos && photos.length > 0
+      ? sql`ARRAY[${sql.array(photos)}]`
+      : sql`ARRAY[]::text[]`;
+
+  const result = await sql`
+      INSERT INTO textbooks (book_title, seller, author, edition, year, faculty, price, condition, photos)
+      VALUES (${book_title}, ${id}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}, ${photosArray}) 
+      RETURNING *;`;
+  return result[0];
+}
+
+export async function editTextbook(
+  book_title: string,
+  author: string,
+  edition: string,
+  year: string,
+  faculty: string,
+  price: number,
+  condition: string,
+  textbookId: string,
+  sellerId: string,
 ) {
   const result = await sql`
-      INSERT INTO textbooks (book_title, seller, author, edition, year, faculty, price, condition)
-      VALUES (${book_title}, ${id}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) 
-      RETURNING book_title, author;`;
+      UPDATE textbooks SET (book_title, author, edition, year, faculty, price, condition) = (${book_title}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) WHERE id = ${textbookId} AND seller = ${sellerId} RETURNING *;`;
   return result[0];
+}
+
+export async function removeTextbook(id: Textbook["id"], user_id: User["id"]) {
+  const deleted = await sql<
+    Pick<Textbook, "id" | "book_title">[]
+  >`DELETE FROM textbooks WHERE id = ${id} AND seller = ${user_id} RETURNING *`;
+  return deleted;
 }
