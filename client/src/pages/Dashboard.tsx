@@ -96,11 +96,12 @@ function ActionButtons({
 
 export default function Dashboard() {
   const { user, isLoading: loading } = useAuth();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { userRentals, isUserRentalsLoading } = useUserRentals();
   const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();
   const { userMisc, isUserMiscLoading } = useUserMisc();
+
+  const [isAccountEditing, setIsAccountEditing] = useState<boolean>(false);
 
   if (loading)
     return <div className="px-8 py-12 text-secondary-fg">Loading…</div>;
@@ -215,9 +216,43 @@ export default function Dashboard() {
         <h1 className="text-4xl font-extrabold text-primary-fg mt-[5rem]">
           Dashboard
         </h1>
+
+        <div className="rounded-xl border-2 border-border bg-primary-bg shadow-lg my-[1rem]">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/70">
+            <p className="text-primary-fg font-semibold text-xl">
+              Account details
+            </p>
+            <div className="flex gap-[.5rem]">
+              {isAccountEditing ? (
+                <>
+                  <button className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 bg-green-800 text-primary-bg text-sm hover:bg-green-700/85 transition">
+                    Save
+                  </button>
+                  <button
+                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 bg-gray-600 text-primary-bg text-sm hover:bg-gray-600/85 transition"
+                    onClick={() => {
+                      setIsAccountEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsAccountEditing(true)}
+                  className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 bg-primary-fg text-primary-bg text-sm hover:bg-primary-fg/85 transition"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="p-4">Hello there</div>
+        </div>
+
         <p className="text-base text-secondary-fg mt-1">
-          Welcome <span className="font-semibold">{user.firstName}</span> —
-          manage your listings or add new ones below.
+          Welcome <span className="font-bold">{user.firstName}</span> — manage
+          your listings or add new ones below.
         </p>
       </div>
 
