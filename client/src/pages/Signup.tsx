@@ -187,7 +187,7 @@ export default function SignUp() {
               },
             }}
             placeholder="Password"
-            hideToggle
+            type="password"
           />
 
           {errorMessage && (

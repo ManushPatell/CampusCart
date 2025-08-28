@@ -7,6 +7,7 @@ import {
   getUserRentals,
   getUserTextbooks,
   getUserMisc,
+  putUser,
 } from "../controllers/userController.ts";
 
 import { authenticateToken } from "../middleware/authMiddleware.ts";
@@ -58,6 +59,56 @@ router.get("/:id", getUserById);
 router.get("/:id/rentals", getUserRentals);
 router.get("/:id/textbooks", getUserTextbooks);
 router.get("/:id/misc", getUserMisc);
+
+/**
+ * @swagger
+ * /users:
+ *   put:
+ *     summary: Update the authenticated user's details
+ *     description: Updates the currently authenticated user's profile information. Requires authentication.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - phoneNumber
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john.doe@mcmaster.com
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "301-123-1233"
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'   # Assuming you have a User schema defined
+ *       400:
+ *         description: Missing required fields in request body
+ *         content:
+ *           application/json:
+ *             example: "Failed to provide required param in the body of the request."
+ *       401:
+ *         description: Unauthorized - User is not authenticated
+ */
+router.put("/", authenticateToken, putUser);
 
 /**
  * @swagger

@@ -5,6 +5,7 @@ import {
   findUserById,
   addUser,
   findUserByEmail,
+  editUser,
 } from "../models/userModel.ts";
 import { findRentalsFromUser } from "../models/rentalModel.ts";
 import { findTextbooksFromUser } from "../models/textbookModel.ts";
@@ -34,6 +35,29 @@ export async function getUserById(
     return;
   }
   res.status(200).json(user);
+}
+
+export async function putUser(req: Request, res: Response) {
+  const { id: userId } = req.user!; // Must be defined since this is a protected route
+
+  const { firstName, lastName, email, phoneNumber } = req.body;
+  if (!firstName || !lastName || !email || !phoneNumber) {
+    res
+      .status(400)
+      .json("Failed to provide required param in the body of the request.");
+    return;
+  }
+
+  const sanitizedPhoneNumber = phoneNumber.replace(/\D/g, "");
+
+  const user = editUser(
+    userId,
+    firstName,
+    lastName,
+    email,
+    sanitizedPhoneNumber,
+  );
+  return user;
 }
 
 export async function getAllUsers(

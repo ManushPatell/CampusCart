@@ -56,6 +56,31 @@ export const addUser = async (
   }
 };
 
+export const editUser = async (
+  id: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  phoneNumber: string,
+): Promise<
+  | Pick<User, "id" | "email" | "firstName" | "lastName" | "phoneNumber">
+  | undefined
+> => {
+  try {
+    const newUser = await sql<
+      Pick<User, "id" | "email" | "firstName" | "lastName" | "phoneNumber">[]
+    >`
+        UPDATE users SET first_name = ${firstName}, last_name = ${lastName}, email = ${email}, phone_number = ${phoneNumber}) WHERE id = ${id}
+        RETURNING id, first_name as "firstName", last_name as "lastName", email, phone_number as "phoneNumber";
+        `;
+
+    return newUser[0];
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+};
+
 export const findUserByEmail = async (
   email: string,
 ): Promise<Pick<User, "id" | "password" | "email" | "role"> | undefined> => {

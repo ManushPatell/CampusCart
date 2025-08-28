@@ -109,8 +109,8 @@ export default function Login() {
             rules={{
               required: "Field required",
             }}
+            type="password"
             placeholder="Password"
-            hideToggle
           />
 
           {errorMessage && (
