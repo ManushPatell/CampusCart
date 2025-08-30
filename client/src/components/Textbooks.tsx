@@ -67,7 +67,7 @@ const Textbooks = () => {
     <div className="min-h-screen bg-bg">
       {/* Header */}
       <div className="py-8 px-4">
-        <h1 className="text-4xl font-extrabold text-[#4A4032]">
+        <h1 className="text-4xl font-extrabold text-[#4A4032] mt-[5rem]">
           Textbook Listings
         </h1>
       </div>

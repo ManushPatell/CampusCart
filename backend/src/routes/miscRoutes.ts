@@ -82,10 +82,18 @@ router.get("/:id", getMiscById);
  *           type: integer
  *         date_posted:
  *           type: string
+ *           format: date-time
  *         photos:
  *           type: array
  *           items:
  *             type: string
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *         listing_type:
+ *           type: string
+ *           enum: [Selling, Wanting]
  *         condition:
  *           type: string
  *         category:

@@ -1,4 +1,4 @@
-import UnauthenticatedNav from "./Nav";
+import Nav from "./Nav";
 
 const AboutSection = () => {
   const slides = [

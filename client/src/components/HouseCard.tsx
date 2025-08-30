@@ -2,6 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+
 type Props = { house: any };
 
 function formatCurrency(v: unknown) {
@@ -16,7 +17,11 @@ function formatDate(d: unknown) {
   const dt = new Date(String(d));
   return isNaN(dt.getTime())
     ? null
-    : dt.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    : dt.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
 }
 
 const HouseCard: React.FC<Props> = ({ house }) => {
@@ -48,8 +53,8 @@ const HouseCard: React.FC<Props> = ({ house }) => {
     typeof house.num_beds === "number"
       ? house.num_beds
       : house.num_beds != null
-      ? parseInt(String(house.num_beds), 10)
-      : undefined;
+        ? parseInt(String(house.num_beds), 10)
+        : undefined;
   const bedroomsLabel = Number.isFinite(bedroomsNum) ? bedroomsNum : "—";
 
   // ----- Availability -----
@@ -131,7 +136,6 @@ const HouseCard: React.FC<Props> = ({ house }) => {
           )}
         </div>
 
-        {/* Availability + CTA */}
         <div className="flex items-center justify-between pt-1">
           <div className="text-xs text-[#8B7355]">
             {availableLabel ? `Available ${availableLabel}` : ""}
