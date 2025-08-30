@@ -37,9 +37,9 @@ const Misc = () => {
           : [],
       }));
 
-      setListings(arr); // ← keep the rest of your code the same
+      setListings(arr); 
 
-      // ... your slider max code below stays as-is
+      
       const max = arr.reduce((m, it) => {
         const p =
           typeof it.price === "number"
@@ -89,7 +89,7 @@ const Misc = () => {
   return (
     <div className="min-h-screen bg-bg">
       {/* Header */}
-      <div className="py-8 px-4">
+      <div className="py-8 px-4 pt-20">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Extras & Misc Listings
         </h1>
