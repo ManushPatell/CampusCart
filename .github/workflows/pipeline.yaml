@@ -5,6 +5,7 @@ on:
      - "deployment"
 
 permissions:
+  contents: read
   packages: write
 
 jobs:
