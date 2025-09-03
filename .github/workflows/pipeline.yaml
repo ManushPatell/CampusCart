@@ -28,8 +28,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/campuscart:latest
-            ghcr.io/${{ github.repository_owner }}/campuscart:${{ github.sha }}
+            ghcr.io/manushpatell/campuscart:latest
+            ghcr.io/manushpatell/campuscart:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
