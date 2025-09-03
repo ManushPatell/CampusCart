@@ -1,5 +1,5 @@
-import sql from "./db.ts";
-import { RentalListing } from "./rentalModel.ts";
+import sql from "./db";
+import { RentalListing } from "./rentalModel";
 
 export interface User {
   id: string;

@@ -1,5 +1,5 @@
-import sql from "./db.ts";
-import { User } from "./userModel.ts";
+import sql from "./db";
+import { User } from "./userModel";
 
 type ListingType = "Selling" | "Wanted";
 
@@ -43,7 +43,9 @@ export const addMisc = async (
   return result;
 };
 
-export const editMisc = async (misc: Omit<Miscellaneous, "date_posted">) => {
+export const editMisc = async (
+  misc: Omit<Miscellaneous, "date_posted" | "photos">,
+) => {
   const result =
     await sql`UPDATE misc SET (title, description, price, listing_type) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}) WHERE id = ${misc.id} AND seller = ${misc.seller}`;
   return result;
