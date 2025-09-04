@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/manushpatell/campuscart/backend:latest
     container_name: backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -10,12 +8,10 @@ services:
       - app-network
 
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+    image: ghcr.io/manushpatell/campuscart/client:latest
     container_name: client
     ports:
-      - "3000:80"
+      - "443:80"
     depends_on:
       - backend
     networks:
