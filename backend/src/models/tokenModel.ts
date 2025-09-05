@@ -1,4 +1,4 @@
-import sql from "./db.ts";
+import sql from "./db";
 
 export const registerToken = async (refreshToken: string, userId: string) => {
   const tokenRow = await sql<{ token: string }[]>`

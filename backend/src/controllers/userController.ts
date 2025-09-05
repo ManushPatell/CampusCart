@@ -5,10 +5,10 @@ import {
   findUserById,
   addUser,
   findUserByEmail,
-} from "../models/userModel.ts";
-import { findRentalsFromUser } from "../models/rentalModel.ts";
-import { findTextbooksFromUser } from "../models/textbookModel.ts";
-import { findMiscFromUser } from "../models/miscModel.ts";
+} from "../models/userModel";
+import { findRentalsFromUser } from "../models/rentalModel";
+import { findTextbooksFromUser } from "../models/textbookModel";
+import { findMiscFromUser } from "../models/miscModel";
 
 export async function getUserById(
   req: Request,

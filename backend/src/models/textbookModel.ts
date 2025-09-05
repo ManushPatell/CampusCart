@@ -1,8 +1,8 @@
-import sql from "./db.ts";
-import { User } from "./userModel.ts";
+import sql from "./db";
+import { User } from "./userModel";
 
 export interface Textbook {
-  id: number;
+  id: string;
   book_title: string;
   author: string;
   edition: string;

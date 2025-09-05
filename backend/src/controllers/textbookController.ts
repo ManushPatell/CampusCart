@@ -6,7 +6,6 @@ import {
   findAllTextbooks,
   findTextbook,
   removeTextbook,
-  removeTextbook,
 } from "../models/textbookModel";
 
 export async function getAllTextbooks(req: Request, res: Response) {

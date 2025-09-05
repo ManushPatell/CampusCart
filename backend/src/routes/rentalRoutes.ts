@@ -5,9 +5,9 @@ import {
   getRentalById,
   postRental,
   putRental,
-} from "../controllers/rentalController.ts";
-import { authenticateToken } from "../middleware/authMiddleware.ts";
-import { uploadImage } from "../controllers/uploadController.ts";
+} from "../controllers/rentalController";
+import { authenticateToken } from "../middleware/authMiddleware";
+import { uploadImage } from "../controllers/uploadController";
 
 const router = express.Router();
 

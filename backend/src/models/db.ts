@@ -1,7 +1,7 @@
 import postgres from "postgres";
 
 const sql = postgres({
-  host: "localhost",
+  host: "host.docker.internal",
   port: parseInt(process.env.DB_PORT!),
   username: process.env.DB_USERNAME!,
   password: process.env.DB_PASSWORD!,
