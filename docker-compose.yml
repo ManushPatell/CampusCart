@@ -1,21 +1,27 @@
 services:
   backend:
     image: ghcr.io/manushpatell/campuscart/backend:latest
-    container_name: backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - app-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   client:
     image: ghcr.io/manushpatell/campuscart/client:latest
-    container_name: client
     ports:
       - "443:80"
     depends_on:
       - backend
     networks:
       - app-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
 networks:
   app-network:
