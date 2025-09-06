@@ -33,8 +33,8 @@ jobs:
           tags: |
             ghcr.io/manushpatell/campuscart/client:latest
             ghcr.io/manushpatell/campuscart/client:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/manushpatell/campuscart/client:latest
-          cache-to: type=registry,ref=ghcr.io/manushpatell/campuscart/client:latest,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
       - name: Build and push backend Docker image
@@ -45,8 +45,8 @@ jobs:
           tags: |
             ghcr.io/manushpatell/campuscart/backend:latest
             ghcr.io/manushpatell/campuscart/backend:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/manushpatell/campuscart/backend:latest
-          cache-to: type=registry,ref=ghcr.io/manushpatell/campuscart/backend:latest,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
   # deploy:
