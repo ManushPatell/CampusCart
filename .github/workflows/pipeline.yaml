@@ -30,7 +30,6 @@ jobs:
           tags: |
             ghcr.io/manushpatell/campuscart/client:latest
             ghcr.io/manushpatell/campuscart/client:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ghcr.io/manushpatell/campuscart/client:latest
           cache-to: type=registry,ref=ghcr.io/manushpatell/campuscart/client:latest,mode=max
 
@@ -43,7 +42,6 @@ jobs:
           tags: |
             ghcr.io/manushpatell/campuscart/backend:latest
             ghcr.io/manushpatell/campuscart/backend:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ghcr.io/manushpatell/campuscart/backend:latest
           cache-to: type=registry,ref=ghcr.io/manushpatell/campuscart/backend:latest,mode=max
 
