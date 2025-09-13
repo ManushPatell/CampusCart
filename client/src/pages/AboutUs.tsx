@@ -27,12 +27,12 @@ export default function AboutUs() {
               >
                 Browse listings
               </Link>
-              <Link
-                to="/contact"
+              <a
+                href="mailto:campuscart10@gmail.com"
                 className="border border-[#4A4032] text-[#4A4032] px-5 py-2.5 rounded-xl hover:bg-[#F5F1EA] transition font-semibold"
               >
                 Get in touch
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -44,21 +44,20 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* Value Props */}
-      <section className="max-w-6xl mx-auto px-6 pt-16">
-        <div className="grid gap-5 md:grid-cols-3">
-          <ValueCard
-            title="Verified & Transparent"
-            body="Listings are vetted and clearly presented so students can make confident decisions."
-          />
-          <ValueCard
-            title="Built for Students"
-            body="Filters, watchlists, and messaging tuned to campus life and student budgets."
-          />
-          <ValueCard
-            title="Beyond Housing"
-            body="A trusted marketplace for textbooks and essentials to make student life easier."
-          />
+      {/* Why I Built CampusCart */}
+      <section className="max-w-3xl mx-auto px-6 pt-16">
+        <div className="bg-[#F5F1EA] border border-[#E8DFD0] rounded-2xl p-6 shadow-sm">
+          <blockquote className="text-lg italic text-[#4A4032] leading-relaxed">
+            "I spent months searching through Facebook Marketplace and
+            Places4Students for a reasonable listing, but mostly found spam,
+            scams, and bots. Not to mention sketchy concert ticket exchanges on
+            Snapchat. I wanted a platform students could trust. That’s when the
+            idea for CampusCart was born — a place for real listings from real
+            students."
+          </blockquote>
+          <p className="mt-4 text-right font-semibold text-[#4A4032]">
+            — Manush Patel
+          </p>
         </div>
       </section>
 
@@ -71,30 +70,58 @@ export default function AboutUs() {
           Meet the team behind CampusCart.
         </p>
 
-        <ul className="grid gap-6">
-          <FounderCard
-            img="/founders/andrew.jpg"
-            name="Andrew Mancini"
-            role="Software Engineer"
-            bio="Andrew is a Computer Science student at the University of Waterloo (formerly McMaster University) with a focus on software engineering and system architecture, spanning full-stack work and hardware–software integration."
-            linkedin="https://linkedin.com/in/andrew-iammancini"
-          />
-
-          <FounderCard
-            img="/founders/brandon.jpg"
-            name="Brandon Yoo"
-            role="Biomedical Engineering & Computer Science"
-            bio="Brandon studies Chemical-Biomedical Engineering and Biochemistry at McMaster. He has experience as a Data Scientist and ML researcher, with a passion for innovation at the intersection of software and biomedical sciences."
-            linkedin="https://linkedin.com/in/brandonwsyoo"
-          />
-
-          <FounderCard
-            img="/founders/manush.jpg"
-            name="Manush Patel"
-            role="Computer Engineering"
-            bio="Manush is a Computer Engineering student at McMaster University with deep curiosity for electronics and software design. He builds modern engineering workflows and explores ML and hardware development."
-            linkedin="https://linkedin.com/in/manushp"
-          />
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+          {[
+            {
+              img: "/andrew-campuscart.jpg",
+              name: "Andrew Iammancini",
+              role: "Computer Science",
+              bio: "Computer Science student with focus on full-stack systems and hardware–software integration.",
+              linkedin: "https://linkedin.com/in/andrew-iammancini",
+            },
+            {
+              img: "/manush-campuscart.jpg",
+              name: "Manush Patel",
+              role: "Computer Engineering",
+              bio: "Explores modern workflows, ML, and hardware. Built CampusCart to make campus life easier.",
+              linkedin: "https://linkedin.com/in/manushp",
+            },
+            {
+              img: "/brandon-campuscart.jpg",
+              name: "Brandon Yoo",
+              role: "Biomedical Engineering & Computer Science",
+              bio: "Data Scientist and ML researcher passionate about biomedicine and software innovation.",
+              linkedin: "https://linkedin.com/in/brandonwsyoo",
+            },
+          ].map((f) => (
+            <li key={f.name} className="h-full">
+              <Card className="h-full flex flex-col bg-white border border-[#E8DFD0] rounded-2xl shadow-sm hover:shadow transition">
+                <CardContent className="flex-1 p-5 flex flex-col items-center text-center">
+                  <img
+                    src={f.img}
+                    alt={f.name}
+                    className="w-28 h-28 rounded-full object-cover shadow mb-4"
+                  />
+                  <h3 className="text-lg font-semibold text-[#4A4032]">
+                    {f.name}
+                  </h3>
+                  <p className="text-sm text-secondary-fg">{f.role}</p>
+                  <p className="mt-2 text-sm text-secondary-fg">{f.bio}</p>
+                  {f.linkedin && (
+                    <a
+                      href={f.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex items-center justify-center rounded-lg p-2 hover:bg-[#F5F1EA]"
+                      aria-label={`LinkedIn profile of ${f.name}`}
+                    >
+                      <Linkedin className="h-5 w-5 text-[#4A4032] hover:text-[#5C503E]" />
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            </li>
+          ))}
         </ul>
       </section>
     </main>
@@ -111,62 +138,5 @@ function ValueCard({ title, body }: { title: string; body: string }) {
         <p className="mt-2 text-sm text-secondary-fg leading-relaxed">{body}</p>
       </CardContent>
     </Card>
-  );
-}
-
-function FounderCard({
-  img,
-  name,
-  role,
-  bio,
-  linkedin,
-}: {
-  img: string;
-  name: string;
-  role: string;
-  bio: string;
-  linkedin?: string;
-}) {
-  return (
-    <li>
-      <Card className="bg-white border border-[#E8DFD0] rounded-2xl shadow-sm hover:shadow-md transition">
-        <CardContent className="p-5">
-          <div className="flex flex-col sm:flex-row gap-5">
-            <img
-              src={img}
-              alt={name}
-              className="w-full sm:w-44 h-32 rounded-xl object-cover object-center"
-            />
-
-            <div className="flex-1">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-[#4A4032]">
-                    {name}
-                  </h3>
-                  <p className="text-sm text-secondary-fg">{role}</p>
-                </div>
-
-                {linkedin && (
-                  <a
-                    href={linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="shrink-0 inline-flex items-center justify-center rounded-lg p-2 hover:bg-[#F5F1EA]"
-                    aria-label={`LinkedIn profile of ${name}`}
-                  >
-                    <Linkedin className="h-5 w-5 text-[#4A4032] hover:text-[#5C503E]" />
-                  </a>
-                )}
-              </div>
-
-              <p className="mt-3 text-sm text-secondary-fg leading-relaxed">
-                {bio}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </li>
   );
 }
