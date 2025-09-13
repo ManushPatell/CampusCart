@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
 import TextbookDetail from "./pages/TextbookDetail"; 
+import MiscDetail from "./pages/MiscDetail";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -42,7 +43,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="rentals/:id" element={<HouseDetail />} />
                 <Route path="textbooks/:id" element={<TextbookDetail />} />
-                <Route path="misc/:id" element={<HouseDetail />} />
+                <Route path="misc/:id" element={<MiscDetail />} />
                 <Route path="rentals/create" element={<AddRental />} />
                 <Route path="textbooks/create" element={<AddTextbook />} />
                 <Route path="misc/create" element={<AddMisc />} />

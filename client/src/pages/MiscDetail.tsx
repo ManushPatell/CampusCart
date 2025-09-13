@@ -1,7 +1,22 @@
-// src/pages/HouseDetail.tsx
+// src/pages/MiscDetail.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "../components/Nav";
+
+type Misc = {
+  id: number | string;
+  title?: string;
+  description?: string;
+  price?: number | string;
+  // API now returns a nested seller object; keep number fallback just in case
+  seller?: number | { id?: number | string; name?: string | null; email?: string | null; contact?: string | null };
+  date_posted?: string;
+  condition?: string;
+  category?: string;
+  listing_type?: "Selling" | "Buying" | string;
+  photos?: string[] | string;
+  images?: string[] | string;
+};
 
 function formatCurrency(v: any) {
   const n =
@@ -28,27 +43,13 @@ function buildApiUrl(path: string) {
   return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
-const FeatureChip = ({ on, label }: { on?: boolean; label: string }) => (
-  <span
-    className={`inline-flex items-center rounded-full px-3 py-1 text-sm border mr-2 mb-2 ${
-      on
-        ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-        : "bg-gray-50 border-gray-200 text-gray-400 line-through"
-    }`}
-    title={label}
-  >
-    {label}
-  </span>
-);
-
-export default function HouseDetail() {
+export default function MiscDetail() {
   const { id } = useParams<{ id: string }>();
-  const [house, setHouse] = useState<any>(null);
+  const [item, setItem] = useState<Misc | null>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch the house
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -56,20 +57,20 @@ export default function HouseDetail() {
         setLoading(true);
         setError("");
         if (!id) {
-          setError("No rental id provided.");
+          setError("No item id provided.");
           return;
         }
-        const url = buildApiUrl(`/api/rentals/${encodeURIComponent(id)}`);
+        const url = buildApiUrl(`/api/misc/${encodeURIComponent(id)}`);
         const res = await fetch(url, { credentials: "include" });
         if (!res.ok) {
-          setError(res.status === 404 ? "House not found." : "Failed to load house.");
+          setError(res.status === 404 ? "Item not found." : "Failed to load item.");
           return;
         }
-        const data = await res.json();
-        if (!cancelled) setHouse(data);
+        const data = (await res.json()) as Misc;
+        if (!cancelled) setItem(data);
       } catch (e) {
         console.error(e);
-        if (!cancelled) setError("Failed to fetch rental data.");
+        if (!cancelled) setError("Failed to fetch item data.");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -79,48 +80,31 @@ export default function HouseDetail() {
     };
   }, [id]);
 
-  // Derive photos (accepts array, JSON string, or CSV string)
+  // Combine photos/images; accept array, JSON string, or CSV string
   const photos: string[] = useMemo(() => {
-    const p = house?.photos;
-    if (!p) return [];
-    if (Array.isArray(p)) return p.filter(Boolean);
-    if (typeof p === "string") {
-      try {
-        const parsed = JSON.parse(p);
-        if (Array.isArray(parsed)) return parsed.filter(Boolean);
-      } catch {
-        return p.split(",").map((s: string) => s.trim()).filter(Boolean);
+    const raw = item?.photos ?? item?.images;
+    if (!raw) return [];
+    const toArray = (val: any): string[] => {
+      if (Array.isArray(val)) return val.filter(Boolean);
+      if (typeof val === "string") {
+        try {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed)) return parsed.filter(Boolean);
+        } catch {
+          return val.split(",").map((s) => s.trim()).filter(Boolean);
+        }
       }
-    }
-    return [];
-  }, [house?.photos]);
+      return [];
+    };
+    return toArray(raw);
+  }, [item?.photos, item?.images]);
 
-  // Read seller directly from API (nested object or raw id fallback)
-  const sellerObj =
-    typeof house?.seller === "object" && house?.seller ? house.seller : undefined;
-  const sellerId =
-    typeof house?.seller === "string" || typeof house?.seller === "number"
-      ? house.seller
-      : sellerObj?.id;
+  // Read seller directly from API response (fallback if backend ever returns a number)
+  const sellerObj = (typeof item?.seller === "object" && item?.seller) ? item.seller : undefined;
+  const sellerId   = typeof item?.seller === "number" || typeof item?.seller === "string" ? item?.seller : sellerObj?.id;
   const sellerName = sellerObj?.name ?? (sellerId ? `Seller #${sellerId}` : "Unknown");
   const sellerEmail = sellerObj?.email ?? sellerObj?.contact ?? "—";
 
-  // Feature chips
-  const features = useMemo(
-    () => [
-      { on: !!house?.is_cost_per_room, label: "Per-room pricing" },
-      { on: !!house?.is_utilities_included, label: "Utilities included" },
-      { on: !!house?.is_sublet, label: "Sublet" },
-      { on: !!house?.has_laundry, label: "Laundry" },
-      { on: !!house?.has_cooking, label: "Kitchen" },
-      { on: !!house?.has_parking, label: "Parking" },
-      { on: !!house?.no_smoking, label: "No smoking" },
-      { on: !!house?.is_shared, label: "Shared" },
-    ],
-    [house]
-  );
-
-  // Loading / error states
   if (loading) {
     return (
       <>
@@ -148,15 +132,15 @@ export default function HouseDetail() {
     );
   }
 
-  if (!house) return null;
+  if (!item) return null;
 
   return (
     <>
       <NavBar />
       <div className="max-w-5xl mx-auto p-6">
         <div className="text-sm text-gray-500 mb-3">
-          <Link to="/rentals" className="hover:underline">
-            Rentals
+          <Link to="/misc" className="hover:underline">
+            Misc
           </Link>{" "}
           / <span className="text-gray-700">Details</span>
         </div>
@@ -165,18 +149,15 @@ export default function HouseDetail() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
           <div>
             <h1 className="text-3xl font-bold text-[#4A4032]">
-              {house.title || house.house_type || "Rental"}
+              {item.title || "Item"}
             </h1>
             <div className="text-[#6B5B45]">
-              {house.num_beds ? `${house.num_beds} beds • ` : ""}
-              {house.address}
+              {item.category ? `${item.category} • ` : ""}
+              {item.condition ? `Condition: ${item.condition}` : ""}
             </div>
           </div>
           <div className="text-3xl font-semibold text-[#4A4032]">
-            {formatCurrency(house.cost)}
-            {house.is_cost_per_room ? (
-              <span className="ml-1 text-base text-[#6B5B45]">/room</span>
-            ) : null}
+            {formatCurrency(item.price)}
           </div>
         </div>
 
@@ -249,13 +230,15 @@ export default function HouseDetail() {
         <div className="grid md:grid-cols-3 gap-6">
           <section className="md:col-span-2 space-y-4">
             <div className="text-[#6B5B45]">
-              <div>
-                <span className="font-semibold text-[#4A4032]">Available:</span>{" "}
-                {formatDate(house.date_available)}
-              </div>
+              {item.listing_type && (
+                <div>
+                  <span className="font-semibold text-[#4A4032]">Listing Type:</span>{" "}
+                  {item.listing_type}
+                </div>
+              )}
               <div>
                 <span className="font-semibold text-[#4A4032]">Posted:</span>{" "}
-                {formatDate(house.post_date)}
+                {formatDate(item.date_posted)}
               </div>
             </div>
 
@@ -264,27 +247,14 @@ export default function HouseDetail() {
                 Description
               </h2>
               <p className="text-[#6B5B45] whitespace-pre-wrap">
-                {house.description || "No description provided."}
+                {item.description || "No description provided."}
               </p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold text-[#4A4032] mb-2">
-                Features
-              </h2>
-              <div className="flex flex-wrap">
-                {features.map((f) => (
-                  <FeatureChip key={f.label} on={f.on} label={f.label} />
-                ))}
-              </div>
             </div>
           </section>
 
-          {/* Contact / CTA */}
+          {/* Contact / CTA — same layout as rentals/misc */}
           <aside className="border rounded-xl p-4 h-fit shadow-sm">
-            <h3 className="text-lg font-semibold text-[#4A4032] mb-2">
-              Contact Seller
-            </h3>
+            <h3 className="text-lg font-semibold text-[#4A4032] mb-2">Contact Seller</h3>
 
             <div className="text-[#6B5B45] space-y-1 mb-4">
               <div>
@@ -301,7 +271,7 @@ export default function HouseDetail() {
               <a
                 href={
                   sellerEmail && sellerEmail !== "—"
-                    ? `mailto:${sellerEmail}?subject=Inquiry about rental #${house.id}`
+                    ? `mailto:${sellerEmail}?subject=Inquiry about item #${item.id}`
                     : undefined
                 }
                 onClick={(e) => {

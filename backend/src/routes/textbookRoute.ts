@@ -103,9 +103,6 @@ router.get("/:id", getTextbookById);
  *               condition:
  *                 type: string
  *                 enum: [Used, New]
- *               course_code:
- *                 type: string
- *                 example: "CS101"
  *     responses:
  *       200:
  *         description: Textbook successfully created.
@@ -144,42 +141,27 @@ router.put("/:id", authenticateToken, putTextbook);
  *     Textbook:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *         book_title:
- *           type: string
- *         author:
- *           type: string
- *         edition:
- *           type: string
- *         condition:
- *           type: string
- *           enum: [Used, New]
- *         seller:
- *           type: integer
- *         date_posted:
- *           type: string
- *           format: date
+ *         id: { type: string, format: uuid }
+ *         book_title: { type: string }
+ *         author: { type: string }
+ *         edition: { type: string }
+ *         condition: { type: string }
+ *         year: { type: integer }
+ *         faculty: { type: string }
+ *         price: { type: number }
  *         photos:
  *           type: array
- *           items:
- *             type: string
- *         year:
- *           type: integer
- *           enum: [1, 2, 3, 4]
- *         faculty:
- *           type: string
- *         price:
- *           type: integer
- *         course_code:
- *           type: array
+ *           items: { type: string }
+ *         date_posted: { type: string, format: date }
+ *         seller:
+ *           type: object
  *           properties:
- *             course_code:
- *               type: array
- *               items:
- *                 type: string
- *               description: string
+ *             id: { type: string, format: uuid }
+ *             name: { type: string }
+ *             email: { type: string, format: email }
  */
+
+
 
 /**
  * @swagger

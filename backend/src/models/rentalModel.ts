@@ -22,37 +22,100 @@ export type RentalListing = {
   };
 };
 
-export interface Rental {
+export type Rental = {
   id: string;
   title: string;
-  seller: string;
+  seller_id?: string | null;
+  seller: { id: string | null; name: string | null; email: string | null } | null;
   address: string;
-  post_date: string;
-  date_available: string;
-  description: string;
+  post_date: string | null;
+  date_available: string | null;
+  description: string | null;
   house_type: "Apartment" | "House" | "Bedroom" | "Basement";
   cost: number;
-  num_beds: number;
-  is_cost_per_room: boolean;
-  is_utilities_included: boolean;
-  is_sublet: boolean;
-  has_laundry: boolean;
-  has_cooking: boolean;
-  has_parking: boolean;
-  no_smoking: boolean;
-  is_shared: boolean;
-  photos: string[];
-}
+  num_beds: number | null;
+  is_cost_per_room: boolean | null;
+  is_utilities_included: boolean | null;
+  is_sublet: boolean | null;
+  has_laundry: boolean | null;
+  has_cooking: boolean | null;
+  has_parking: boolean | null;
+  no_smoking: boolean | null;
+  is_shared: boolean | null;
+  photos: string[] | null;
+};
+
 
 export async function findAllRentals(): Promise<Rental[]> {
-  const result = await sql<Rental[]>`SELECT * FROM rentals`;
-  return result;
+  const rows = await sql<Rental[]>`
+    SELECT
+      r.id,
+      r.title,
+      r.address,
+      r.post_date,
+      r.date_available,
+      r.description,
+      r.house_type,
+      r.cost,
+      r.num_beds,
+      r.is_cost_per_room,
+      r.is_utilities_included,
+      r.is_sublet,
+      r.has_laundry,
+      r.has_cooking,
+      r.has_parking,
+      r.no_smoking,
+      r.is_shared,
+      r.photos,
+      r.seller AS seller_id,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM rentals r
+    LEFT JOIN users u ON u.id = r.seller
+    ORDER BY r.post_date DESC NULLS LAST, r.id DESC
+  `;
+  return rows;
 }
 
+
 export async function findRentalById(id: string): Promise<Rental | null> {
-  const result = await sql<Rental[]>`SELECT * FROM rentals WHERE id = ${id}`;
-  return result[0] ?? null;
+  const rows = await sql<Rental[]>`
+    SELECT
+      r.id,
+      r.title,
+      r.address,
+      r.post_date,
+      r.date_available,
+      r.description,
+      r.house_type,
+      r.cost,
+      r.num_beds,
+      r.is_cost_per_room,
+      r.is_utilities_included,
+      r.is_sublet,
+      r.has_laundry,
+      r.has_cooking,
+      r.has_parking,
+      r.no_smoking,
+      r.is_shared,
+      r.photos,
+      r.seller AS seller_id,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM rentals r
+    LEFT JOIN users u ON u.id = r.seller
+    WHERE r.id = ${id}
+    LIMIT 1
+  `;
+  return rows[0] ?? null;
 }
+
 
 export async function findRentalsFromUser(id: string) {
   const rentals = await sql<

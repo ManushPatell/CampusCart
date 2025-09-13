@@ -3,29 +3,68 @@ import { User } from "./userModel.ts";
 
 type ListingType = "Selling" | "Wanted";
 
+export type MiscSeller =
+  | string
+  | number
+  | { id: string | number | null; name: string | null; email: string | null }
+  | null;
+
 export interface Miscellaneous {
   id: string;
   title: string;
   description: string;
   price: number;
-  seller: string;
+  seller: MiscSeller;
   date_posted: string;
   photos: string[];
   listing_type: ListingType;
 }
 
-export const findMiscById = async (
-  id: string,
-): Promise<Miscellaneous | null> => {
-  const result = await sql<Miscellaneous[]>`
-        SELECT * FROM misc WHERE id = ${id}
-    `;
-  return result[0] ?? null;
+export const findMiscById = async (id: string) => {
+  const rows = await sql<any[]>`
+    SELECT
+      m.id,
+      m.title,
+      m.description,
+      m.price,
+      m.seller          AS seller_id,
+      m.date_posted,
+      m.photos,
+      m.listing_type,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM misc m
+    LEFT JOIN users u ON u.id = m.seller
+    WHERE m.id = ${id}
+    LIMIT 1
+  `;
+  return rows[0] ?? null;
 };
 
-export const findAllMisc = async (): Promise<Miscellaneous[]> => {
-  const result = await sql<Miscellaneous[]>`SELECT * FROM misc`;
-  return result;
+export const findAllMisc = async () => {
+  const rows = await sql<any[]>`
+    SELECT
+      m.id,
+      m.title,
+      m.description,
+      m.price,
+      m.seller          AS seller_id,
+      m.date_posted,
+      m.photos,
+      m.listing_type,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM misc m
+    LEFT JOIN users u ON u.id = m.seller
+    ORDER BY m.date_posted DESC NULLS LAST, m.id DESC
+  `;
+  return rows;
 };
 
 export const findMiscFromUser = async (id: Miscellaneous["id"]) => {
