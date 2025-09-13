@@ -32,7 +32,11 @@ const app = express();
 app.use(limiter);
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:4321";
+const rawOrigins = process.env.FRONTEND_ORIGIN ?? "http://localhost:4321";
+const FRONTEND_ORIGINS = rawOrigins
+  .split(/[,\s]+/) // split on commas or whitespace
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 app.disable("etag");
 
@@ -43,7 +47,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: FRONTEND_ORIGIN,
+    origin: FRONTEND_ORIGINS,
     credentials: true,
   }),
 ); // Since we rely on credential for cookies, we must set the origin.
@@ -53,9 +57,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/rentals", rentalRoutes);
-app.use("/misc", miscRoutes);
-app.use("/textbooks", textbookRoutes);
+app.use("/api/rentals", rentalRoutes);
+app.use("/api/misc", miscRoutes);
+app.use("/api/textbooks", textbookRoutes);
 app.use("/upload", uploadRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -75,11 +79,22 @@ app.get("/", (req: Request, res: Response) => {
   );
 });
 
-const img_host = [
+const BACKEND = `http://localhost:${PORT}`;
+
+const connectSrc = [
+  "'self'",
+  BACKEND,
+  ...FRONTEND_ORIGINS,
+  ...FRONTEND_ORIGINS.map((o) =>
+    o.replace(/^http:/, "ws:").replace(/^https:/, "wss:"),
+  ), // HMR websockets
+];
+
+const imgSrc = [
   "'self'",
   "data:",
   "blob:",
-  "http://localhost:3001",
+  BACKEND,
   "https://*.amazonaws.com",
   "https://*.s3.amazonaws.com",
   "https://photo-storage-system.s3.ca-us-east-2.amazonaws.com",
@@ -90,11 +105,11 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
       "style-src 'self' 'unsafe-inline'",
-      `img-src ${img_host.join(" ")}`,
-      `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGIN}`,
-      "font-src 'self'",
+      `img-src ${imgSrc.join(" ")}`,
+      `connect-src ${connectSrc.join(" ")}`,
+      "font-src 'self' data:",
     ].join("; "),
   );
   next();

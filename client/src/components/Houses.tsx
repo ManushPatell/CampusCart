@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import HouseCard from "../components/HouseCard";
-import mockListings from "../data/mockListings"; // import mock data for housing listings
+// import mockListings from "../data/mockListings"; // import mock data for housing listings
 
 const Houses = () => {
   const [searchTerm, setSearchTerm] = useState(""); //state variable for search term [value, setValue] = useState(initialValue)
   const [isFilterOpen, setIsFilterOpen] = useState(false); //boolean state to control filter drawer visibility
+  const [listings, setListings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     priceRange: "",
     location: "",
@@ -16,30 +19,101 @@ const Houses = () => {
     maxPrice: 2000,
     currentPrice: 2000,
   });
+  useEffect(() => {
+    fetch("/api/rentals")
+      .then((r) => r.json())
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : [];
+        setListings(arr);
 
-  const filteredListings = mockListings.filter((house) => {
-    // filters the mock listings based on search term and selected filters
+        // compute a reasonable max from cost/price
+        const max = arr.reduce((m, h) => {
+          const p =
+            typeof h.cost === "number"
+              ? h.cost
+              : typeof h.price === "number"
+                ? h.price
+                : parseFloat(
+                    String(h.price ?? h.cost ?? "0").replace(/[^0-9.]/g, ""),
+                  ) || 0;
+          return Math.max(m, p);
+        }, 0);
+
+        if (max > 0) {
+          setFilters((prev) => ({
+            ...prev,
+            maxPrice: Math.ceil(max),
+            currentPrice: Math.ceil(max),
+          }));
+        }
+      })
+      .catch((e) => setError(String(e)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredListings = listings.filter((house) => {
+    // search (title/description)
+    const title = String(house.title ?? "").toLowerCase();
+    const desc = String(house.description ?? "").toLowerCase();
     const matchesSearch =
-      house.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      house.description.toLowerCase().includes(searchTerm.toLowerCase());
+      title.includes(searchTerm.toLowerCase()) ||
+      desc.includes(searchTerm.toLowerCase());
 
-    const price = parseFloat(house.price.replace(/[^0-9.]/g, "")); //removes anything but digits and decimal points and converts to float
-    const matchesPrice =
-      !filters.priceRange || price <= parseFloat(filters.priceRange); // checks if price is less than or equal to the selected price range
+    // price: use cost (DB) or fallback to price
+    const price =
+      typeof house.cost === "number"
+        ? house.cost
+        : typeof house.price === "number"
+          ? house.price
+          : parseFloat(
+              String(house.price ?? house.cost ?? "0").replace(/[^0-9.]/g, ""),
+            ) || 0;
+
+    // IMPORTANT: compare to currentPrice (the slider), not priceRange
+    const matchesPrice = price <= (Number(filters.currentPrice) || Infinity);
+
+    // location: DB has address, sometimes city/state
+    const loc = String(
+      house.location ??
+        house.address ??
+        [house.city, house.state].filter(Boolean).join(", ") ??
+        "",
+    ).toLowerCase();
     const matchesLocation =
-      !filters.location || house.location.includes(filters.location); // checks if the house location includes the selected location
+      !filters.location || loc.includes(String(filters.location).toLowerCase());
+
+    // bedrooms: DB uses num_beds
+    const bedroomsVal =
+      house.num_beds ?? house.details?.bedrooms ?? house.bedrooms;
+    const bedroomsNum = Number.isFinite(Number(bedroomsVal))
+      ? Number(bedroomsVal)
+      : undefined;
     const matchesBedrooms =
       !filters.bedrooms ||
-      house.details.bedrooms.toString() === filters.bedrooms; // checks if the number of bedrooms matches the selected number of bedrooms
-    const matchesUtilities = house.details.utilities
+      (Number.isFinite(bedroomsNum) &&
+        bedroomsNum === Number(filters.bedrooms));
+
+    // utilities: DB boolean is_utilities_included → make it searchable text
+    const utilitiesText =
+      typeof house.is_utilities_included === "boolean"
+        ? house.is_utilities_included
+          ? "utilities included included"
+          : "utilities not included excluded"
+        : String(house.details?.utilities ?? "");
+    const matchesUtilities = String(utilitiesText)
       .toLowerCase()
-      .includes(filters.utilities.toLowerCase());
-    const matchesFurnished =
-      !filters.furnished ||
-      house.amenities.some((a) => a.toLowerCase().includes("furnished"));
-    const matchesPetFriendly =
-      !filters.petFriendly ||
-      house.amenities.some((a) => a.toLowerCase().includes("pet"));
+      .includes(String(filters.utilities || "").toLowerCase());
+
+    // furnished / pet: only filter if user toggled; your DB doesn’t have these, so don’t exclude by accident
+    const hasFurnished =
+      Array.isArray(house.amenities) &&
+      house.amenities.some((a: any) => /furnish/i.test(String(a)));
+    const hasPet =
+      Array.isArray(house.amenities) &&
+      house.amenities.some((a: any) => /pet/i.test(String(a)));
+
+    const matchesFurnished = !filters.furnished || hasFurnished;
+    const matchesPetFriendly = !filters.petFriendly || hasPet;
 
     return (
       matchesSearch &&
@@ -47,8 +121,8 @@ const Houses = () => {
       matchesLocation &&
       matchesBedrooms &&
       matchesUtilities &&
-      (!filters.furnished || matchesFurnished) &&
-      (!filters.petFriendly || matchesPetFriendly)
+      matchesFurnished &&
+      matchesPetFriendly
     );
   });
 
@@ -56,7 +130,7 @@ const Houses = () => {
   return (
     <div className="min-h-screen bg-bg">
       {/* Header */}
-      <div className="py-8 px-4">
+      <div className="py-8 px-4 pt-20">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Housing Listings
         </h1>

@@ -63,6 +63,7 @@ router.get("/", getAllMisc);
  *         description: An error occurred while fetching the miscellaneous item
  */
 router.get("/:id", getMiscById);
+
 /**
  * @swagger
  * components:
@@ -71,25 +72,45 @@ router.get("/:id", getMiscById);
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *           example: "550e8400-e29b-41d4-a716-446655440000"
  *         title:
  *           type: string
+ *           example: "Electric guitar for sale"
  *         description:
  *           type: string
+ *           example: "A Fender Stratocaster in excellent condition."
  *         price:
  *           type: number
+ *           example: 250
  *         seller:
- *           type: integer
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               format: uuid
+ *               example: "7f3d8a2b-45ef-4b8e-a23d-92c43d11f9c5"
+ *             name:
+ *               type: string
+ *               example: "John Doe"
+ *             email:
+ *               type: string
+ *               format: email
+ *               example: "johndoe@example.com"
  *         date_posted:
  *           type: string
+ *           format: date
+ *           example: "2025-09-12"
  *         photos:
  *           type: array
  *           items:
  *             type: string
- *         condition:
+ *             example: "https://example.com/photo1.jpg"
+ *         listing_type:
  *           type: string
- *         category:
- *           type: string
+ *           enum: [Selling, Wanted]
+ *           example: "Selling"
  */
 
 /**

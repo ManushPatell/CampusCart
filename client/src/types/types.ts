@@ -69,7 +69,8 @@ export interface Miscellaneous {
   price: number;
   seller: number;
   date_posted: string;
-  photos: string[];
+  images: string[];
   condition: string;
   category: string;
+  listing_type: "Selling" | "Buying";
 }

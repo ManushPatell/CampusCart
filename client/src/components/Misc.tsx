@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+// pages/Misc.tsx
+import React, { useEffect, useMemo, useState } from "react";
 import MiscCard, { MiscItem } from "../components/MiscCard";
-import mockMisc from "../data/mockMisc"; // you'll need to create mockMisc.ts with sample misc listings
 
 const Misc = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [listings, setListings] = useState<MiscItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [filters, setFilters] = useState({
     listingType: "",
     minPrice: 0,
@@ -12,28 +16,81 @@ const Misc = () => {
     currentPrice: 1000,
   });
 
-  const filteredListings = mockMisc.filter((item: MiscItem) => {
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    // Initial load (you can also pass query params here)
+    fetch(`/api/misc`)
+      .then((r) => r.json())
+      .then((data) => {
+        const raw = Array.isArray(data) ? data : [];
 
-    const numericPrice =
-      typeof item.price === "number"
-        ? item.price
-        : parseFloat((item.price as string).replace(/[^0-9.]/g, "")) || 0;
+        // 🔧 1-liner-ish normalization: always give the card `image: string[]`
+        const arr: MiscItem[] = raw.map((it: any) => ({
+          ...it,
+          image: Array.isArray(it.image)
+            ? it.image
+            : Array.isArray(it.images)
+              ? it.images
+              : Array.isArray(it.photos)
+                ? it.photos
+                : it.photo
+                  ? [it.photo]
+                  : [],
+        }));
 
-    const matchesPrice = numericPrice <= filters.currentPrice;
+        setListings(arr);
 
-    const matchesListingType =
-      !filters.listingType || item.listing_type === filters.listingType;
+        const max = arr.reduce((m, it) => {
+          const p =
+            typeof it.price === "number"
+              ? it.price
+              : parseFloat(String(it.price).replace(/[^0-9.]/g, "")) || 0;
+          return Math.max(m, p);
+        }, 0);
 
-    return matchesSearch && matchesPrice && matchesListingType;
-  });
+        if (max > 0) {
+          const ceil = Math.ceil(max);
+          setFilters((prev) => ({
+            ...prev,
+            maxPrice: ceil,
+            currentPrice: ceil,
+          }));
+        }
+      })
+      .catch((e) => setError(String(e)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredListings = useMemo(() => {
+    return listings.filter((item: MiscItem) => {
+      const matchesSearch =
+        String(item.title ?? "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        String(item.description ?? "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+
+      const numericPrice =
+        typeof item.price === "number"
+          ? item.price
+          : parseFloat(String(item.price).replace(/[^0-9.]/g, "")) || 0;
+
+      const matchesPrice = numericPrice <= filters.currentPrice;
+
+      const matchesListingType =
+        !filters.listingType || item.listing_type === filters.listingType;
+
+      return matchesSearch && matchesPrice && matchesListingType;
+    });
+  }, [listings, searchTerm, filters]);
+
+  if (loading) return <div className="p-6">Loading…</div>;
+  if (error) return <div className="p-6 text-red-600">{error}</div>;
 
   return (
     <div className="min-h-screen bg-bg">
       {/* Header */}
-      <div className="py-8 px-4">
+      <div className="py-8 px-4 pt-20">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Extras & Misc Listings
         </h1>

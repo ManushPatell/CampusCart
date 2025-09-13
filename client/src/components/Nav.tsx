@@ -47,7 +47,7 @@ export default function Nav() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 font-semibold text-primary-fg items-center">
-          <Link to="/#about" className="hover:text-fuchsia-500 transition">
+          <Link to="/about" className="hover:text-fuchsia-500 transition">
             About Us
           </Link>
 
@@ -129,7 +129,7 @@ export default function Nav() {
 
           <nav className="flex flex-col space-y-8 text-2xl text-center">
             <Link
-              to="/#about"
+              to="/about"
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-fuchsia-500 transition"
             >

@@ -4,28 +4,73 @@ import { User } from "./userModel";
 export interface Textbook {
   id: string;
   book_title: string;
-  author: string;
-  edition: string;
-  condition: string;
-  seller: string;
-  date_posted: Date;
-  year: number;
-  faculty: string;
+  author: string | null;
+  edition: string | null;
+  condition: string | null;
+  seller_id?: string | null;
+  seller: {
+    id: string | null;
+    name: string | null;
+    email: string | null;
+  } | null;
+  date_posted: string | null;
+  year: number | null;
+  faculty: string | null;
   price: number;
-  photos: string[];
+  photos: string[] | null;
 }
 
 export async function findAllTextbooks(): Promise<Textbook[]> {
-  const result = await sql<Textbook[]>`Select * FROM textbooks`;
-  return result;
+  const rows = await sql<Textbook[]>`
+    SELECT
+      t.id,
+      t.book_title,
+      t.author,
+      t.edition,
+      t.condition,
+      t.date_posted,
+      t.year,
+      t.faculty,
+      t.price,
+      t.photos,
+      t.seller AS seller_id,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM textbooks t
+    LEFT JOIN users u ON u.id = t.seller
+    ORDER BY t.date_posted DESC NULLS LAST, t.id DESC
+  `;
+  return rows;
 }
 
 export async function findTextbook(id: string): Promise<Textbook | null> {
-  const result = await sql<Textbook[]>`
-    SELECT * FROM textbooks WHERE id = ${id}
+  const rows = await sql<Textbook[]>`
+    SELECT
+      t.id,
+      t.book_title,
+      t.author,
+      t.edition,
+      t.condition,
+      t.date_posted,
+      t.year,
+      t.faculty,
+      t.price,
+      t.photos,
+      t.seller AS seller_id,
+      jsonb_build_object(
+        'id', u.id,
+        'name', concat_ws(' ', u.first_name, u.last_name),
+        'email', u.email
+      ) AS seller
+    FROM textbooks t
+    LEFT JOIN users u ON u.id = t.seller
+    WHERE t.id = ${id}
+    LIMIT 1
   `;
-
-  return result[0] ?? null;
+  return rows[0] ?? null;
 }
 
 export async function findTextbooksFromUser(id: string) {
