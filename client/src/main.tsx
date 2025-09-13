@@ -22,6 +22,7 @@ import Misc from "./components/Misc";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AddMisc from "./pages/AddMisc";
 import AboutUs from "./pages/AboutUs";
+import AccountPage from "./pages/AccountPage";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<Nav />}>
               <Route path="/" element={<Home />} />
               <Route path="about" element={<AboutUs />} />
-
+              <Route path="account" element={<AccountPage />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Signup />} />
 

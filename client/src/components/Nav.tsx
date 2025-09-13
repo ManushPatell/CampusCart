@@ -11,7 +11,6 @@ export default function Nav() {
 
   const { user } = useAuth();
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -41,9 +40,9 @@ export default function Nav() {
         "
       >
         {/* Logo */}
-        <h1 className="text-2xl font-['Kavoon'] text-primary-fg cursor-pointer select-none">
+        <Link to="/" className="text-2xl font-['Kavoon'] text-primary-fg cursor-pointer select-none hover:text-fuchsia-500 transition">
           Campus Cart
-        </h1>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 font-semibold text-primary-fg items-center">
@@ -96,9 +95,14 @@ export default function Nav() {
           </div>
 
           {user ? (
-            <Link to="/dashboard" className="hover:text-fuchsia-500 transition">
-              Dashboard
-            </Link>
+            <>
+              <Link to="/dashboard" className="hover:text-fuchsia-500 transition">
+                Dashboard
+              </Link>
+              <Link to="/account" className="hover:text-fuchsia-500 transition">
+                Account
+              </Link>
+            </>
           ) : (
             <Link to="/register" className="hover:text-fuchsia-500 transition">
               Sign Up
@@ -158,13 +162,22 @@ export default function Nav() {
             </Link>
 
             {user ? (
-              <Link
-                to="/dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-fuchsia-500 transition"
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="hover:text-fuchsia-500 transition"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="hover:text-fuchsia-500 transition"
+                >
+                  Account
+                </Link>
+              </>
             ) : (
               <Link
                 to="/register"
