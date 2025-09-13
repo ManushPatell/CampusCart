@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
+import TextbookDetail from "./pages/TextbookDetail"; 
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,6 +41,8 @@ createRoot(document.getElementById("root")!).render(
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="rentals/:id" element={<HouseDetail />} />
+                <Route path="textbooks/:id" element={<TextbookDetail />} />
+                <Route path="misc/:id" element={<HouseDetail />} />
                 <Route path="rentals/create" element={<AddRental />} />
                 <Route path="textbooks/create" element={<AddTextbook />} />
                 <Route path="misc/create" element={<AddMisc />} />

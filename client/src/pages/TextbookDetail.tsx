@@ -12,7 +12,7 @@ export default function TextbookDetail() {
   useEffect(() => {
     const fetchTextbook = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/textbooks/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/textbooks/${id}`);
         if (!res.ok) {
           setError("Textbook not found");
           return;
