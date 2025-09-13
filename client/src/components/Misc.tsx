@@ -16,47 +16,46 @@ const Misc = () => {
     currentPrice: 1000,
   });
 
-      useEffect(() => {
-        // Initial load (you can also pass query params here)
-        fetch(`/api/misc`)
-          .then((r) => r.json())
-          .then((data) => {
-      const raw = Array.isArray(data) ? data : [];
+  useEffect(() => {
+    // Initial load (you can also pass query params here)
+    fetch(`/api/misc`)
+      .then((r) => r.json())
+      .then((data) => {
+        const raw = Array.isArray(data) ? data : [];
 
-      // 🔧 1-liner-ish normalization: always give the card `image: string[]`
-      const arr: MiscItem[] = raw.map((it: any) => ({
-        ...it,
-        image: Array.isArray(it.image)
-          ? it.image
-          : Array.isArray(it.images)
-          ? it.images
-          : Array.isArray(it.photos)
-          ? it.photos
-          : it.photo
-          ? [it.photo]
-          : [],
-      }));
-
-      setListings(arr); 
-
-      
-      const max = arr.reduce((m, it) => {
-        const p =
-          typeof it.price === "number"
-            ? it.price
-            : parseFloat(String(it.price).replace(/[^0-9.]/g, "")) || 0;
-        return Math.max(m, p);
-      }, 0);
-
-      if (max > 0) {
-        const ceil = Math.ceil(max);
-        setFilters((prev) => ({
-          ...prev,
-          maxPrice: ceil,
-          currentPrice: ceil,
+        // 🔧 1-liner-ish normalization: always give the card `image: string[]`
+        const arr: MiscItem[] = raw.map((it: any) => ({
+          ...it,
+          image: Array.isArray(it.image)
+            ? it.image
+            : Array.isArray(it.images)
+              ? it.images
+              : Array.isArray(it.photos)
+                ? it.photos
+                : it.photo
+                  ? [it.photo]
+                  : [],
         }));
-      }
-    })
+
+        setListings(arr);
+
+        const max = arr.reduce((m, it) => {
+          const p =
+            typeof it.price === "number"
+              ? it.price
+              : parseFloat(String(it.price).replace(/[^0-9.]/g, "")) || 0;
+          return Math.max(m, p);
+        }, 0);
+
+        if (max > 0) {
+          const ceil = Math.ceil(max);
+          setFilters((prev) => ({
+            ...prev,
+            maxPrice: ceil,
+            currentPrice: ceil,
+          }));
+        }
+      })
       .catch((e) => setError(String(e)))
       .finally(() => setLoading(false));
   }, []);
@@ -64,7 +63,9 @@ const Misc = () => {
   const filteredListings = useMemo(() => {
     return listings.filter((item: MiscItem) => {
       const matchesSearch =
-        String(item.title ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(item.title ?? "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         String(item.description ?? "")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());

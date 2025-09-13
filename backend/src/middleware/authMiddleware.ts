@@ -1,4 +1,4 @@
-import { type UserPayload } from "../types/user.ts";
+import { type UserPayload } from "../types/user";
 import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
@@ -23,6 +23,7 @@ export const authenticateToken = (
   jwt.verify(
     accessToken,
     process.env.ACCESS_TOKEN_SECRET as string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (err: any, decoded: any) => {
       if (err?.name === "TokenExpiredError") {
         res

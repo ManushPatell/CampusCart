@@ -1,22 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "module": "ESNext",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "types": ["node"],
-    "allowSyntheticDefaultImports": true,
-    "moduleDetection": "force"
+    "target": "ES2020",
+    "module": "commonjs",
     
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleDetection": "force",
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
   },
   
-  "include": ["src/**/*.ts", "src/routes/upload.js"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"],
 }

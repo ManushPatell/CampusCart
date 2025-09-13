@@ -10,26 +10,32 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./swagger.ts";
+import { swaggerSpec } from "./swagger";
 
-import userRoutes from "./routes/userRoutes.ts";
-import rentalRoutes from "./routes/rentalRoutes.ts";
-import authRoutes from "./routes/authRoutes.ts";
-import textbookRoutes from "./routes/textbookRoute.ts";
-import miscRoutes from "./routes/miscRoutes.ts";
-import uploadRoutes from "./routes/uploadRoutes.ts";
+import userRoutes from "./routes/userRoutes";
+import rentalRoutes from "./routes/rentalRoutes";
+import authRoutes from "./routes/authRoutes";
+import textbookRoutes from "./routes/textbookRoute";
+import miscRoutes from "./routes/miscRoutes";
+import uploadRoutes from "./routes/uploadRoutes";
 
 import cors from "cors";
 import morgan from "morgan";
-import { getAllRentals } from "./controllers/rentalController.ts";
+import RateLimit from "express-rate-limit";
+
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 30,
+});
 
 const app = express();
+app.use(limiter);
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const rawOrigins = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173";
+const rawOrigins = process.env.FRONTEND_ORIGIN ?? "http://localhost:4321";
 const FRONTEND_ORIGINS = rawOrigins
-  .split(/[,\s]+/)       // split on commas or whitespace
-  .map(s => s.trim())
+  .split(/[,\s]+/) // split on commas or whitespace
+  .map((s) => s.trim())
   .filter(Boolean);
 
 app.disable("etag");
@@ -64,7 +70,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (NODE_ENV !== "production")
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req: Request, res: Response) => {
   res.send(
@@ -78,12 +85,15 @@ const connectSrc = [
   "'self'",
   BACKEND,
   ...FRONTEND_ORIGINS,
-  ...FRONTEND_ORIGINS
-    .map(o => o.replace(/^http:/, "ws:").replace(/^https:/, "wss:")), // HMR websockets
+  ...FRONTEND_ORIGINS.map((o) =>
+    o.replace(/^http:/, "ws:").replace(/^https:/, "wss:"),
+  ), // HMR websockets
 ];
 
 const imgSrc = [
-  "'self'","data:","blob:",
+  "'self'",
+  "data:",
+  "blob:",
   BACKEND,
   "https://*.amazonaws.com",
   "https://*.s3.amazonaws.com",
@@ -91,18 +101,22 @@ const imgSrc = [
 ];
 
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
-    "style-src 'self' 'unsafe-inline'",
-    `img-src ${imgSrc.join(" ")}`,
-    `connect-src ${connectSrc.join(" ")}`,
-    "font-src 'self' data:",
-  ].join("; "));
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
+      "style-src 'self' 'unsafe-inline'",
+      `img-src ${imgSrc.join(" ")}`,
+      `connect-src ${connectSrc.join(" ")}`,
+      "font-src 'self' data:",
+    ].join("; "),
+  );
   next();
 });
 
 app.listen(PORT, () => {
   console.log(`Server running for ${NODE_ENV} at http://localhost:${PORT}`);
-  console.log(`JsDoc running on http://localhost:${PORT}/docs`);
+  if (NODE_ENV !== "production")
+    console.log(`JsDoc running on http://localhost:${PORT}/docs`);
 });

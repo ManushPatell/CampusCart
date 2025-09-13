@@ -66,7 +66,7 @@ const Textbooks = () => {
   return (
     <div className="min-h-screen bg-bg">
       {/* Header */}
-      <div className="py-8 px-4 pt-20">
+      <div className="py-8 px-4">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Textbook Listings
         </h1>
