@@ -4,7 +4,6 @@ import Submit from "../components/forms/Submit";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import ControlledCheckbox from "../components/forms/ControlledCheckbox";
 import { useQueryClient } from "@tanstack/react-query";
 
 const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
@@ -23,26 +22,33 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<FormInputs>({
-    defaultValues: { email: "", password: "" },
-  });
+  } = useForm<FormInputs>({ defaultValues: { email: "", password: "" } });
 
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Redirect if already authed
+  useEffect(() => {
+    if (user) navigate("/dashboard");
+  }, [user, navigate]);
+
+  // Lock background scroll while this view is mounted
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setIsLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+        body: JSON.stringify({ email: data.email, password: data.password }),
       });
 
       if (res.status === 200) {
@@ -51,44 +57,50 @@ export default function Login() {
       } else if (res.status === 400) {
         setErrorMessage("Failed to provide email and password.");
       } else if (res.status === 401) {
-        // This case should NEVER be hit, since we just registered a new user.
         setErrorMessage("Invalid login credentials. This shouldn't happen!");
       } else if (res.status === 500) {
         setErrorMessage("An error occurred on our end. Please try again.");
       } else {
         setErrorMessage("An error occured");
       }
-      setIsLoading(false);
     } catch (err) {
-      setIsLoading(false);
       setErrorMessage(String(err));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  });
-
   return (
-    <div className="flex min-h-screen bg-bg text-primary-fg">
-      {/* Left Image */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-primary-bg">
-        <img
-          src="/login_photo.jpg"
-          alt="Login Visual"
-          className="object-cover h-full w-full"
-        />
-      </div>
+    <div
+      className="relative min-h-[100svh] text-primary-fg"
+      style={{ overscrollBehaviorY: "contain" }}
+    >
+      {/* Full-bleed background image */}
+      <img
+        src="/isaiah.jpg"
+        alt=""
+        className="pointer-events-none select-none absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        fetchPriority="high"
+      />
+      {/* Subtle overlay so the card pops */}
+      <div className="absolute inset-0 bg-black/25" aria-hidden="true" />
 
-      {/* Right Login Form */}
-      <div className="flex w-full md:w-1/2 items-center justify-center px-6 py-12">
+      {/* Centered login card */}
+      <div className="relative z-10 flex min-h-[100svh] items-center justify-center px-4 sm:px-6">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm flex flex-col gap-[.5rem]"
+          className="
+            bg-white p-8 rounded-2xl shadow-lg
+            w-full max-w-md lg:max-w-lg
+            flex flex-col gap-[.5rem]
+            border
+            overflow-auto
+          "
+          style={{ borderColor: "#E7E0D6", maxHeight: "calc(100svh - 2rem)" }}
         >
           <h2 className="text-2xl font-semibold text-center mb-9">Login</h2>
+
           <ControlledInput
             name="email"
             control={control}
@@ -106,9 +118,7 @@ export default function Login() {
             name="password"
             control={control}
             errors={errors}
-            rules={{
-              required: "Field required",
-            }}
+            rules={{ required: "Field required" }}
             placeholder="Password"
             hideToggle
           />
