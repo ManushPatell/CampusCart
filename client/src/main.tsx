@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import "./fonts/fonts.css";
 import HouseDetail from "./pages/HouseDetail";
-import TextbookDetail from "./pages/TextbookDetail"; 
+import TextbookDetail from "./pages/TextbookDetail";
 import MiscDetail from "./pages/MiscDetail";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
@@ -32,10 +32,9 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="about" element={<AboutUs />} />
             <Route element={<Nav />}>
-              <Route path="/" element={<Home />} />
-              <Route path="about" element={<AboutUs />} />
-
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Signup />} />
 
@@ -51,7 +50,7 @@ createRoot(document.getElementById("root")!).render(
 
               <Route path="textbooks" element={<Textbooks />} />
               <Route path="rentals" element={<Houses />} />
-              <Route path="misc" element={<Misc/>} />
+              <Route path="misc" element={<Misc />} />
             </Route>
           </Routes>
         </AuthProvider>

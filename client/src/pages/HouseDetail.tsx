@@ -62,7 +62,9 @@ export default function HouseDetail() {
         const url = buildApiUrl(`/api/rentals/${encodeURIComponent(id)}`);
         const res = await fetch(url, { credentials: "include" });
         if (!res.ok) {
-          setError(res.status === 404 ? "House not found." : "Failed to load house.");
+          setError(
+            res.status === 404 ? "House not found." : "Failed to load house.",
+          );
           return;
         }
         const data = await res.json();
@@ -89,7 +91,10 @@ export default function HouseDetail() {
         const parsed = JSON.parse(p);
         if (Array.isArray(parsed)) return parsed.filter(Boolean);
       } catch {
-        return p.split(",").map((s: string) => s.trim()).filter(Boolean);
+        return p
+          .split(",")
+          .map((s: string) => s.trim())
+          .filter(Boolean);
       }
     }
     return [];
@@ -97,12 +102,15 @@ export default function HouseDetail() {
 
   // Read seller directly from API (nested object or raw id fallback)
   const sellerObj =
-    typeof house?.seller === "object" && house?.seller ? house.seller : undefined;
+    typeof house?.seller === "object" && house?.seller
+      ? house.seller
+      : undefined;
   const sellerId =
     typeof house?.seller === "string" || typeof house?.seller === "number"
       ? house.seller
       : sellerObj?.id;
-  const sellerName = sellerObj?.name ?? (sellerId ? `Seller #${sellerId}` : "Unknown");
+  const sellerName =
+    sellerObj?.name ?? (sellerId ? `Seller #${sellerId}` : "Unknown");
   const sellerEmail = sellerObj?.email ?? sellerObj?.contact ?? "—";
 
   // Feature chips
@@ -117,7 +125,7 @@ export default function HouseDetail() {
       { on: !!house?.no_smoking, label: "No smoking" },
       { on: !!house?.is_shared, label: "Shared" },
     ],
-    [house]
+    [house],
   );
 
   // Loading / error states
@@ -195,7 +203,8 @@ export default function HouseDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex - 1 + photos.length) % photos.length
+                          (currentImageIndex - 1 + photos.length) %
+                            photos.length,
                         )
                       }
                       className="absolute top-1/2 left-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -205,7 +214,7 @@ export default function HouseDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex + 1) % photos.length
+                          (currentImageIndex + 1) % photos.length,
                         )
                       }
                       className="absolute top-1/2 right-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -312,7 +321,9 @@ export default function HouseDetail() {
                 Email Seller
               </a>
               <button
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
+                onClick={() =>
+                  navigator.clipboard.writeText(window.location.href)
+                }
                 className="rounded-lg px-4 py-2 border border-gray-300 hover:bg-gray-50"
               >
                 Share
