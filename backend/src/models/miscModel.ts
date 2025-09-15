@@ -3,11 +3,7 @@ import { User } from "./userModel";
 
 type ListingType = "Selling" | "Wanted";
 
-export type MiscSeller =
-  | string
-  | number
-  | { id: string | number | null; name: string | null; email: string | null }
-  | null;
+export type MiscSeller = { id: string; name: string; email: string };
 
 export interface Miscellaneous {
   id: string;
@@ -78,7 +74,7 @@ export const addMisc = async (
   misc: Omit<Miscellaneous, "id" | "date_posted">,
 ) => {
   const result =
-    await sql`INSERT INTO misc (title, description, price, seller, listing_type, photos) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller}, ${misc.listing_type}, ${misc.photos})`;
+    await sql`INSERT INTO misc (title, description, price, seller, listing_type, photos) VALUES (${misc.title}, ${misc.description}, ${misc.price}, ${misc.seller.id}, ${misc.listing_type}, ${misc.photos})`;
   return result;
 };
 
@@ -86,7 +82,7 @@ export const editMisc = async (
   misc: Omit<Miscellaneous, "date_posted" | "photos">,
 ) => {
   const result =
-    await sql`UPDATE misc SET (title, description, price, listing_type) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}) WHERE id = ${misc.id} AND seller = ${misc.seller}`;
+    await sql`UPDATE misc SET (title, description, price, listing_type) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}) WHERE id = ${misc.id} AND seller = ${misc.seller.id}`;
   return result;
 };
 

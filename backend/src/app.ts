@@ -55,12 +55,12 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/misc", miscRoutes);
 app.use("/api/textbooks", textbookRoutes);
-app.use("/upload", uploadRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(`Thrown error: ${err.stack}`);
@@ -71,11 +71,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 if (NODE_ENV !== "production")
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api", (req: Request, res: Response) => {
   res.send(
-    "Welcome to the API — use /auth, /users, /rentals, /docs or /textbooks",
+    "Welcome to the API — use /api/auth, /api/users, /api/rentals, /api/docs or /api/textbooks",
   );
 });
 
@@ -118,5 +118,5 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running for ${NODE_ENV} at http://localhost:${PORT}`);
   if (NODE_ENV !== "production")
-    console.log(`JsDoc running on http://localhost:${PORT}/docs`);
+    console.log(`JsDoc running on http://localhost:${PORT}/api/docs`);
 });

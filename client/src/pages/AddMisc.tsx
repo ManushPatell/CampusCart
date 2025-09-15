@@ -99,7 +99,7 @@ export default function AddMisc() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/misc`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc`, {
         method: id ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ export default function AddMisc() {
   useEffect(() => {
     if (id) {
       setIsLoadingMisc(true);
-      fetch(`${import.meta.env.VITE_API_URL}/api/misc/${id}`)
+      fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`)
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingMisc(false);

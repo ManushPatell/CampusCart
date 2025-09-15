@@ -120,17 +120,14 @@ export default function AddTextbook() {
     };
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/textbooks`,
-        {
-          method: id ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(data),
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/textbooks`, {
+        method: id ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
 
       if (!res.ok) {
         if (res.status === 500) {

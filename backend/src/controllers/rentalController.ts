@@ -35,7 +35,7 @@ function transformRentalToHouseView(rental: Rental): RentalListing {
     ].filter(Boolean) as string[],
 
     seller: {
-      name: rental.seller,
+      name: rental.seller.name,
     },
     photos: rental.photos,
   };
@@ -104,7 +104,7 @@ export const postRental = async (req: Request, res: Response) => {
   }
   const postedRental: Omit<Rental, "id"> = {
     title,
-    seller: id,
+    seller: { id: id, name: "", email: "" },
     address,
     date_available,
     post_date: new Date().toDateString(),
@@ -159,7 +159,7 @@ export const putRental = async (req: Request, res: Response) => {
   const postedRental: Rental = {
     id: rentalId,
     title,
-    seller: id,
+    seller: { id: id, name: "", email: "" },
     address,
     date_available,
     post_date: new Date().toDateString(),

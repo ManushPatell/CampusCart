@@ -53,7 +53,7 @@ export const postMisc = async (req: Request, res: Response) => {
     title,
     description,
     price,
-    seller: req.user!.id!, // we must be signed in
+    seller: { id: req.user!.id!, name: "", email: "" }, // we must be signed in
     listing_type,
     photos,
   };
@@ -76,7 +76,7 @@ export const putMisc = async (req: Request, res: Response) => {
     title,
     description,
     price: parseInt(price),
-    seller: req.user!.id!, // we must be signed in
+    seller: { id: req.user!.id!, name: "", email: "" }, // we must be signed in
     listing_type,
   };
 
