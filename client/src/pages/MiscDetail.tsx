@@ -66,7 +66,7 @@ export default function MiscDetail() {
           setError("No item id provided.");
           return;
         }
-        const url = buildApiUrl(`/api/misc/${encodeURIComponent(id)}`);
+        const url = buildApiUrl(`/misc/${encodeURIComponent(id)}`);
         const res = await fetch(url, { credentials: "include" });
         if (!res.ok) {
           setError(

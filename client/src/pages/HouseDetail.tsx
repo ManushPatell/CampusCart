@@ -59,7 +59,7 @@ export default function HouseDetail() {
           setError("No rental id provided.");
           return;
         }
-        const url = buildApiUrl(`/api/rentals/${encodeURIComponent(id)}`);
+        const url = buildApiUrl(`/rentals/${encodeURIComponent(id)}`);
         const res = await fetch(url, { credentials: "include" });
         if (!res.ok) {
           setError(

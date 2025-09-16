@@ -21,7 +21,6 @@ import uploadRoutes from "./routes/uploadRoutes";
 
 import cors from "cors";
 import morgan from "morgan";
-import { getAllRentals } from "./controllers/rentalController.ts";
 import RateLimit from "express-rate-limit";
 
 const limiter = RateLimit({

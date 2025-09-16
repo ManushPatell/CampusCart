@@ -38,7 +38,7 @@ export default function TextbookDetail() {
         setLoading(true);
         setError("");
         const base = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
-        const res = await fetch(`${base}/api/textbooks/${id}`, {
+        const res = await fetch(`${base}/textbooks/${id}`, {
           credentials: "include",
         });
         if (!res.ok) {
