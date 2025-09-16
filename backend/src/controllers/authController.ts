@@ -1,4 +1,4 @@
-import { type UserPayload } from "../types/user.ts";
+import { type UserPayload } from "../types/user";
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -8,8 +8,8 @@ import {
   deleteToken,
   isRefreshTokenRegistered,
   deleteTokenById,
-} from "../models/tokenModel.ts";
-import { findUserByEmail, findUserById } from "../models/userModel.ts";
+} from "../models/tokenModel";
+import { findUserByEmail, findUserById } from "../models/userModel";
 
 export async function getUserInformation(req: Request, res: Response) {
   const { id } = req.user!; // This route is protected which guarantees req.user exists
@@ -66,13 +66,15 @@ export async function postLoginUser(req: Request, res: Response) {
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
+        path: "/",
         expires: new Date(Date.now() + 1800000), // expires in 30 minutes
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
+        path: "/",
         expires: new Date(Date.now() + 604800000), // expires in 7 days
       })
       .json({});
@@ -97,6 +99,7 @@ export async function postRefreshToken(req: Request, res: Response) {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET as string,
+    //@ts-expect-error Not sure why typescript doesn't like this
     (err: unknown, user: UserPayload) => {
       if (err) {
         res.status(403).json({ error: err });

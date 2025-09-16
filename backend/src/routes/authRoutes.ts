@@ -4,8 +4,8 @@ import {
   postLoginUser,
   postRefreshToken,
   getUserInformation,
-} from "../controllers/authController.ts";
-import { authenticateToken } from "../middleware/authMiddleware.ts";
+} from "../controllers/authController";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 

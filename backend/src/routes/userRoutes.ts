@@ -7,9 +7,9 @@ import {
   getUserRentals,
   getUserTextbooks,
   getUserMisc,
-} from "../controllers/userController.ts";
+} from "../controllers/userController";
 
-import { authenticateToken } from "../middleware/authMiddleware.ts";
+import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 

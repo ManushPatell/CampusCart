@@ -1,5 +1,5 @@
-import sql from "./db.ts";
-import { User } from "./userModel.ts";
+import sql from "./db";
+import { User } from "./userModel";
 
 export interface Textbook {
   id: string | number; // use string if your id is uuid; number if integer
