@@ -2,23 +2,20 @@ import sql from "./db";
 import { User } from "./userModel";
 
 export interface Textbook {
-  id: string;
+  id: string | number; // use string if your id is uuid; number if integer
   book_title: string;
   author: string | null;
   edition: string | null;
   condition: string | null;
   seller_id?: string | null;
-  seller: {
-    id: string | null;
-    name: string | null;
-    email: string | null;
-  } | null;
+  seller: { id: string | null; name: string | null; email: string | null } | null;
   date_posted: string | null;
   year: number | null;
   faculty: string | null;
   price: number;
   photos: string[] | null;
 }
+
 
 export async function findAllTextbooks(): Promise<Textbook[]> {
   const rows = await sql<Textbook[]>`
@@ -45,6 +42,7 @@ export async function findAllTextbooks(): Promise<Textbook[]> {
   `;
   return rows;
 }
+
 
 export async function findTextbook(id: string): Promise<Textbook | null> {
   const rows = await sql<Textbook[]>`

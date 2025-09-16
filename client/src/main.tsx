@@ -32,10 +32,9 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="about" element={<AboutUs />} />
             <Route element={<Nav />}>
-              <Route path="/" element={<Home />} />
-              <Route path="about" element={<AboutUs />} />
-
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Signup />} />
 

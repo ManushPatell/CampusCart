@@ -69,7 +69,10 @@ export default function TextbookDetail() {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) return parsed.filter(Boolean);
       } catch {
-        return raw.split(",").map((s: string) => s.trim()).filter(Boolean);
+        return raw
+          .split(",")
+          .map((s: string) => s.trim())
+          .filter(Boolean);
       }
     }
     return [];
@@ -93,12 +96,14 @@ export default function TextbookDetail() {
     return (
       <>
         <NavBar />
-        <div className="max-w-5xl mx-auto p-6">
+        <div className="h-24" aria-hidden="true" />
+        {/* navbar offset */}
+        <div className="max-w-5xl mx-auto px-6 pb-8">
           <div className="animate-pulse space-y-4">
-            <div className="h-10 bg-gray-200 rounded w-1/3" />
-            <div className="h-80 bg-gray-200 rounded" />
-            <div className="h-6 bg-gray-200 rounded w-1/2" />
-            <div className="h-24 bg-gray-200 rounded" />
+            <div className="h-8 bg-gray-200 rounded w-1/3" />
+            <div className="h-64 bg-gray-200 rounded" />
+            <div className="h-5 bg-gray-200 rounded w-1/2" />
+            <div className="h-20 bg-gray-200 rounded" />
           </div>
         </div>
       </>
@@ -109,7 +114,8 @@ export default function TextbookDetail() {
     return (
       <>
         <NavBar />
-        <div className="max-w-5xl mx-auto p-6 text-center text-red-600">
+        <div className="h-24" aria-hidden="true" />
+        <div className="max-w-5xl mx-auto px-6 pb-8 text-center text-red-600">
           {error}
         </div>
       </>
@@ -121,7 +127,10 @@ export default function TextbookDetail() {
   return (
     <>
       <NavBar />
-      <div className="max-w-5xl mx-auto p-6">
+      <div className="h-24" aria-hidden="true" />
+      {/* navbar offset */}
+
+      <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
         {/* Breadcrumbs */}
         <div className="text-sm text-gray-500 mb-3">
           <Link to="/textbooks" className="hover:underline">
@@ -131,26 +140,26 @@ export default function TextbookDetail() {
         </div>
 
         {/* Title + price */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
           <div>
-            <h1 className="text-3xl font-bold text-[#4A4032]">
+            <h1 className="text-3xl md:text-4xl font-bold leading-snug text-[#4A4032]">
               {textbook.book_title || "Textbook"}
             </h1>
-            <div className="text-[#6B5B45]">
+            <div className="text-[#6B5B45] mt-1">
               {textbook.author ? `${textbook.author} • ` : ""}
               {textbook.edition ? `Edition ${textbook.edition}` : ""}
             </div>
           </div>
-          <div className="text-3xl font-semibold text-[#4A4032]">
+          <div className="text-3xl md:text-4xl font-semibold text-[#4A4032]">
             {formatCurrency((textbook as any)?.price)}
           </div>
         </div>
 
         {/* Photos */}
-        <div className="mb-6">
+        <div className="mb-4">
           {photos.length > 0 ? (
             <>
-              <div className="relative w-full h-[22rem] md:h-[26rem]">
+              <div className="relative w-full h-[18rem] md:h-[22rem]">
                 <img
                   src={photos[currentImageIndex]}
                   alt={`Photo ${currentImageIndex + 1}`}
@@ -161,7 +170,8 @@ export default function TextbookDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex - 1 + photos.length) % photos.length
+                          (currentImageIndex - 1 + photos.length) %
+                            photos.length,
                         )
                       }
                       className="absolute top-1/2 left-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -171,7 +181,7 @@ export default function TextbookDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex + 1) % photos.length
+                          (currentImageIndex + 1) % photos.length,
                         )
                       }
                       className="absolute top-1/2 right-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -182,13 +192,15 @@ export default function TextbookDetail() {
                 )}
               </div>
               {photos.length > 1 && (
-                <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
                   {photos.map((p, i) => (
                     <button
                       key={p + i}
                       onClick={() => setCurrentImageIndex(i)}
                       className={`h-16 w-24 flex-none rounded overflow-hidden border ${
-                        i === currentImageIndex ? "border-[#4A4032]" : "border-gray-200"
+                        i === currentImageIndex
+                          ? "border-[#4A4032]"
+                          : "border-gray-200"
                       }`}
                     >
                       <img
@@ -205,21 +217,23 @@ export default function TextbookDetail() {
             <img
               src="https://via.placeholder.com/1200x600?text=No+Image"
               alt="No image"
-              className="w-full h-[22rem] md:h-[26rem] object-cover rounded-xl shadow"
+              className="w-full h-[18rem] md:h-[22rem] object-cover rounded-xl shadow"
             />
           )}
         </div>
 
         {/* Two-column layout (details + contact) */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <section className="md:col-span-2 space-y-4">
+        <div className="grid md:grid-cols-3 gap-4">
+          <section className="md:col-span-2 space-y-3">
             <div className="text-[#6B5B45]">
               <div>
                 <span className="font-semibold text-[#4A4032]">Condition:</span>{" "}
                 {textbook.condition || "—"}
               </div>
               <div>
-                <span className="font-semibold text-[#4A4032]">Course Code:</span>{" "}
+                <span className="font-semibold text-[#4A4032]">
+                  Course Code:
+                </span>{" "}
                 {(textbook as any)?.course_code ?? "—"}
               </div>
               <div>
@@ -238,7 +252,7 @@ export default function TextbookDetail() {
 
             {textbook.description && (
               <div>
-                <h2 className="text-xl font-semibold text-[#4A4032] mb-2">
+                <h2 className="text-xl font-semibold text-[#4A4032] mb-1.5">
                   Description
                 </h2>
                 <p className="text-[#6B5B45] whitespace-pre-wrap">
@@ -248,13 +262,13 @@ export default function TextbookDetail() {
             )}
           </section>
 
-          {/* Contact Seller — same placement/styling as Misc */}
-          <aside className="border rounded-xl p-4 h-fit shadow-sm">
+          {/* Contact Seller */}
+          <aside className="border rounded-xl p-3 md:p-4 h-fit shadow-sm">
             <h3 className="text-lg font-semibold text-[#4A4032] mb-2">
               Contact Seller
             </h3>
 
-            <div className="text-[#6B5B45] space-y-1 mb-4">
+            <div className="text-[#6B5B45] space-y-1.5 mb-3">
               <div>
                 <span className="font-semibold text-[#4A4032]">Name:</span>{" "}
                 {sellerName}
@@ -282,7 +296,9 @@ export default function TextbookDetail() {
                 Email Seller
               </a>
               <button
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
+                onClick={() =>
+                  navigator.clipboard.writeText(window.location.href)
+                }
                 className="rounded-lg px-4 py-2 border border-gray-300 hover:bg-gray-50"
               >
                 Share

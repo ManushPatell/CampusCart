@@ -19,6 +19,14 @@
   --color-secondary-fg: #5e5850;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
 body {
   font-family: "Nunito", sans-serif;
   font-optical-sizing: auto;

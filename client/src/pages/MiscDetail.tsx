@@ -8,8 +8,14 @@ type Misc = {
   title?: string;
   description?: string;
   price?: number | string;
-  // API now returns a nested seller object; keep number fallback just in case
-  seller?: number | { id?: number | string; name?: string | null; email?: string | null; contact?: string | null };
+  seller?:
+    | number
+    | {
+        id?: number | string;
+        name?: string | null;
+        email?: string | null;
+        contact?: string | null;
+      };
   date_posted?: string;
   condition?: string;
   category?: string;
@@ -63,7 +69,9 @@ export default function MiscDetail() {
         const url = buildApiUrl(`/api/misc/${encodeURIComponent(id)}`);
         const res = await fetch(url, { credentials: "include" });
         if (!res.ok) {
-          setError(res.status === 404 ? "Item not found." : "Failed to load item.");
+          setError(
+            res.status === 404 ? "Item not found." : "Failed to load item.",
+          );
           return;
         }
         const data = (await res.json()) as Misc;
@@ -80,7 +88,6 @@ export default function MiscDetail() {
     };
   }, [id]);
 
-  // Combine photos/images; accept array, JSON string, or CSV string
   const photos: string[] = useMemo(() => {
     const raw = item?.photos ?? item?.images;
     if (!raw) return [];
@@ -91,7 +98,10 @@ export default function MiscDetail() {
           const parsed = JSON.parse(val);
           if (Array.isArray(parsed)) return parsed.filter(Boolean);
         } catch {
-          return val.split(",").map((s) => s.trim()).filter(Boolean);
+          return val
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
         }
       }
       return [];
@@ -99,22 +109,27 @@ export default function MiscDetail() {
     return toArray(raw);
   }, [item?.photos, item?.images]);
 
-  // Read seller directly from API response (fallback if backend ever returns a number)
-  const sellerObj = (typeof item?.seller === "object" && item?.seller) ? item.seller : undefined;
-  const sellerId   = typeof item?.seller === "number" || typeof item?.seller === "string" ? item?.seller : sellerObj?.id;
-  const sellerName = sellerObj?.name ?? (sellerId ? `Seller #${sellerId}` : "Unknown");
+  const sellerObj =
+    typeof item?.seller === "object" && item?.seller ? item.seller : undefined;
+  const sellerId =
+    typeof item?.seller === "number" || typeof item?.seller === "string"
+      ? item?.seller
+      : sellerObj?.id;
+  const sellerName =
+    sellerObj?.name ?? (sellerId ? `Seller #${sellerId}` : "Unknown");
   const sellerEmail = sellerObj?.email ?? sellerObj?.contact ?? "—";
 
   if (loading) {
     return (
       <>
         <NavBar />
-        <div className="max-w-5xl mx-auto p-6">
+        <div className="h-24" aria-hidden="true" />
+        <div className="max-w-5xl mx-auto px-6 pb-8">
           <div className="animate-pulse space-y-4">
-            <div className="h-10 bg-gray-200 rounded w-1/3" />
-            <div className="h-80 bg-gray-200 rounded" />
-            <div className="h-6 bg-gray-200 rounded w-1/2" />
-            <div className="h-24 bg-gray-200 rounded" />
+            <div className="h-8 bg-gray-200 rounded w-1/3" />
+            <div className="h-64 bg-gray-200 rounded" />
+            <div className="h-5 bg-gray-200 rounded w-1/2" />
+            <div className="h-20 bg-gray-200 rounded" />
           </div>
         </div>
       </>
@@ -125,7 +140,8 @@ export default function MiscDetail() {
     return (
       <>
         <NavBar />
-        <div className="max-w-5xl mx-auto p-6 text-center text-red-600">
+        <div className="h-24" aria-hidden="true" />
+        <div className="max-w-5xl mx-auto px-6 pb-8 text-center text-red-600">
           {error}
         </div>
       </>
@@ -137,7 +153,11 @@ export default function MiscDetail() {
   return (
     <>
       <NavBar />
-      <div className="max-w-5xl mx-auto p-6">
+      <div className="h-24" aria-hidden="true" />
+      {/* navbar offset */}
+
+      <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
+        {/* Breadcrumbs */}
         <div className="text-sm text-gray-500 mb-3">
           <Link to="/misc" className="hover:underline">
             Misc
@@ -146,26 +166,26 @@ export default function MiscDetail() {
         </div>
 
         {/* Title + price */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
           <div>
-            <h1 className="text-3xl font-bold text-[#4A4032]">
+            <h1 className="text-3xl md:text-4xl font-bold leading-snug text-[#4A4032]">
               {item.title || "Item"}
             </h1>
-            <div className="text-[#6B5B45]">
+            <div className="text-[#6B5B45] mt-1">
               {item.category ? `${item.category} • ` : ""}
               {item.condition ? `Condition: ${item.condition}` : ""}
             </div>
           </div>
-          <div className="text-3xl font-semibold text-[#4A4032]">
+          <div className="text-3xl md:text-4xl font-semibold text-[#4A4032]">
             {formatCurrency(item.price)}
           </div>
         </div>
 
         {/* Photos */}
-        <div className="mb-6">
+        <div className="mb-4">
           {photos.length > 0 ? (
             <>
-              <div className="relative w-full h-[22rem] md:h-[26rem]">
+              <div className="relative w-full h-[18rem] md:h-[22rem]">
                 <img
                   src={photos[currentImageIndex]}
                   alt={`Photo ${currentImageIndex + 1}`}
@@ -176,7 +196,8 @@ export default function MiscDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex - 1 + photos.length) % photos.length
+                          (currentImageIndex - 1 + photos.length) %
+                            photos.length,
                         )
                       }
                       className="absolute top-1/2 left-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -186,7 +207,7 @@ export default function MiscDetail() {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (currentImageIndex + 1) % photos.length
+                          (currentImageIndex + 1) % photos.length,
                         )
                       }
                       className="absolute top-1/2 right-3 -translate-y-1/2 bg-white/80 backdrop-blur px-3 py-2 rounded-full shadow"
@@ -197,7 +218,7 @@ export default function MiscDetail() {
                 )}
               </div>
               {photos.length > 1 && (
-                <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
                   {photos.map((p, i) => (
                     <button
                       key={p + i}
@@ -222,17 +243,19 @@ export default function MiscDetail() {
             <img
               src="https://via.placeholder.com/1200x600?text=No+Image"
               alt="No image"
-              className="w-full h-[22rem] md:h-[26rem] object-cover rounded-xl shadow"
+              className="w-full h-[18rem] md:h-[22rem] object-cover rounded-xl shadow"
             />
           )}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <section className="md:col-span-2 space-y-4">
+        <div className="grid md:grid-cols-3 gap-4">
+          <section className="md:col-span-2 space-y-3">
             <div className="text-[#6B5B45]">
               {item.listing_type && (
                 <div>
-                  <span className="font-semibold text-[#4A4032]">Listing Type:</span>{" "}
+                  <span className="font-semibold text-[#4A4032]">
+                    Listing Type:
+                  </span>{" "}
                   {item.listing_type}
                 </div>
               )}
@@ -243,7 +266,7 @@ export default function MiscDetail() {
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold text-[#4A4032] mb-2">
+              <h2 className="text-xl font-semibold text-[#4A4032] mb-1.5">
                 Description
               </h2>
               <p className="text-[#6B5B45] whitespace-pre-wrap">
@@ -252,11 +275,13 @@ export default function MiscDetail() {
             </div>
           </section>
 
-          {/* Contact / CTA — same layout as rentals/misc */}
-          <aside className="border rounded-xl p-4 h-fit shadow-sm">
-            <h3 className="text-lg font-semibold text-[#4A4032] mb-2">Contact Seller</h3>
+          {/* Contact / CTA */}
+          <aside className="border rounded-xl p-3 md:p-4 h-fit shadow-sm">
+            <h3 className="text-lg font-semibold text-[#4A4032] mb-2">
+              Contact Seller
+            </h3>
 
-            <div className="text-[#6B5B45] space-y-1 mb-4">
+            <div className="text-[#6B5B45] space-y-1.5 mb-3">
               <div>
                 <span className="font-semibold text-[#4A4032]">Name:</span>{" "}
                 {sellerName}
@@ -282,7 +307,9 @@ export default function MiscDetail() {
                 Email Seller
               </a>
               <button
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
+                onClick={() =>
+                  navigator.clipboard.writeText(window.location.href)
+                }
                 className="rounded-lg px-4 py-2 border border-gray-300 hover:bg-gray-50"
               >
                 Share
