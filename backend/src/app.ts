@@ -21,7 +21,6 @@ import uploadRoutes from "./routes/uploadRoutes";
 
 import cors from "cors";
 import morgan from "morgan";
-import { getAllRentals } from "./controllers/rentalController.ts";
 import RateLimit from "express-rate-limit";
 
 const limiter = RateLimit({
@@ -35,8 +34,8 @@ const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
 const rawOrigins = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173";
 const FRONTEND_ORIGINS = rawOrigins
-  .split(/[,\s]+/)       // split on commas or whitespace
-  .map(s => s.trim())
+  .split(/[,\s]+/) // split on commas or whitespace
+  .map((s) => s.trim())
   .filter(Boolean);
 
 app.disable("etag");
@@ -86,12 +85,15 @@ const connectSrc = [
   "'self'",
   BACKEND,
   ...FRONTEND_ORIGINS,
-  ...FRONTEND_ORIGINS
-    .map(o => o.replace(/^http:/, "ws:").replace(/^https:/, "wss:")), // HMR websockets
+  ...FRONTEND_ORIGINS.map((o) =>
+    o.replace(/^http:/, "ws:").replace(/^https:/, "wss:"),
+  ), // HMR websockets
 ];
 
 const imgSrc = [
-  "'self'","data:","blob:",
+  "'self'",
+  "data:",
+  "blob:",
   BACKEND,
   "https://*.amazonaws.com",
   "https://*.s3.amazonaws.com",
