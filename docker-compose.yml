@@ -56,16 +56,16 @@ services:
       args: 
         VITE_API_URL: ${VITE_API_URL}
         VITE_PORT: ${VITE_PORT}
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    ports:
-      - "443:443"
-      - "80:80"
     depends_on:
       - backend
     networks:
       - app-network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - webroot:/var/www/certbot        # ACME challenge path
+      - certs:/etc/letsencrypt 
     deploy:
       replicas: 1
       restart_policy:
@@ -73,12 +73,21 @@ services:
   
   certbot:
     image: certbot/certbot
+    container_name: certbot
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - webroot:/var/www/certbot        # ACME challenge path
+      - certs:/etc/letsencrypt 
+    entrypoint: >
+      sh -c "certbot certonly \
+      --webroot -w /var/www/certbot \
+      -d campus-cart.ca --agree-tos --non-interactive --register-unsafely-without-email"
+    depends_on:
+      - client
 
 volumes:
   db-data:
+  certs:
+  webroot:
 
 networks:
   app-network:
