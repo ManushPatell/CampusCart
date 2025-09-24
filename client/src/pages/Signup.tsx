@@ -190,7 +190,6 @@ export default function SignUp() {
               },
             }}
             placeholder="Password"
-            hideToggle
           />
 
           {errorMessage && (
