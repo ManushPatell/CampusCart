@@ -1,0 +1,11 @@
+FROM node:20-alpine
+
+ARG VITE_PORT
+ENV VITE_PORT=$VITE_PORT
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE $VITE_PORT
+CMD ["npm", "run", "dev"]
