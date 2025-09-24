@@ -190,6 +190,7 @@ export default function SignUp() {
               },
             }}
             placeholder="Password"
+            type="password"
           />
 
           {errorMessage && (

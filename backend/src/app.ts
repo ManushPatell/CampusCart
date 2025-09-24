@@ -32,11 +32,7 @@ const app = express();
 app.use(limiter);
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const rawOrigins = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173";
-const FRONTEND_ORIGINS = rawOrigins
-  .split(/[,\s]+/) // split on commas or whitespace
-  .map((s) => s.trim())
-  .filter(Boolean);
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
 app.disable("etag");
 
@@ -47,7 +43,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: FRONTEND_ORIGINS,
+    origin: FRONTEND_ORIGIN,
     credentials: true,
   }),
 ); // Since we rely on credential for cookies, we must set the origin.
@@ -81,15 +77,6 @@ app.get("/api", (req: Request, res: Response) => {
 
 const BACKEND = `http://localhost:${PORT}`;
 
-const connectSrc = [
-  "'self'",
-  BACKEND,
-  ...FRONTEND_ORIGINS,
-  ...FRONTEND_ORIGINS.map((o) =>
-    o.replace(/^http:/, "ws:").replace(/^https:/, "wss:"),
-  ), // HMR websockets
-];
-
 const imgSrc = [
   "'self'",
   "data:",
@@ -108,7 +95,7 @@ app.use((req, res, next) => {
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       `img-src ${imgSrc.join(" ")}`,
-      `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGINS}`,
+      `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGIN}`,
       "font-src 'self'",
     ].join("; "),
   );
