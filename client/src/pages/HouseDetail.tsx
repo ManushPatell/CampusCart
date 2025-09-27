@@ -1,5 +1,4 @@
-// src/pages/HouseDetail.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "../components/Nav";
 
@@ -168,14 +167,6 @@ export default function HouseDetail() {
       {/* navbar offset */}
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
-        <div className="text-sm text-gray-500 mb-3">
-          <Link to="/rentals" className="hover:underline">
-            Rentals
-          </Link>{" "}
-          / <span className="text-gray-700">Details</span>
-        </div>
-
-        {/* Title + price */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold leading-snug text-[#4A4032]">

@@ -7,7 +7,7 @@ import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 type FormInputs = {
@@ -158,14 +158,13 @@ export default function AddRental() {
   };
 
   return (
-    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
-      <span
-        className="flex hover:gap-[.5rem] hover:font-semibold gap-[0rem] transition-all ease-linear duration-100 w-fit h-[1.5rem] items-center mb-[1rem]"
-        onClick={() => navigate("/dashboard")}
-      >
-        <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
-        <p>Go back</p>
-      </span>
+    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg mt-[5rem]">
+      <div className="text-sm text-gray-500 mb-3">
+        <Link to="/dashboard" className="hover:underline">
+          Dashboard
+        </Link>{" "}
+        / <span className="text-gray-700">Rental</span>
+      </div>
 
       <h1 className="text-xl font-bold">Add rental</h1>
       <form
