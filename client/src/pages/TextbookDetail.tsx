@@ -131,14 +131,6 @@ export default function TextbookDetail() {
       {/* navbar offset */}
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
-        {/* Breadcrumbs */}
-        <div className="text-sm text-gray-500 mb-3">
-          <Link to="/textbooks" className="hover:underline">
-            Textbooks
-          </Link>{" "}
-          / <span className="text-gray-700">Details</span>
-        </div>
-
         {/* Title + price */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
           <div>

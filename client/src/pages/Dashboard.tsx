@@ -17,29 +17,17 @@ import useUserRentals from "../hooks/useUserRentals";
 import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import ShareButton from "@/components/Share";
 
-// Small, reliable image box with built-in fallback, no forced aspect/crop
-function CardImage({
-  src,
-  alt,
-  onClick,
-}: {
-  src?: string;
-  alt: string;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-}) {
+function CardImage({ src, alt }: { src?: string; alt: string }) {
   const [broken, setBroken] = useState(false);
   const show = !!src && !broken;
 
   return (
     <div
-      onClick={onClick}
-      role={onClick ? "button" : undefined}
-      className={`relative overflow-hidden rounded-md border border-border bg-border/30 ${
-        onClick ? "cursor-pointer" : ""
-      }`}
+      className={`relative overflow-hidden rounded-md border border-border bg-border/30`}
     >
       {show ? (
         <img
@@ -57,13 +45,18 @@ function CardImage({
   );
 }
 
-// Reusable action bar for cards
 function ActionButtons({
   onEdit,
   onDelete,
+  shareTitle,
+  text,
+  url,
 }: {
   onEdit: () => void;
   onDelete: () => void;
+  shareTitle: string;
+  text: string;
+  url: string;
 }) {
   return (
     <div className="mt-3 flex items-center gap-2">
@@ -72,8 +65,7 @@ function ActionButtons({
           e.stopPropagation();
           onEdit();
         }}
-        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm
-                   bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition"
+        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition"
       >
         <Pencil className="h-5 w-5" />
         Edit
@@ -90,13 +82,13 @@ function ActionButtons({
         <Trash2 className="h-5 w-5" />
         Delete
       </button>
+      <ShareButton title={shareTitle} text={text} url={url} />
     </div>
   );
 }
 
 export default function Dashboard() {
   const { user, isLoading: loading } = useAuth();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { userRentals, isUserRentalsLoading } = useUserRentals();
   const { userTextbooks, isUserTextbooksLoading } = useUserTextbooks();
@@ -111,7 +103,6 @@ export default function Dashboard() {
       </div>
     );
 
-  // ---- Delete helpers (adjust endpoints if different) ----
   async function del(path: string) {
     const ok = window.confirm("Delete this listing? This cannot be undone.");
     if (!ok) return;
@@ -122,7 +113,6 @@ export default function Dashboard() {
         headers: { "Content-Type": "application/json" },
       });
       if (!res.ok) throw new Error(`Delete failed (${res.status})`);
-      // simplest: reload to refetch hooks
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -192,18 +182,9 @@ export default function Dashboard() {
     </span>
   );
 
-  const Row = ({
-    children,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    onClick?: () => void;
-  }) => (
+  const Row = ({ children }: { children: React.ReactNode }) => (
     <div
-      className={`rounded-lg border border-border bg-primary-bg p-4 shadow-sm hover:shadow-md transition ${
-        onClick ? "cursor-pointer hover:-translate-y-[1px]" : ""
-      }`}
-      onClick={onClick}
+      className={`rounded-lg border border-border bg-primary-bg p-4 shadow-sm hover:shadow-md transition`}
     >
       {children}
     </div>
@@ -246,17 +227,14 @@ export default function Dashboard() {
         ) : userRentals && userRentals.length > 0 ? (
           <div className="flex flex-col gap-3">
             {userRentals.map((rental) => (
-              <Row
-                key={rental.id}
-                onClick={() => navigate(`/rentals/${rental.id}`)}
-              >
+              <Row key={rental.id}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* LEFT: Details */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-primary-fg">
                       <MapPin className="h-6 w-6 opacity-70" />
                       <span className="font-semibold text-lg">
-                        {rental.address}
+                        {rental.title}
                       </span>
                     </div>
 
@@ -288,7 +266,7 @@ export default function Dashboard() {
                       {rental.post_date ? (
                         <span className="inline-flex items-center gap-1">
                           <Calendar className="h-5 w-5 opacity-70" />
-                          {String(rental.post_date)}
+                          {String(rental.post_date.split("T")[0])}
                         </span>
                       ) : null}
                     </div>
@@ -297,18 +275,14 @@ export default function Dashboard() {
                     <ActionButtons
                       onEdit={() => navigate(`/rentals/create?id=${rental.id}`)}
                       onDelete={() => deleteRental(String(rental.id))}
+                      shareTitle={rental.address}
+                      text="Check out this listing on Campus Cart!"
+                      url={`/rentals/${rental.id}`}
                     />
                   </div>
 
                   {/* RIGHT: Photo (first photo) */}
-                  <CardImage
-                    src={rental.photos?.[0]}
-                    alt="rental image"
-                    onClick={(e) => {
-                      e?.stopPropagation?.();
-                      navigate(`/rentals/${rental.id}`);
-                    }}
-                  />
+                  <CardImage src={rental.photos?.[0]} alt="rental image" />
                 </div>
               </Row>
             ))}
@@ -331,7 +305,7 @@ export default function Dashboard() {
         ) : userTextbooks && userTextbooks.length > 0 ? (
           <div className="flex flex-col gap-3">
             {userTextbooks.map((t) => (
-              <Row key={t.id} onClick={() => navigate(`/textbooks/${t.id}`)}>
+              <Row key={t.id}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* LEFT: Details */}
                   <div className="space-y-2">
@@ -368,18 +342,14 @@ export default function Dashboard() {
                     <ActionButtons
                       onEdit={() => navigate(`/textbooks/create?id=${t.id}`)}
                       onDelete={() => deleteTextbook(t.id)}
+                      shareTitle={t.book_title}
+                      text="Check out this listing on Campus Cart!"
+                      url={`/textbooks/${t.id}`}
                     />
                   </div>
 
                   {/* RIGHT: Photo (first photo) */}
-                  <CardImage
-                    src={t.photos?.[0]}
-                    alt="textbook image"
-                    onClick={(e) => {
-                      e?.stopPropagation?.();
-                      navigate(`/textbooks/${t.id}`);
-                    }}
-                  />
+                  <CardImage src={t.photos?.[0]} alt="textbook image" />
                 </div>
               </Row>
             ))}
@@ -402,7 +372,7 @@ export default function Dashboard() {
         ) : userMisc && userMisc.length > 0 ? (
           <div className="flex flex-col gap-3">
             {userMisc.map((m) => (
-              <Row key={m.id} onClick={() => navigate(`/misc/${m.id}`)}>
+              <Row key={m.id}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* LEFT: Details */}
                   <div className="space-y-2">
@@ -426,6 +396,9 @@ export default function Dashboard() {
                     <ActionButtons
                       onEdit={() => navigate(`/misc/create?id=${m.id}`)}
                       onDelete={() => deleteMisc(m.id)}
+                      shareTitle={m.title}
+                      text="Check out this listing on Campus Cart!"
+                      url={`/misc/${m.id}`}
                     />
                   </div>
 
@@ -433,10 +406,6 @@ export default function Dashboard() {
                   <CardImage
                     src={(m as any).photos?.[0]}
                     alt={`${m.title} preview`}
-                    onClick={(e) => {
-                      e?.stopPropagation?.();
-                      navigate(`/misc/${m.id}`);
-                    }}
                   />
                 </div>
               </Row>

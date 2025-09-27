@@ -113,6 +113,7 @@ export default function Login() {
               },
             }}
             placeholder="Email"
+            autocomplete="username"
           />
           <ControlledInput
             name="password"
@@ -120,7 +121,8 @@ export default function Login() {
             errors={errors}
             rules={{ required: "Field required" }}
             placeholder="Password"
-            hideToggle
+            type="password"
+            autocomplete="current-password"
           />
 
           {errorMessage && (

@@ -26,7 +26,6 @@
   }
 }
 
-
 body {
   font-family: "Nunito", sans-serif;
   font-optical-sizing: auto;
@@ -185,6 +184,18 @@ input[type="checkbox"]:checked::before {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes text-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+.text-gradient {
+  animation: text-gradient 8s linear infinite;
 }
 
 @layer base {

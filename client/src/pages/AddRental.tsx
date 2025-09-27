@@ -7,8 +7,14 @@ import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
-import { useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FormInputs = {
   title: string;
@@ -53,12 +59,15 @@ const initialValues: FormInputs = {
 };
 
 export default function AddRental() {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const MAX_IMAGES = 10;
 
@@ -77,6 +86,7 @@ export default function AddRental() {
     formState: { errors },
     control,
     watch,
+    reset,
   } = useForm<FormInputs>({
     defaultValues: initialValues,
     mode: "onSubmit",
@@ -92,6 +102,37 @@ export default function AddRental() {
     const previews = files.map((file) => URL.createObjectURL(file));
     setPreviewUrls(previews);
   };
+
+  useEffect(() => {
+    if (id) {
+      setIsLoading(true);
+      fetch(`${import.meta.env.VITE_API_URL}/rentals/${id}`)
+        .then((res) => res.json())
+        .then((body) => {
+          setIsLoading(false);
+          reset({
+            title: body.title,
+            description: body.description,
+            cost: parseInt(body.cost),
+            address: body.address,
+            post_date: new Date(body.post_date),
+            date_available: body.date_available ?? undefined,
+            house_type: body.house_type,
+            num_beds: parseInt(body.num_beds),
+            is_cost_per_room: body.is_cost_per_room,
+            is_utilities_included: false,
+            is_sublet: body.is_sublet,
+            has_laundry: body.has_laundry,
+            has_cooking: body.has_cooking,
+            has_parking: body.has_parking,
+            no_smoking: body.no_smoking,
+            is_shared: body.is_shared,
+            amenities: body.amenities,
+            photos: body.photos,
+          });
+        });
+    }
+  }, []);
 
   const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
@@ -115,11 +156,6 @@ export default function AddRental() {
         uploadedUrls.push(data.url);
         console.log("Submitting photos:", uploadedUrls); // should be string[]
       }
-      if (selectedImages.length === 0) {
-        setErrorMessage("Please add at least one image.");
-        setIsLoading(false);
-        return;
-      }
     } catch (err) {
       console.error("Upload error:", err);
       setErrorMessage("One or more images failed to upload.");
@@ -133,21 +169,39 @@ export default function AddRental() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(fullData),
-      });
-
-      if (!res.ok) {
-        if (res.status === 500) {
-          setErrorMessage("Something went wrong on our end! Please try again.");
-        }
-      } else {
+      if (id) {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/rentals/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(fullData),
+          },
+        );
+        queryClient.invalidateQueries({ queryKey: ["userRentals"] });
         navigate("/dashboard");
+      } else {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(fullData),
+        });
+
+        if (!res.ok) {
+          if (res.status === 500) {
+            setErrorMessage(
+              "Something went wrong on our end! Please try again.",
+            );
+          }
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (err) {
       console.error("Form submission error:", err);
@@ -158,16 +212,15 @@ export default function AddRental() {
   };
 
   return (
-    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
-      <span
-        className="flex hover:gap-[.5rem] hover:font-semibold gap-[0rem] transition-all ease-linear duration-100 w-fit h-[1.5rem] items-center mb-[1rem]"
-        onClick={() => navigate("/dashboard")}
-      >
-        <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
-        <p>Go back</p>
-      </span>
+    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg mt-[5rem]">
+      <div className="text-sm text-gray-500 mb-3">
+        <Link to="/dashboard" className="hover:underline">
+          Dashboard
+        </Link>{" "}
+        / <span className="text-gray-700">Rental</span>
+      </div>
 
-      <h1 className="text-xl font-bold">Add rental</h1>
+      <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} rental</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"
         onSubmit={handleSubmit(onSubmit)}
@@ -390,7 +443,7 @@ export default function AddRental() {
         />
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
-          label="Add rental"
+          label={`${id ? "Edit" : "Add"} rental`}
           isLoading={isLoading}
           className="mt-[2rem]"
         />

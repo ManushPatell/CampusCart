@@ -3,9 +3,7 @@
     "version": "1.0.0",
     "main": "dist/app.js",
     "scripts": {
-        "docker-build:dev": "docker build -t backend-img:0.0.1 -f Dockerfile.dev .",
-        "docker-run:dev": "docker run -it -p 3000:3000 --name backend-container -v ./:/app -v my-node-modules:/app/node_modules backend-img:0.0.1",
-        "dev": "nodemon --watch src --exec tsx src/app.ts",
+        "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
         "build": "tsc",
         "start": "node dist/app.js",
         "lint": "eslint 'src/**/*.{js,ts}'",

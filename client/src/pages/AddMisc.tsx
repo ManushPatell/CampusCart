@@ -3,8 +3,9 @@ import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
 type ListingType = (typeof listingType)[number];
@@ -26,6 +27,7 @@ const initialValues: FormInputs = {
 export default function AddMisc() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMisc, setIsLoadingMisc] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -99,7 +101,7 @@ export default function AddMisc() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`, {
         method: id ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,6 +119,7 @@ export default function AddMisc() {
           setErrorMessage(String(body.error));
         }
       } else {
+        queryClient.invalidateQueries({ queryKey: ["userMisc"] });
         navigate("/dashboard");
       }
 
@@ -144,14 +147,13 @@ export default function AddMisc() {
   }, []);
 
   return (
-    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] rounded-lg">
-      <span
-        className="flex hover:gap-[.5rem] hover:font-semibold gap-[0rem] transition-all ease-linear duration-100 w-fit h-[1.5rem] items-center mb-[1rem]"
-        onClick={() => navigate("/dashboard")}
-      >
-        <ArrowLeft className="p-[.3rem] flex items-center justify-center" />
-        <p>Go back</p>
-      </span>
+    <div className="bg-primary-bg m-[3rem] shadow-2xl px-[2rem] py-[2rem] mt-[5rem] rounded-lg">
+      <div className="text-sm text-gray-500 mb-3">
+        <Link to="/dashboard" className="hover:underline">
+          Dashboard{" "}
+        </Link>
+        / <span className="text-gray-700">Misc</span>
+      </div>
       <h1 className="text-xl font-bold">{id ? "Edit" : "Add"} miscellaneous</h1>
       <form
         className="flex flex-col gap-[.5rem] my-[2rem]"

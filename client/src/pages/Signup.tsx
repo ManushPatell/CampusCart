@@ -157,6 +157,7 @@ export default function SignUp() {
               },
             }}
             placeholder="Email"
+            autocomplete="username"
           />
           <ControlledInput
             name="phoneNumber"
@@ -190,7 +191,8 @@ export default function SignUp() {
               },
             }}
             placeholder="Password"
-            hideToggle
+            type="password"
+            autocomplete="new-password"
           />
 
           {errorMessage && (

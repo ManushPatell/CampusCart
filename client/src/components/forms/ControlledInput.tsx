@@ -20,7 +20,7 @@ interface ControlledInputProps<T extends FieldValues> {
   placeholder?: string;
   type?: "password" | "text" | "number" | "email" | "tel";
   errors: FieldErrors<T>;
-  hideToggle?: boolean;
+  autocomplete?: "username" | "current-password" | "new-password";
 }
 
 export default function ControlledInput<T extends FieldValues>({
@@ -32,7 +32,7 @@ export default function ControlledInput<T extends FieldValues>({
   type = "text",
   placeholder,
   label,
-  hideToggle = false,
+  autocomplete,
 }: ControlledInputProps<T>) {
   const [hideText, setHideText] = useState<boolean>(true);
 
@@ -52,18 +52,11 @@ export default function ControlledInput<T extends FieldValues>({
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value}
-                type={hideText && hideToggle ? "password" : type}
+                type={type}
                 className={`w-full px-4 transition-all duration-200 py-2 placeholder-gray-400  ${hasError ? "focus:ring-red-400 border-red-400 border-2" : "border-gray-300 focus:ring-primary-fg/50 border-2 focus:border-primary-fg/50"}  rounded-xl focus:outline-none focus:ring-2  ${inputClassName}`}
                 placeholder={placeholder}
+                autoComplete={autocomplete}
               />
-              {hideToggle && (
-                <button
-                  className="absolute -translate-x-3/2 hover:text-gray-500 top-1/2 -translate-y-1/2 "
-                  onClick={() => setHideText((prev) => !prev)}
-                >
-                  {hideText ? "Show" : "Hide"}
-                </button>
-              )}
             </span>
           </label>
           {hasError && (
