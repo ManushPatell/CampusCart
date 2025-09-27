@@ -1,6 +1,5 @@
 import Hero from "../components/Hero";
 import Content from "../components/Content";
-import Houses from "../components/Houses";
 import NavBar from "../components/Nav";
 export default function Home() {
   return (

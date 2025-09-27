@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const faculties = Object.freeze([
   "Engineering",
@@ -52,6 +53,7 @@ export default function AddTextbook() {
   const [isLoadingTextbook, setIsLoadingTextbook] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
+  const queryClient = useQueryClient();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -83,7 +85,6 @@ export default function AddTextbook() {
     setIsLoading(true);
     setErrorMessage("");
 
-    // 1) upload images first (optional: allow zero images)
     const uploadedUrls: string[] = [];
     try {
       if (selectedImages.length > 0) {
@@ -120,14 +121,17 @@ export default function AddTextbook() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/textbooks`, {
-        method: id ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/textbooks/${id}`,
+        {
+          method: id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
         },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      );
 
       if (!res.ok) {
         if (res.status === 500) {
@@ -137,6 +141,7 @@ export default function AddTextbook() {
           setErrorMessage(body?.error || "Failed to create textbook listing.");
         }
       } else {
+        queryClient.invalidateQueries({ queryKey: ["userTextbooks"] });
         navigate("/dashboard");
       }
     } catch (err) {
