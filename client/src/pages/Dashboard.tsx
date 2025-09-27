@@ -234,7 +234,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2 text-primary-fg">
                       <MapPin className="h-6 w-6 opacity-70" />
                       <span className="font-semibold text-lg">
-                        {rental.address}
+                        {rental.title}
                       </span>
                     </div>
 
@@ -266,7 +266,7 @@ export default function Dashboard() {
                       {rental.post_date ? (
                         <span className="inline-flex items-center gap-1">
                           <Calendar className="h-5 w-5 opacity-70" />
-                          {String(rental.post_date)}
+                          {String(rental.post_date.split("T")[0])}
                         </span>
                       ) : null}
                     </div>

@@ -18,34 +18,20 @@ export default function Hero() {
       className="relative w-full min-h-[100svh] overflow-hidden text-[#3A3127]"
       style={{ backgroundColor: "#F5F1EA", contain: "paint" }}
     >
-      {/* motion keyframes */}
-      <style>{`
-        @keyframes glowPanA { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(0,-2%,0) scale(1.04); } }
-        @keyframes glowPanB { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(0,-3%,0) scale(1.03); } }
-        @keyframes grainShift { 0% { transform: translate(0,0); } 100% { transform: translate(-10%, 6%); } }
-      `}</style>
-
-      {/* animated glows (GPU promoted, no CSS blur) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-8 -left-[6%] w-[85vw] max-w-[1100px] h-[560px] opacity-70 rounded-[999px]"
+        className="pointer-events-none absolute -top-8 left-[-20%] w-[85vw] max-w-[1100px] h-[560px] opacity-70 rounded-[999px]"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(212,163,115,0.35), rgba(212,163,115,0.12) 55%, rgba(212,163,115,0) 100%)",
-          animation: "glowPanA 14s ease-in-out infinite alternate",
-          willChange: "transform, opacity",
-          transform: "translateZ(0)",
+            "radial-gradient(closest-side, var(--color-accent), #F5F1EA00 100%)",
         }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-6 -right-[4%] w-[75vw] max-w-[900px] h-[520px] opacity-60 rounded-[999px]"
+        className="pointer-events-none absolute top-20  right-[-20%] w-[85vw] max-w-[1100px] h-[560px] opacity-70 rounded-[999px]"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(139,115,85,0.28), rgba(139,115,85,0.12) 55%, rgba(139,115,85,0) 70%)",
-          animation: "glowPanB 16s ease-in-out infinite alternate",
-          willChange: "transform, opacity",
-          transform: "translateZ(0)",
+            "radial-gradient(closest-side, var(--color-accent), #F5F1EA00 100%)",
         }}
       />
       <div
@@ -88,7 +74,7 @@ export default function Hero() {
           <div className="max-w-4xl mx-auto">
             {/* trust pill */}
             <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm ring-1 shadow-sm backdrop-blur"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm ring-1 shadow-sm backdrop-blur mt-[30%] sm:mt-[0rem]"
               style={{
                 background: "rgba(255,255,255,0.9)",
                 borderColor: "rgba(74,64,50,0.22)",
@@ -107,7 +93,7 @@ export default function Hero() {
               style={{ fontFamily: "RetroCustom" }}
               className="mt-5 tracking-tight text-[2.6rem] sm:text-6xl md:text-7xl leading-[1.08] font-extrabold"
             >
-              Buy, Sell, and Rent — Right on Campus.
+              Buy, Sell, and Rent. Right on Campus.
             </h1>
 
             {/* subhead */}

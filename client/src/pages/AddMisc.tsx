@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
 type ListingType = (typeof listingType)[number];
@@ -26,6 +27,7 @@ const initialValues: FormInputs = {
 export default function AddMisc() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMisc, setIsLoadingMisc] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -99,7 +101,7 @@ export default function AddMisc() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`, {
         method: id ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,6 +119,7 @@ export default function AddMisc() {
           setErrorMessage(String(body.error));
         }
       } else {
+        queryClient.invalidateQueries({ queryKey: ["userMisc"] });
         navigate("/dashboard");
       }
 

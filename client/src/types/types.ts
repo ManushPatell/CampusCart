@@ -39,6 +39,7 @@ export interface Rental {
 
 export interface RentalListing {
   id: string;
+  title: string;
   seller: {
     name: string;
     contact: string;
