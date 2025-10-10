@@ -4,7 +4,6 @@ import Submit from "../components/forms/Submit";
 import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
@@ -58,15 +57,6 @@ export default function AddMisc() {
     setPreviewUrls(urls);
     return () => urls.forEach((u) => URL.revokeObjectURL(u)); // cleanup
   }, [selectedImages]);
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const files = Array.from(e.target.files);
-    setSelectedImages(files);
-
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(previews);
-  };
 
   const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
@@ -136,6 +126,7 @@ export default function AddMisc() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingMisc(false);
+          setPreviewUrls(body.photos);
           reset({
             title: body.title,
             description: body.description,

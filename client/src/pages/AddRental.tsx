@@ -7,13 +7,7 @@ import ControlledDatePicker from "@/components/forms/ControlledDatePicker";
 import ControlledTextarea from "@/components/forms/ControlledTextarea";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 type FormInputs = {
@@ -34,7 +28,6 @@ type FormInputs = {
   no_smoking: boolean;
   is_shared: boolean;
   amenities: string[];
-  photos: string[];
 };
 
 const initialValues: FormInputs = {
@@ -55,7 +48,6 @@ const initialValues: FormInputs = {
   no_smoking: false,
   is_shared: false,
   amenities: [],
-  photos: [],
 };
 
 export default function AddRental() {
@@ -94,15 +86,6 @@ export default function AddRental() {
 
   const isShared = watch("is_shared");
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const files = Array.from(e.target.files);
-    setSelectedImages(files);
-
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(previews);
-  };
-
   useEffect(() => {
     if (id) {
       setIsLoading(true);
@@ -110,6 +93,7 @@ export default function AddRental() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoading(false);
+          setPreviewUrls(body.photos);
           reset({
             title: body.title,
             description: body.description,
@@ -128,7 +112,6 @@ export default function AddRental() {
             no_smoking: body.no_smoking,
             is_shared: body.is_shared,
             amenities: body.amenities,
-            photos: body.photos,
           });
         });
     }

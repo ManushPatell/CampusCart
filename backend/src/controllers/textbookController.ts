@@ -59,7 +59,7 @@ export async function postTextbook(req: Request, res: Response) {
       textbook.price,
       textbook.condition,
       id,
-      textbook.photos
+      textbook.photos,
     );
 
     res.status(200).json(result);
@@ -90,6 +90,7 @@ export async function putTextbook(req: Request, res: Response) {
       textbook.condition,
       id,
       userId,
+      textbook.photos,
     );
 
     res.status(200).json(editedTextbook);

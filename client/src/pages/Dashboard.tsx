@@ -18,7 +18,6 @@ import useUserTextbooks from "../hooks/useUserTextbooks";
 import useUserMisc from "../hooks/useUserMisc";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import ShareButton from "@/components/Share";
 
 function CardImage({ src, alt }: { src?: string; alt: string }) {
@@ -59,7 +58,7 @@ function ActionButtons({
   url: string;
 }) {
   return (
-    <div className="mt-3 flex items-center gap-2">
+    <div className="mt-3 flex flex-col sm:flex sm:flex-row sm:items-center gap-2">
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -161,7 +160,7 @@ export default function Dashboard() {
     onAdd: () => void;
     children: React.ReactNode;
   }) => (
-    <div className="rounded-xl border-2 border-border bg-primary-bg shadow-lg">
+    <div className="rounded-xl border-2 border-border bg-primary-bg shadow-lg w-full">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border/70">
         <p className="text-primary-fg font-semibold text-xl">{title}</p>
         <button

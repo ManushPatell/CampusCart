@@ -159,6 +159,7 @@ export default function AddTextbook() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingTextbook(false);
+          setPreviewUrls(body.photos);
           reset({
             book_title: body.book_title,
             author: body.author,
