@@ -4,7 +4,6 @@ import Submit from "../components/forms/Submit";
 import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const faculties = Object.freeze([
@@ -42,7 +41,6 @@ const initialValues: FormInputs = {
   condition: "",
 };
 
-// ---- small helpers for uploader
 const MAX_IMAGES = 10;
 function formatMB(bytes: number) {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
@@ -57,9 +55,7 @@ export default function AddTextbook() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // image uploader state
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [itemImages, setItemImages] = useState<(string | File)[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
@@ -74,51 +70,34 @@ export default function AddTextbook() {
 
   const navigate = useNavigate();
 
-  // derive previews from files, clean up object URLs
-  useEffect(() => {
-    const urls = selectedImages.map((f) => URL.createObjectURL(f));
-    setPreviewUrls(urls);
-    return () => urls.forEach((u) => URL.revokeObjectURL(u));
-  }, [selectedImages]);
-
-  const onSubmit = async (data: FormInputs) => {
+  const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
     setErrorMessage("");
 
     const uploadedUrls: string[] = [];
     try {
-      if (selectedImages.length > 0) {
-        await Promise.all(
-          selectedImages.map(async (file) => {
-            const imageForm = new FormData();
-            imageForm.append("image", file);
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-              method: "POST",
-              body: imageForm,
-              credentials: "include", // include cookies if needed
-            });
-            if (!res.ok) throw new Error("Image upload failed");
-            const json = await res.json();
-            if (!json?.url) throw new Error("Upload response missing url");
-            uploadedUrls.push(json.url);
-          }),
-        );
+      for (const file of itemImages.filter((item) => item instanceof File)) {
+        const imageForm = new FormData();
+        imageForm.append("image", file);
+
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+          method: "POST",
+          body: imageForm,
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Image upload failed");
+
+        const data = await res.json();
+        uploadedUrls.push(data.url);
+        console.log("Submitting photos:", uploadedUrls); // should be string[]
       }
-    } catch (err) {
-      console.error("Upload error:", err);
+    } catch (error) {
+      console.error("Upload error:", error);
       setErrorMessage("One or more images failed to upload.");
       setIsLoading(false);
       return;
     }
-
-    // 2) post textbook with photos
-    const payload = {
-      ...data,
-      // ensure numeric types
-      price: typeof data.price === "string" ? Number(data.price) : data.price,
-      year: typeof data.year === "string" ? Number(data.year) : data.year,
-      photos: uploadedUrls, // string[]
-    };
 
     try {
       const res = await fetch(
@@ -129,7 +108,7 @@ export default function AddTextbook() {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify(data),
+          body: JSON.stringify({ ...formData, photos: uploadedUrls }),
         },
       );
 
@@ -159,7 +138,7 @@ export default function AddTextbook() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingTextbook(false);
-          setPreviewUrls(body.photos);
+          setItemImages(body.photos);
           reset({
             book_title: body.book_title,
             author: body.author,
@@ -263,9 +242,7 @@ export default function AddTextbook() {
               f.type.startsWith("image/"),
             );
             if (!files.length) return;
-            setSelectedImages((prev) =>
-              [...prev, ...files].slice(0, MAX_IMAGES),
-            );
+            setItemImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
           }}
           className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
                      hover:border-zinc-400 transition-colors p-6 text-center cursor-pointer"
@@ -296,35 +273,30 @@ export default function AddTextbook() {
             onChange={(e) => {
               if (!e.target.files) return;
               const files = Array.from(e.target.files);
-              setSelectedImages((prev) =>
-                [...prev, ...files].slice(0, MAX_IMAGES),
-              );
+              setItemImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
               if (fileInputRef.current) fileInputRef.current.value = "";
             }}
           />
         </div>
 
-        {/* Selected summary + clear */}
-        {previewUrls.length > 0 && (
-          <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
-            <span>
-              {previewUrls.length}/{MAX_IMAGES} selected
-            </span>
-            <button
-              type="button"
-              onClick={() => setSelectedImages([])}
-              className="underline hover:opacity-80"
-            >
-              Remove all
-            </button>
-          </div>
-        )}
+        <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
+          <span>
+            {itemImages.length}/{MAX_IMAGES} selected
+          </span>
+          <button
+            type="button"
+            onClick={() => setItemImages([])}
+            className="underline hover:opacity-80"
+          >
+            Remove all
+          </button>
+        </div>
 
-        {/* Previews grid */}
-        {previewUrls.length > 0 && (
+        {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {previewUrls.map((url, index) => {
-              const f = selectedImages[index];
+            {itemImages.map((image, index) => {
+              const url =
+                image instanceof File ? URL.createObjectURL(image) : image;
               return (
                 <div
                   key={index}
@@ -335,19 +307,11 @@ export default function AddTextbook() {
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover"
                   />
-                  {f && (
-                    <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
-                      {f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name}{" "}
-                      · {formatMB(f.size)}
-                    </div>
-                  )}
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedImages((prev) => {
-                        const next = [...prev];
-                        next.splice(index, 1);
-                        return next;
+                      setItemImages((prev) => {
+                        return prev.filter((_, i) => i != index);
                       });
                     }}
                     className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
@@ -360,9 +324,7 @@ export default function AddTextbook() {
               );
             })}
           </div>
-        )}
-        {/* ------------------------------------------------------------------- */}
-
+        }
         <p className="text-red-500 text-[1rem]">{errorMessage}</p>
         <Submit
           label={`${id ? "Edit" : "Add"} textbook`}

@@ -55,8 +55,7 @@ export default function AddRental() {
   const id = searchParams.get("id");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [itemImages, setItemImages] = useState<(string | File)[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -66,12 +65,6 @@ export default function AddRental() {
   function formatMB(bytes: number) {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
-
-  useEffect(() => {
-    const urls = selectedImages.map((f) => URL.createObjectURL(f));
-    setPreviewUrls(urls);
-    return () => urls.forEach((u) => URL.revokeObjectURL(u)); // cleanup
-  }, [selectedImages]);
 
   const {
     handleSubmit,
@@ -93,7 +86,7 @@ export default function AddRental() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoading(false);
-          setPreviewUrls(body.photos);
+          setItemImages(body.photos);
           reset({
             title: body.title,
             description: body.description,
@@ -124,7 +117,7 @@ export default function AddRental() {
     const uploadedUrls: string[] = [];
 
     try {
-      for (const file of selectedImages) {
+      for (const file of itemImages.filter((image) => image instanceof File)) {
         const imageForm = new FormData();
         imageForm.append("image", file);
 
@@ -146,45 +139,27 @@ export default function AddRental() {
       return;
     }
 
-    const fullData = {
-      ...formData,
-      photos: uploadedUrls,
-    };
-
     try {
-      if (id) {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/rentals/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify(fullData),
-          },
-        );
-        queryClient.invalidateQueries({ queryKey: ["userRentals"] });
-        navigate("/dashboard");
-      } else {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(fullData),
-        });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/rentals/${id}`, {
+        method: id ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          ...formData,
+          photos: uploadedUrls,
+        }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["userRentals"] });
+      navigate("/dashboard");
 
-        if (!res.ok) {
-          if (res.status === 500) {
-            setErrorMessage(
-              "Something went wrong on our end! Please try again.",
-            );
-          }
-        } else {
-          navigate("/dashboard");
+      if (!res.ok) {
+        if (res.status === 500) {
+          setErrorMessage("Something went wrong on our end! Please try again.");
         }
+      } else {
+        navigate("/dashboard");
       }
     } catch (err) {
       console.error("Form submission error:", err);
@@ -298,9 +273,7 @@ export default function AddRental() {
             );
             if (!files.length) return;
             // append instead of replace, cap at MAX_IMAGES
-            setSelectedImages((prev) =>
-              [...prev, ...files].slice(0, MAX_IMAGES),
-            );
+            setItemImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
           }}
           className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
                   hover:border-zinc-400 transition-colors p-6 text-center cursor-pointer"
@@ -331,35 +304,32 @@ export default function AddRental() {
             onChange={(e) => {
               if (!e.target.files) return;
               const files = Array.from(e.target.files);
-              setSelectedImages((prev) =>
-                [...prev, ...files].slice(0, MAX_IMAGES),
-              );
+              setItemImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
               if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-selecting the same file
             }}
           />
         </div>
-
-        {/* Selected summary + clear */}
-        {previewUrls.length > 0 && (
+        {
           <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
             <span>
-              {previewUrls.length}/{MAX_IMAGES} selected
+              {itemImages.length}/{MAX_IMAGES} selected
             </span>
             <button
               type="button"
-              onClick={() => setSelectedImages([])}
+              onClick={() => setItemImages([])}
               className="underline hover:opacity-80"
             >
               Remove all
             </button>
           </div>
-        )}
+        }
 
         {/* Previews grid */}
-        {previewUrls.length > 0 && (
+        {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {previewUrls.map((url, index) => {
-              const f = selectedImages[index];
+            {itemImages.map((image, index) => {
+              const url =
+                image instanceof File ? URL.createObjectURL(image) : image;
               return (
                 <div
                   key={index}
@@ -370,25 +340,12 @@ export default function AddRental() {
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover"
                   />
-                  {/* file meta chip */}
-                  {f && (
-                    <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
-                      {f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name}{" "}
-                      · {formatMB(f.size)}
-                    </div>
-                  )}
-                  {/* remove button */}
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedImages((prev) => {
-                        const next = [...prev];
-                        next.splice(index, 1);
-                        return next;
-                      });
+                      setItemImages((prev) => [...prev].splice(index, 1));
                     }}
-                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
-                            opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
+                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
                     aria-label={`Remove image ${index + 1}`}
                   >
                     ✕
@@ -397,7 +354,7 @@ export default function AddRental() {
               );
             })}
           </div>
-        )}
+        }
 
         <p className="font-bold text-primary-fg mt-[1rem]">Amenities</p>
         <ControlledCheckbox

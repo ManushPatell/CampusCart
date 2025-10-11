@@ -31,8 +31,7 @@ export default function AddMisc() {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [itemImages, setItemImages] = useState<(string | File)[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const {
     handleSubmit,
@@ -48,22 +47,12 @@ export default function AddMisc() {
 
   const MAX_IMAGES = 10;
 
-  function formatMB(bytes: number) {
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-
-  useEffect(() => {
-    const urls = selectedImages.map((f) => URL.createObjectURL(f));
-    setPreviewUrls(urls);
-    return () => urls.forEach((u) => URL.revokeObjectURL(u)); // cleanup
-  }, [selectedImages]);
-
   const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
-    const uploadedUrls: string[] = [];
+    const uploadedUrls: string[] = []; // For newly uploaded images
 
     try {
-      for (const file of selectedImages) {
+      for (const file of itemImages.filter((item) => item instanceof File)) {
         const imageForm = new FormData();
         imageForm.append("image", file);
 
@@ -85,11 +74,6 @@ export default function AddMisc() {
       return;
     }
 
-    const fullData = {
-      ...formData,
-      photos: uploadedUrls,
-    };
-
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`, {
         method: id ? "PUT" : "POST",
@@ -97,7 +81,10 @@ export default function AddMisc() {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(fullData),
+        body: JSON.stringify({
+          ...formData,
+          photos: uploadedUrls,
+        }),
       });
 
       const body = await res.json();
@@ -126,7 +113,7 @@ export default function AddMisc() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingMisc(false);
-          setPreviewUrls(body.photos);
+          setItemImages(body.photos);
           reset({
             title: body.title,
             description: body.description,
@@ -198,14 +185,13 @@ export default function AddMisc() {
           }}
           onDrop={(e) => {
             e.preventDefault();
-            const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+            const files = Array.from(e.dataTransfer.files).filter((f) =>
               f.type.startsWith("image/"),
             );
             if (!files.length) return;
             // append instead of replace
-            setSelectedImages((prev) => {
-              const merged = [...prev, ...files].slice(0, MAX_IMAGES);
-              return merged;
+            setItemImages((prev) => {
+              return [...prev, ...files].slice(0, MAX_IMAGES);
             });
           }}
           className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
@@ -238,9 +224,8 @@ export default function AddMisc() {
             onChange={(e) => {
               if (!e.target.files) return;
               const files = Array.from(e.target.files);
-              setSelectedImages((prev) => {
-                const merged = [...prev, ...files].slice(0, MAX_IMAGES);
-                return merged;
+              setItemImages((prev) => {
+                return [...prev, ...files].slice(0, MAX_IMAGES);
               });
               if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-select same file
             }}
@@ -248,14 +233,14 @@ export default function AddMisc() {
         </div>
 
         {/* Selected summary + clear */}
-        {previewUrls.length > 0 && (
+        {itemImages.length > 0 && (
           <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
             <span>
-              {previewUrls.length}/{MAX_IMAGES} selected
+              {itemImages.length}/{MAX_IMAGES} selected
             </span>
             <button
               type="button"
-              onClick={() => setSelectedImages([])}
+              onClick={() => setItemImages([])}
               className="underline hover:opacity-80"
             >
               Remove all
@@ -264,10 +249,11 @@ export default function AddMisc() {
         )}
 
         {/* Previews grid */}
-        {previewUrls.length > 0 && (
+        {itemImages.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {previewUrls.map((url, index) => {
-              const f = selectedImages[index];
+            {itemImages.map((image, index) => {
+              const url =
+                image instanceof File ? URL.createObjectURL(image) : image;
               return (
                 <div
                   key={index}
@@ -278,21 +264,12 @@ export default function AddMisc() {
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover"
                   />
-                  {/* file meta */}
-                  {f && (
-                    <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
-                      {f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name}{" "}
-                      · {formatMB(f.size)}
-                    </div>
-                  )}
                   {/* remove */}
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedImages((prev) => {
-                        const next = [...prev];
-                        next.splice(index, 1);
-                        return next;
+                      setItemImages((prev) => {
+                        return prev.filter((_, i) => i != index);
                       });
                     }}
                     className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
