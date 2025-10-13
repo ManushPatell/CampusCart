@@ -71,7 +71,7 @@ export default function Hero() {
       {/* content */}
       <header className="relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-28 md:pt-40 pb-16 md:pb-24 text-center">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto flex items-center flex-col justify-center">
             {/* trust pill */}
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm ring-1 shadow-sm backdrop-blur mt-[30%] sm:mt-[0rem]"
@@ -87,22 +87,17 @@ export default function Hero() {
               />
               <span className="font-medium">Trusted by students on campus</span>
             </div>
-
-            {/* H1 */}
             <h1
               style={{ fontFamily: "RetroCustom" }}
               className="mt-5 tracking-tight text-[2.6rem] sm:text-6xl md:text-7xl leading-[1.08] font-extrabold"
             >
               Buy, Sell, and Rent. Right on Campus.
             </h1>
-
-            {/* subhead */}
             <p className="mt-4 text-lg sm:text-xl md:text-2xl text-[#4A4032]/85 leading-relaxed">
               A simpler, safer way to find rentals and swap essentials — no
               spam, no bots, just students.
             </p>
 
-            {/* primary button */}
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/register"

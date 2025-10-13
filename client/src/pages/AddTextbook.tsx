@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { BookImage } from "lucide-react";
 
 const faculties = Object.freeze([
   "Engineering",
@@ -74,7 +75,9 @@ export default function AddTextbook() {
     setIsLoading(true);
     setErrorMessage("");
 
-    const uploadedUrls: string[] = [];
+    const uploadedUrls: string[] = itemImages.filter(
+      (image) => typeof image === "string",
+    );
     try {
       for (const file of itemImages.filter((item) => item instanceof File)) {
         const imageForm = new FormData();
@@ -300,7 +303,7 @@ export default function AddTextbook() {
               return (
                 <div
                   key={index}
-                  className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
+                  className={`relative group rounded-xl border ${index === 0 ? "border-blue-600 border-2" : "border-zinc-200"} bg-white overflow-hidden shadow-sm`}
                 >
                   <img
                     src={url}
@@ -314,11 +317,27 @@ export default function AddTextbook() {
                         return prev.filter((_, i) => i != index);
                       });
                     }}
-                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
-                               opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
+                    className="absolute top-2 right-2 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs px-2 py-0.5
+                            "
                     aria-label={`Remove image ${index + 1}`}
                   >
                     ✕
+                  </button>
+                  {/* make cover */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setItemImages((prev) => {
+                        return [
+                          prev.find((img) => img === image)!,
+                          ...prev.filter((_, i) => i != index),
+                        ];
+                      });
+                    }}
+                    className={`absolute top-2 right-10 rounded-full text-xs px-2 py-0.5 w-6 flex items-center justify-center ${index === 0 ? "bg-blue-600 text-white hover:bg-blue-800" : "bg-black/60 hover:bg-black/80 text-white"}`}
+                    aria-label={`Make image ${index + 1} cover image`}
+                  >
+                    <BookImage className="h-[.9rem] w-[.9rem] mx-[-.1rem] text-white" />
                   </button>
                 </div>
               );

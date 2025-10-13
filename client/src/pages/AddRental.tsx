@@ -9,6 +9,7 @@ import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { HouseType, houseTypeOptions } from "@/types/types";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { BookImage } from "lucide-react";
 
 type FormInputs = {
   title: string;
@@ -62,10 +63,6 @@ export default function AddRental() {
 
   const MAX_IMAGES = 10;
 
-  function formatMB(bytes: number) {
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-
   const {
     handleSubmit,
     formState: { errors },
@@ -114,7 +111,9 @@ export default function AddRental() {
     setIsLoading(true);
     setErrorMessage("");
 
-    const uploadedUrls: string[] = [];
+    const uploadedUrls: string[] = itemImages.filter(
+      (image) => typeof image === "string",
+    );
 
     try {
       for (const file of itemImages.filter((image) => image instanceof File)) {
@@ -333,7 +332,7 @@ export default function AddRental() {
               return (
                 <div
                   key={index}
-                  className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
+                  className={`relative group rounded-xl border ${index === 0 ? "border-blue-600 border-2" : "border-zinc-200"} bg-white overflow-hidden shadow-sm`}
                 >
                   <img
                     src={url}
@@ -345,10 +344,26 @@ export default function AddRental() {
                     onClick={() => {
                       setItemImages((prev) => [...prev].splice(index, 1));
                     }}
-                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
+                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5 hover:bg-black/80"
                     aria-label={`Remove image ${index + 1}`}
                   >
                     ✕
+                  </button>
+                  {/* make cover */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setItemImages((prev) => {
+                        return [
+                          prev.find((img) => img === image)!,
+                          ...prev.filter((_, i) => i != index),
+                        ];
+                      });
+                    }}
+                    className={`absolute top-2 right-10 rounded-full text-xs px-2 py-0.5 w-6 flex items-center justify-center ${index === 0 ? "bg-blue-600 text-white hover:bg-blue-800" : "bg-black/60 hover:bg-black/80 text-white"}`}
+                    aria-label={`Make image ${index + 1} cover image`}
+                  >
+                    <BookImage className="h-[.9rem] w-[.9rem] mx-[-.1rem] text-white" />
                   </button>
                 </div>
               );
