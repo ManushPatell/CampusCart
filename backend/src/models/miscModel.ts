@@ -78,11 +78,9 @@ export const addMisc = async (
   return result;
 };
 
-export const editMisc = async (
-  misc: Omit<Miscellaneous, "date_posted" | "photos">,
-) => {
+export const editMisc = async (misc: Omit<Miscellaneous, "date_posted">) => {
   const result =
-    await sql`UPDATE misc SET (title, description, price, listing_type) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}) WHERE id = ${misc.id} AND seller = ${misc.seller.id}`;
+    await sql`UPDATE misc SET (title, description, price, listing_type, photos) = (${misc.title}, ${misc.description}, ${misc.price}, ${misc.listing_type}, ${misc.photos}) WHERE id = ${misc.id} AND seller = ${misc.seller.id}`;
   return result;
 };
 

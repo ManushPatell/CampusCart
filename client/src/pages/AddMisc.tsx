@@ -4,8 +4,8 @@ import Submit from "../components/forms/Submit";
 import { useState, useEffect, useRef } from "react";
 import ControlledDropdown from "@/components/forms/ControlledDropdown";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { BookImage } from "lucide-react";
 
 const listingType = Object.freeze(["Wanting", "Selling"]);
 type ListingType = (typeof listingType)[number];
@@ -32,8 +32,7 @@ export default function AddMisc() {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [itemImages, setItemImages] = useState<(string | File)[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const {
     handleSubmit,
@@ -49,31 +48,14 @@ export default function AddMisc() {
 
   const MAX_IMAGES = 10;
 
-  function formatMB(bytes: number) {
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-
-  useEffect(() => {
-    const urls = selectedImages.map((f) => URL.createObjectURL(f));
-    setPreviewUrls(urls);
-    return () => urls.forEach((u) => URL.revokeObjectURL(u)); // cleanup
-  }, [selectedImages]);
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const files = Array.from(e.target.files);
-    setSelectedImages(files);
-
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(previews);
-  };
-
   const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
-    const uploadedUrls: string[] = [];
+    const uploadedUrls: string[] = itemImages.filter(
+      (image) => typeof image === "string",
+    );
 
     try {
-      for (const file of selectedImages) {
+      for (const file of itemImages.filter((item) => item instanceof File)) {
         const imageForm = new FormData();
         imageForm.append("image", file);
 
@@ -95,11 +77,6 @@ export default function AddMisc() {
       return;
     }
 
-    const fullData = {
-      ...formData,
-      photos: uploadedUrls,
-    };
-
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/misc/${id}`, {
         method: id ? "PUT" : "POST",
@@ -107,7 +84,10 @@ export default function AddMisc() {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(fullData),
+        body: JSON.stringify({
+          ...formData,
+          photos: uploadedUrls,
+        }),
       });
 
       const body = await res.json();
@@ -136,6 +116,7 @@ export default function AddMisc() {
         .then((res) => res.json())
         .then((body) => {
           setIsLoadingMisc(false);
+          setItemImages(body.photos);
           reset({
             title: body.title,
             description: body.description,
@@ -207,14 +188,13 @@ export default function AddMisc() {
           }}
           onDrop={(e) => {
             e.preventDefault();
-            const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+            const files = Array.from(e.dataTransfer.files).filter((f) =>
               f.type.startsWith("image/"),
             );
             if (!files.length) return;
             // append instead of replace
-            setSelectedImages((prev) => {
-              const merged = [...prev, ...files].slice(0, MAX_IMAGES);
-              return merged;
+            setItemImages((prev) => {
+              return [...prev, ...files].slice(0, MAX_IMAGES);
             });
           }}
           className="rounded-2xl border-2 border-dashed border-zinc-300 bg-white/60 
@@ -247,9 +227,8 @@ export default function AddMisc() {
             onChange={(e) => {
               if (!e.target.files) return;
               const files = Array.from(e.target.files);
-              setSelectedImages((prev) => {
-                const merged = [...prev, ...files].slice(0, MAX_IMAGES);
-                return merged;
+              setItemImages((prev) => {
+                return [...prev, ...files].slice(0, MAX_IMAGES);
               });
               if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-select same file
             }}
@@ -257,14 +236,14 @@ export default function AddMisc() {
         </div>
 
         {/* Selected summary + clear */}
-        {previewUrls.length > 0 && (
+        {itemImages.length > 0 && (
           <div className="mt-3 mb-2 flex items-center justify-between text-sm text-zinc-600">
             <span>
-              {previewUrls.length}/{MAX_IMAGES} selected
+              {itemImages.length}/{MAX_IMAGES} selected
             </span>
             <button
               type="button"
-              onClick={() => setSelectedImages([])}
+              onClick={() => setItemImages([])}
               className="underline hover:opacity-80"
             >
               Remove all
@@ -273,42 +252,49 @@ export default function AddMisc() {
         )}
 
         {/* Previews grid */}
-        {previewUrls.length > 0 && (
+        {itemImages.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {previewUrls.map((url, index) => {
-              const f = selectedImages[index];
+            {itemImages.map((image, index) => {
+              const url =
+                image instanceof File ? URL.createObjectURL(image) : image;
               return (
                 <div
                   key={index}
-                  className="relative group rounded-xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
+                  className={`relative group rounded-xl border ${index === 0 ? "border-blue-600 border-2" : "border-zinc-200"} bg-white overflow-hidden shadow-sm`}
                 >
                   <img
                     src={url}
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover"
                   />
-                  {/* file meta */}
-                  {f && (
-                    <div className="absolute left-2 bottom-2 text-[11px] px-2 py-0.5 rounded bg-black/55 text-white">
-                      {f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name}{" "}
-                      · {formatMB(f.size)}
-                    </div>
-                  )}
                   {/* remove */}
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedImages((prev) => {
-                        const next = [...prev];
-                        next.splice(index, 1);
-                        return next;
+                      setItemImages((prev) => {
+                        return prev.filter((_, i) => i != index);
                       });
                     }}
-                    className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5
-                       opacity-0 group-hover:opacity-100 focus:opacity-100 transition"
+                    className="absolute top-2 right-2 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs px-2 py-0.5"
                     aria-label={`Remove image ${index + 1}`}
                   >
                     ✕
+                  </button>
+                  {/* make cover */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setItemImages((prev) => {
+                        return [
+                          prev.find((img) => img === image)!,
+                          ...prev.filter((_, i) => i != index),
+                        ];
+                      });
+                    }}
+                    className={`absolute top-2 right-10 rounded-full text-xs px-2 py-0.5 w-6 flex items-center justify-center ${index === 0 ? "bg-blue-600 text-white hover:bg-blue-800" : "bg-black/60 hover:bg-black/80 text-white"}`}
+                    aria-label={`Make image ${index + 1} cover image`}
+                  >
+                    <BookImage className="h-[.9rem] w-[.9rem] mx-[-.1rem] text-white" />
                   </button>
                 </div>
               );

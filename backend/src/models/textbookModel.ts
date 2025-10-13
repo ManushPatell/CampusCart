@@ -8,14 +8,17 @@ export interface Textbook {
   edition: string | null;
   condition: string | null;
   seller_id?: string | null;
-  seller: { id: string | null; name: string | null; email: string | null } | null;
+  seller: {
+    id: string | null;
+    name: string | null;
+    email: string | null;
+  } | null;
   date_posted: string | null;
   year: number | null;
   faculty: string | null;
   price: number;
   photos: string[] | null;
 }
-
 
 export async function findAllTextbooks(): Promise<Textbook[]> {
   const rows = await sql<Textbook[]>`
@@ -42,7 +45,6 @@ export async function findAllTextbooks(): Promise<Textbook[]> {
   `;
   return rows;
 }
-
 
 export async function findTextbook(id: string): Promise<Textbook | null> {
   const rows = await sql<Textbook[]>`
@@ -111,9 +113,10 @@ export async function editTextbook(
   condition: string,
   textbookId: string,
   sellerId: string,
+  photos: string[],
 ) {
   const result = await sql`
-      UPDATE textbooks SET (book_title, author, edition, year, faculty, price, condition) = (${book_title}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}) WHERE id = ${textbookId} AND seller = ${sellerId} RETURNING *;`;
+      UPDATE textbooks SET (book_title, author, edition, year, faculty, price, condition, photos) = (${book_title}, ${author}, ${edition}, ${year}, ${faculty}, ${price}, ${condition}, ${photos}) WHERE id = ${textbookId} AND seller = ${sellerId} RETURNING *;`;
   return result[0];
 }
 
