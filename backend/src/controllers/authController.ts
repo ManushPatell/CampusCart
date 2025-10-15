@@ -11,6 +11,9 @@ import {
 } from "../models/tokenModel";
 import { findUserByEmail, findUserById } from "../models/userModel";
 
+const REFRESH_TOKEN_NAME = "refreshToken";
+const ACCESS_TOKEN_NAME = "accessToken";
+
 export async function getUserInformation(req: Request, res: Response) {
   const { id } = req.user!; // This route is protected which guarantees req.user exists
   const user = await findUserById(id);
@@ -63,14 +66,14 @@ export async function postLoginUser(req: Request, res: Response) {
     console.log(`Registered refresh token: ${token}`);
     res
       .status(200)
-      .cookie("accessToken", accessToken, {
+      .cookie(ACCESS_TOKEN_NAME, accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
         path: "/",
         expires: new Date(Date.now() + 1800000), // expires in 30 minutes
       })
-      .cookie("refreshToken", refreshToken, {
+      .cookie(REFRESH_TOKEN_NAME, refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
@@ -83,6 +86,26 @@ export async function postLoginUser(req: Request, res: Response) {
   } else {
     res.status(401).json({ error: "Invalid login credentials." });
   }
+}
+
+export async function getLogoutUser(req: Request, res: Response) {
+  res
+    .clearCookie(ACCESS_TOKEN_NAME, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
+    })
+    .clearCookie(REFRESH_TOKEN_NAME, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
+    })
+    .status(200)
+    .json("Success");
+
+  return;
 }
 
 export async function postRefreshToken(req: Request, res: Response) {
@@ -110,7 +133,7 @@ export async function postRefreshToken(req: Request, res: Response) {
         process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: "30m" },
       );
-      res.status(200).cookie("accessToken", accessToken, {
+      res.status(200).cookie(ACCESS_TOKEN_NAME, accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 30, // 30 minutes
