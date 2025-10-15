@@ -1,7 +1,6 @@
-// src/pages/MiscDetail.tsx
+import ShareButton from "@/components/Share";
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import NavBar from "../components/Nav";
 
 type Misc = {
   id: number | string;
@@ -122,8 +121,6 @@ export default function MiscDetail() {
   if (loading) {
     return (
       <>
-        <NavBar />
-        <div className="h-24" aria-hidden="true" />
         <div className="max-w-5xl mx-auto px-6 pb-8">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-1/3" />
@@ -139,7 +136,6 @@ export default function MiscDetail() {
   if (error) {
     return (
       <>
-        <NavBar />
         <div className="h-24" aria-hidden="true" />
         <div className="max-w-5xl mx-auto px-6 pb-8 text-center text-red-600">
           {error}
@@ -152,10 +148,6 @@ export default function MiscDetail() {
 
   return (
     <>
-      <NavBar />
-      <div className="h-24" aria-hidden="true" />
-      {/* navbar offset */}
-
       <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
         {/* Title + price */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
@@ -181,7 +173,7 @@ export default function MiscDetail() {
                 <img
                   src={photos[currentImageIndex]}
                   alt={`Photo ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover rounded-xl shadow"
+                  className="w-full h-full object-contain rounded-xl shadow"
                 />
                 {photos.length > 1 && (
                   <>
@@ -298,14 +290,11 @@ export default function MiscDetail() {
               >
                 Email Seller
               </a>
-              <button
-                onClick={() =>
-                  navigator.clipboard.writeText(window.location.href)
-                }
-                className="rounded-lg px-4 py-2 border border-gray-300 hover:bg-gray-50"
-              >
-                Share
-              </button>
+              <ShareButton
+                title={`Misc listing: ${item.title}`}
+                text={`Check out this listing on Campus Cart`}
+                url={window.location.href}
+              />
             </div>
           </aside>
         </div>

@@ -26,7 +26,7 @@ const Textbooks = () => {
   });
 
   useEffect(() => {
-    fetch("/api/textbooks")
+    fetch(`${import.meta.env.VITE_API_URL}/textbooks`)
       .then((r) => r.json())
       .then((data) => setListings(Array.isArray(data) ? data : []))
       .catch((e) => setError(String(e)))
@@ -64,9 +64,9 @@ const Textbooks = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-[100vh] bg-bg py-10">
       {/* Header */}
-      <div className="py-8 px-4 pt-20 mt-[10rem]">
+      <div className="px-4 mt-[5rem]">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Textbook Listings
         </h1>

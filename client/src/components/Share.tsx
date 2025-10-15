@@ -31,7 +31,7 @@ export default function ShareButton({
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800 transition"
+      className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm bg-primary-fg/25 text-primary-fg hover:bg-primary-fg/40 active:bg-primary-fg/50 transition"
     >
       <Share className="h-5 w-5" />
       Share

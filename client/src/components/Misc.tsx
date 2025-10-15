@@ -17,8 +17,7 @@ const Misc = () => {
   });
 
   useEffect(() => {
-    // Initial load (you can also pass query params here)
-    fetch(`/api/misc`)
+    fetch(`${import.meta.env.VITE_API_URL}/misc`)
       .then((r) => r.json())
       .then((data) => {
         const raw = Array.isArray(data) ? data : [];
@@ -88,9 +87,9 @@ const Misc = () => {
   if (error) return <div className="p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-bg py-10">
       {/* Header */}
-      <div className="py-8 px-4 pt-20">
+      <div className="px-4 mt-[5rem]">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Extras & Misc Listings
         </h1>

@@ -163,7 +163,7 @@ export default function SignUp() {
             name="phoneNumber"
             control={control}
             errors={errors}
-            type="tel"
+            type="text"
             rules={{
               required: "Field required",
               validate: {
