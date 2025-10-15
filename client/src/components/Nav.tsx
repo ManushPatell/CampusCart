@@ -1,15 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isLogoutLoading, setIsLogoutLoading] = useState<boolean>(false);
 
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // Close dropdown if clicking outside
   useEffect(() => {
@@ -27,6 +31,18 @@ export default function Nav() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = async () => {
+    setIsLogoutLoading(true);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+      credentials: "include",
+    });
+    setIsLogoutLoading(false);
+    if (res.ok) {
+      queryClient.refetchQueries({ queryKey: ["auth"] });
+      navigate("/");
+    }
+  };
 
   return (
     <>
@@ -96,9 +112,20 @@ export default function Nav() {
           </div>
 
           {user ? (
-            <Link to="/dashboard" className="hover:text-fuchsia-500 transition">
-              Dashboard
-            </Link>
+            <>
+              <Link
+                to="/dashboard"
+                className="hover:text-fuchsia-500 transition"
+              >
+                Dashboard
+              </Link>
+              <h1
+                onClick={handleLogout}
+                className="hover:text-fuchsia-500 transition"
+              >
+                {isLogoutLoading ? "Loading..." : "Logout"}
+              </h1>
+            </>
           ) : (
             <Link to="/register" className="hover:text-fuchsia-500 transition">
               Sign Up
@@ -158,13 +185,22 @@ export default function Nav() {
             </Link>
 
             {user ? (
-              <Link
-                to="/dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-fuchsia-500 transition"
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="hover:text-fuchsia-500 transition"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/"
+                  onClick={handleLogout}
+                  className="hover:text-fuchsia-500 transition"
+                >
+                  {isLogoutLoading ? "Loading..." : "Logout"}
+                </Link>
+              </>
             ) : (
               <Link
                 to="/register"

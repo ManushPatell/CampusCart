@@ -4,6 +4,7 @@ import {
   postLoginUser,
   postRefreshToken,
   getUserInformation,
+  getLogoutUser,
 } from "../controllers/authController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -129,6 +130,7 @@ router.get("/me", authenticateToken, getUserInformation);
  *                      type: string
  */
 router.post("/login", postLoginUser);
+router.get("/logout", getLogoutUser);
 
 /**
  * @swagger
