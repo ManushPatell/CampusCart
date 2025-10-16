@@ -103,7 +103,7 @@ export default function Login() {
           </h2>
 
           {isSuccess ? (
-            <p>
+            <p className="text-center mb-[1rem]">
               Check your email for a reset link! The university will likely flag
               our email as spam, so check your spam folder or go to your
               university Outlook Quarantine page. Make sure to reset your
@@ -128,13 +128,14 @@ export default function Login() {
                 }}
                 placeholder="Email"
               />
+              <Submit label="Send email" isLoading={isLoading} />
             </>
           )}
 
           {errorMessage && (
             <p className="text-red-400 text-center">{errorMessage}</p>
           )}
-          <Submit label="Send email" isLoading={isLoading} />
+
           <span className="text-center mt-[1rem]">
             Ready to{" "}
             <Link
