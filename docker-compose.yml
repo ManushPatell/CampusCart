@@ -1,5 +1,5 @@
 services:
-  db: 
+  db:
     build:
       context: ./db
     container_name: db
@@ -21,7 +21,7 @@ services:
       retries: 5
 
   backend:
-    build: 
+    build:
       context: ./backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -38,10 +38,13 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      RESET_PASSWORD_TOKEN_SECRET: ${RESET_PASSWORD_TOKEN_SECRET}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_REGION: ${AWS_REGION}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
     depends_on:
       db:
         condition: service_healthy
@@ -51,9 +54,9 @@ services:
         condition: on-failure
 
   client:
-    build: 
+    build:
       context: ./client
-      args: 
+      args:
         VITE_API_URL: ${VITE_API_URL}
         VITE_PORT: ${VITE_PORT}
     depends_on:
@@ -64,19 +67,19 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - webroot:/var/www/certbot        # ACME challenge path
-      - certs:/etc/letsencrypt 
+      - webroot:/var/www/certbot # ACME challenge path
+      - certs:/etc/letsencrypt
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-  
+
   certbot:
     image: certbot/certbot
     container_name: certbot
     volumes:
-      - webroot:/var/www/certbot        # ACME challenge path
-      - certs:/etc/letsencrypt 
+      - webroot:/var/www/certbot # ACME challenge path
+      - certs:/etc/letsencrypt
     entrypoint: >
       sh -c "certbot certonly \
       --webroot -w /var/www/certbot \

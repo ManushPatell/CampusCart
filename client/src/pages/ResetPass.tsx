@@ -10,7 +10,6 @@ const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
 
 type FormInputs = {
   email: string;
-  password: string;
 };
 
 export default function Login() {
@@ -22,9 +21,10 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<FormInputs>({ defaultValues: { email: "", password: "" } });
+  } = useForm<FormInputs>({ defaultValues: { email: "" } });
 
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Redirect if already authed
@@ -44,24 +44,23 @@ export default function Login() {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/reset-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: data.email }),
+        },
+      );
 
-      if (res.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["auth"] });
-        navigate("/dashboard");
-      } else if (res.status === 400) {
-        setErrorMessage("Failed to provide email and password.");
-      } else if (res.status === 401) {
-        setErrorMessage("Invalid login credentials. This shouldn't happen!");
-      } else if (res.status === 500) {
-        setErrorMessage("An error occurred on our end. Please try again.");
+      const body = await res.json();
+
+      if (res.ok) {
+        setIsSuccess(true);
+        setErrorMessage("");
       } else {
-        setErrorMessage("An error occured");
+        setIsSuccess(false);
+        setErrorMessage(JSON.stringify(body));
       }
     } catch (err) {
       setErrorMessage(String(err));
@@ -99,50 +98,52 @@ export default function Login() {
           "
           style={{ borderColor: "#E7E0D6", maxHeight: "calc(100svh - 2rem)" }}
         >
-          <h2 className="text-2xl font-semibold text-center mb-9">Login</h2>
+          <h2 className="text-2xl font-semibold text-center mb-8">
+            Reset Password
+          </h2>
 
-          <ControlledInput
-            name="email"
-            control={control}
-            errors={errors}
-            rules={{
-              required: "Field required",
-              validate: {
-                macEmail: (v: string) =>
-                  macEmailRegex.test(v) || "Invalid McMaster email",
-              },
-            }}
-            placeholder="School email"
-            autocomplete="username"
-          />
-          <ControlledInput
-            name="password"
-            control={control}
-            errors={errors}
-            rules={{ required: "Field required" }}
-            placeholder="Password"
-            type="password"
-            autocomplete="current-password"
-          />
-          <Link
-            to="/forgot-password"
-            className="font-black text-primary-fg hover:underline ml-auto my-1.5"
-          >
-            Forgot password?
-          </Link>
+          {isSuccess ? (
+            <p>
+              Check your email for a reset link! The university will likely flag
+              our email as spam, so check your spam folder or go to your
+              university Outlook Quarantine page. Make sure to reset your
+              password within the next 5 minutes otherwise the link will expire.
+            </p>
+          ) : (
+            <>
+              <span className="text-center mb-2">
+                Enter the email you signed up with below, and we will send you a
+                link to change your password.
+              </span>
+              <ControlledInput
+                name="email"
+                control={control}
+                errors={errors}
+                rules={{
+                  required: "Field required",
+                  validate: {
+                    macEmail: (v: string) =>
+                      macEmailRegex.test(v) || "Invalid McMaster email",
+                  },
+                }}
+                placeholder="Email"
+              />
+            </>
+          )}
 
           {errorMessage && (
             <p className="text-red-400 text-center">{errorMessage}</p>
           )}
-          <Submit label="Login" className="" isLoading={isLoading} />
+          <Submit label="Send email" isLoading={isLoading} />
           <span className="text-center mt-[1rem]">
-            Don{"'"}t have an account?{" "}
+            Ready to{" "}
             <Link
-              to="/register"
+              to="/login"
               className="font-black text-primary-fg hover:underline"
             >
-              Sign up
+              login
             </Link>
+            ?
           </span>
         </form>
       </div>
