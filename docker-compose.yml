@@ -43,7 +43,8 @@ services:
       AWS_REGION: ${AWS_REGION}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
-      RESEND_API_KEY: ${RESEND_API_KEY}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
     depends_on:
       db:
         condition: service_healthy

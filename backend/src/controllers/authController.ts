@@ -3,7 +3,6 @@ import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { Resend } from "resend";
 
 import {
   registerToken,
@@ -130,18 +129,12 @@ export async function postForgotPassword(req: Request, res: Response) {
 
   const resetLink = `${process.env.FRONTEND_ORIGIN as string}/reset-password?token=${token}`;
 
-  const resend = new Resend(process.env.RESEND_API_KEY as string);
-
-  const { error } = await resend.emails.send({
-    from: "CampusCart <noreply@noreply.campus-cart.ca>",
+  await transporter.sendMail({
+    from: `CampusCart Support <${process.env.EMAIL_USER}@gmail.com>`,
     to: email,
     subject: "CampusCart password reset",
-    html: `<p>Hello there! To change your password, click <a href="${resetLink}">here</a>. This link expires in 5 minutes.</p>`,
+    html: `<p>Hello there! To update your password, click <a href="${resetLink}">here</a>. This link expires in 5 minutes.</p>`,
   });
-
-  if (error) {
-    return res.status(400).json({ error });
-  }
 
   res.status(200).json({ message: "Password reset email sent" });
 }

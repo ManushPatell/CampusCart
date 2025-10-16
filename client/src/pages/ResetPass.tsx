@@ -104,7 +104,9 @@ export default function Login() {
 
           {isSuccess ? (
             <p>
-              Check your email for a reset link! Make sure to reset your
+              Check your email for a reset link! The university will likely flag
+              our email as spam, so check your spam folder or go to your
+              university Outlook Quarantine page. Make sure to reset your
               password within the next 5 minutes otherwise the link will expire.
             </p>
           ) : (
