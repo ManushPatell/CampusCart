@@ -29,12 +29,14 @@ function CardImage({ src, alt }: { src?: string; alt: string }) {
       className={`relative overflow-hidden rounded-md border border-border bg-border/30`}
     >
       {show ? (
-        <img
-          src={src}
-          alt={alt}
-          onError={() => setBroken(true)}
-          className="max-w-full h-auto rounded-md"
-        />
+        <div className="h-[60vh] w-full">
+          <img
+            src={src}
+            alt={alt}
+            onError={() => setBroken(true)}
+            className="h-full w-full object-contain object-center rounded-md"
+          />
+        </div>
       ) : (
         <div className="flex items-center justify-center text-secondary-fg/70 text-sm p-4">
           No photo
@@ -64,7 +66,7 @@ function ActionButtons({
           e.stopPropagation();
           onEdit();
         }}
-        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition"
+        className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-blue-600 bg-blue-100 hover:bg-blue-200 active:bg-blue-300 transition"
       >
         <Pencil className="h-5 w-5" />
         Edit
@@ -76,7 +78,7 @@ function ActionButtons({
           onDelete();
         }}
         className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm
-                   bg-red-600 text-white hover:bg-red-700 active:bg-red-800 transition"
+                   text-red-700 bg-red-100 hover:bg-red-200 active:bg-red-300 transition"
       >
         <Trash2 className="h-5 w-5" />
         Delete

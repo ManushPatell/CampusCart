@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import HouseCard from "../components/HouseCard";
-// import mockListings from "../data/mockListings"; // import mock data for housing listings
 
 const Houses = () => {
   const [searchTerm, setSearchTerm] = useState(""); //state variable for search term [value, setValue] = useState(initialValue)
@@ -20,7 +19,7 @@ const Houses = () => {
     currentPrice: 2000,
   });
   useEffect(() => {
-    fetch("/api/rentals")
+    fetch(`${import.meta.env.VITE_API_URL}/rentals`)
       .then((r) => r.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : [];
@@ -128,9 +127,9 @@ const Houses = () => {
 
   // Render the component
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-bg py-10">
       {/* Header */}
-      <div className="py-8 px-4 pt-20">
+      <div className="px-4 mt-[5rem]">
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Housing Listings
         </h1>
@@ -312,7 +311,7 @@ const Houses = () => {
       <div className="px-4 py-8">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
           {filteredListings.map((house) => (
-            <HouseCard key={house.id} house={house} description={house.id} />
+            <HouseCard key={house.id} house={house} />
           ))}
         </div>
       </div>

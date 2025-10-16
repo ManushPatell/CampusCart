@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "../components/Nav";
 import { Textbook } from "../types/types";
+import ShareButton from "@/components/Share";
 
 function formatCurrency(v: any) {
   const n =
@@ -155,7 +156,7 @@ export default function TextbookDetail() {
                 <img
                   src={photos[currentImageIndex]}
                   alt={`Photo ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover rounded-xl shadow"
+                  className="w-full h-full object-contain rounded-xl shadow"
                 />
                 {photos.length > 1 && (
                   <>
@@ -287,14 +288,11 @@ export default function TextbookDetail() {
               >
                 Email Seller
               </a>
-              <button
-                onClick={() =>
-                  navigator.clipboard.writeText(window.location.href)
-                }
-                className="rounded-lg px-4 py-2 border border-gray-300 hover:bg-gray-50"
-              >
-                Share
-              </button>
+              <ShareButton
+                title={`Misc listing: ${textbook.book_title}`}
+                text={`Check out this listing on Campus Cart`}
+                url={window.location.href}
+              />
             </div>
           </aside>
         </div>
