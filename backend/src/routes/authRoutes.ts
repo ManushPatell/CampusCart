@@ -5,6 +5,7 @@ import {
   postRefreshToken,
   getUserInformation,
   getLogoutUser,
+  postForgotPassword,
 } from "../controllers/authController";
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -131,6 +132,7 @@ router.get("/me", authenticateToken, getUserInformation);
  */
 router.post("/login", postLoginUser);
 router.get("/logout", getLogoutUser);
+router.post("/reset-password", postForgotPassword);
 
 /**
  * @swagger

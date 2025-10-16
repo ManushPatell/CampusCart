@@ -22,6 +22,7 @@ import Misc from "./components/Misc";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AddMisc from "./pages/AddMisc";
 import AboutUs from "./pages/AboutUs";
+import ResetPass from "./pages/ResetPass";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<Nav />}>
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Signup />} />
+              <Route path="forgot-password" element={<ResetPass />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Dashboard />} />

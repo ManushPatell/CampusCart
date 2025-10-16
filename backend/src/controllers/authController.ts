@@ -2,6 +2,8 @@ import { type UserPayload } from "../types/user";
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 import {
   registerToken,
@@ -13,6 +15,11 @@ import { findUserByEmail, findUserById } from "../models/userModel";
 
 const REFRESH_TOKEN_NAME = "refreshToken";
 const ACCESS_TOKEN_NAME = "accessToken";
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
 
 export async function getUserInformation(req: Request, res: Response) {
   const { id } = req.user!; // This route is protected which guarantees req.user exists
@@ -106,6 +113,37 @@ export async function getLogoutUser(req: Request, res: Response) {
     .json("Success");
 
   return;
+}
+
+export async function postForgotPassword(req: Request, res: Response) {
+  const { email } = req.body;
+  const user = await findUserByEmail(email);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const token = jwt.sign(
+    { email },
+    process.env.RESET_PASSWORD_TOKEN_SECRET as string,
+    {
+      expiresIn: "5m",
+    },
+  );
+
+  const resetLink = `${process.env.FRONTEND_ORIGIN as string}/reset-password?token=${token}`;
+
+  const resend = new Resend(process.env.RESEND_API_KEY as string);
+
+  const { error } = await resend.emails.send({
+    from: "CampusCart <noreply@noreply.campus-cart.ca>",
+    to: email,
+    subject: "CampusCart password reset",
+    html: `<p>Hello there! To change your password, click <a href="${resetLink}">here</a>. This link expires in 5 minutes.</p>`,
+  });
+
+  if (error) {
+    return res.status(400).json({ error });
+  }
+
+  res.status(200).json({ message: "Password reset email sent" });
 }
 
 export async function postRefreshToken(req: Request, res: Response) {

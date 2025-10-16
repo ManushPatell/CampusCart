@@ -21,11 +21,20 @@ import uploadRoutes from "./routes/uploadRoutes";
 
 import cors from "cors";
 import morgan from "morgan";
-import RateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 
-const limiter = RateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 30,
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per window
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 8,
+  message: "Too many attempts, please try again later.",
 });
 
 const app = express();
@@ -51,7 +60,7 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/misc", miscRoutes);

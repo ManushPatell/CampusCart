@@ -156,7 +156,7 @@ export default function SignUp() {
                   macEmailRegex.test(v) || "Invalid McMaster email",
               },
             }}
-            placeholder="Email"
+            placeholder="School email"
             autocomplete="username"
           />
           <ControlledInput
