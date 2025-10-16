@@ -1,7 +1,7 @@
 import { type UserPayload } from "../types/user";
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
 import {
@@ -10,7 +10,11 @@ import {
   isRefreshTokenRegistered,
   deleteTokenById,
 } from "../models/tokenModel";
-import { findUserByEmail, findUserById } from "../models/userModel";
+import {
+  findUserByEmail,
+  findUserById,
+  updateUserPassword,
+} from "../models/userModel";
 
 const REFRESH_TOKEN_NAME = "refreshToken";
 const ACCESS_TOKEN_NAME = "accessToken";
@@ -172,6 +176,33 @@ export async function postRefreshToken(req: Request, res: Response) {
       return;
     },
   );
+}
+
+export async function postChangePassword(req: Request, res: Response) {
+  const { token, password } = req.body;
+
+  try {
+    const { email } = jwt.verify(
+      token,
+      process.env.RESET_PASSWORD_TOKEN_SECRET as string,
+    ) as JwtPayload;
+    const user = findUserByEmail(email);
+    if (!user)
+      return res.status(400).json({ error: "Invalid or expired token" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await updateUserPassword(email, hashedPassword); // save new password
+    if (newUser) {
+      res.status(200).json({ message: "Password updated successfully." });
+      return;
+    } else {
+      res.status(500).json({ message: "An error occured" });
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ error: "Invalid or expired token" });
+  }
 }
 
 export async function deleteLogoutUser(req: Request, res: Response) {

@@ -289,10 +289,7 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-secondary-fg text-sm">
-            No rental listings yet. Click{" "}
-            <span className="font-semibold">Add</span> to create one.
-          </div>
+          <div className="text-secondary-fg text-sm">No rental listings.</div>
         )}
       </Section>
 
@@ -356,10 +353,7 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-secondary-fg text-sm">
-            No textbook listings yet. Click{" "}
-            <span className="font-semibold">Add</span>.
-          </div>
+          <div className="text-secondary-fg text-sm">No textbook listings.</div>
         )}
       </Section>
 
@@ -414,8 +408,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="text-secondary-fg text-sm">
-            No miscellaneous listings yet. Click{" "}
-            <span className="font-semibold">Add</span>.
+            No miscellaneous listings.
           </div>
         )}
       </Section>

@@ -127,6 +127,9 @@ export default function SignUp() {
             borderColor: "#E7E0D6", // matches your warm border tone
             maxHeight: "calc(100svh - 2rem)", // allow internal scroll on small screens
           }}
+          method="POST"
+          action={`${import.meta.env.VITE_API_URL}/users`}
+          autoComplete="on"
         >
           <h2 className="text-2xl font-semibold mb-9 text-center">Sign Up</h2>
 
@@ -156,7 +159,7 @@ export default function SignUp() {
                   macEmailRegex.test(v) || "Invalid McMaster email",
               },
             }}
-            placeholder="School email"
+            placeholder="Email"
             autocomplete="username"
           />
           <ControlledInput

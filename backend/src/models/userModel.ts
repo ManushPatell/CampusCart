@@ -73,3 +73,10 @@ export const findUserRentals = async (id: number) => {
     WHERE id = ${id}`;
   return rentals;
 };
+
+export const updateUserPassword = async (email: string, password: string) => {
+  const newUser = await sql<
+    User[]
+  >`UPDATE users SET password = ${password} WHERE email = ${email} RETURNING *`;
+  return newUser[0];
+};
