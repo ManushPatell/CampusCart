@@ -7,7 +7,10 @@ const AboutSection = () => {
       image: "zak.jpg",
       title: "Super Simple to Use",
       steps: [
-        { icon: "👋", text: "Sign up with your @mcmaster email" },
+        {
+          icon: "👋",
+          text: "Sign up with your @uwaterloo.ca or @mylaurier.ca email",
+        },
         { icon: "👀", text: "Browse what other students are selling" },
         { icon: "🤝", text: "Meet up safely on campus & exchange" },
       ],
@@ -190,7 +193,7 @@ const AboutSection = () => {
         <div className="text-center py-8 md:py-10">
           <Link to="/register">
             <button className="bg-primary-fg hover:bg-[#3A3127] text-white text-base md:text-lg lg:text-xl font-semibold md:font-bold py-2.5 md:py-3.5 px-6 md:px-9 rounded-xl transition-all duration-200 shadow-sm">
-              Join McMaster's Community
+              Join The Community!
             </button>
           </Link>
         </div>
