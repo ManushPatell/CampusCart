@@ -58,7 +58,9 @@ export default function Nav() {
       >
         {/* Logo */}
         <h1 className="text-2xl font-['Kavoon'] text-primary-fg cursor-pointer select-none">
-          Campus Cart
+          <Link to="/" className="transition">
+            Campus Cart
+          </Link>
         </h1>
 
         {/* Desktop Nav */}

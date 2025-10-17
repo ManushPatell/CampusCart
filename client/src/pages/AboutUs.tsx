@@ -83,7 +83,7 @@ export default function AboutUs() {
                 linkedin: "https://linkedin.com/in/andrew-iammancini",
               },
               {
-                img: "/manush-campuscart.jpg",
+                img: "/manushcampuscart.jpg",
                 name: "Manush Patel",
                 role: "Computer Engineering",
                 bio: "Interested in controls, embedded systems and robotics. Built CampusCart to make campus life easier.",
