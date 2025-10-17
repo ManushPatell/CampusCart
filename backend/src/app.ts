@@ -33,7 +33,7 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 8,
+  max: 50,
   message: "Too many attempts, please try again later.",
 });
 
@@ -104,7 +104,7 @@ app.use((req, res, next) => {
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       `img-src ${imgSrc.join(" ")}`,
-      `connect-src 'self': http://localhost:3001 ${FRONTEND_ORIGIN}`,
+      `connect-src 'self' http://localhost:3001 ${FRONTEND_ORIGIN}`,
       "font-src 'self'",
     ].join("; "),
   );
