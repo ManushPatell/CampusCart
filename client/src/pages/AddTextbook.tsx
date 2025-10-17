@@ -51,7 +51,7 @@ export default function AddTextbook() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingTextbook, setIsLoadingTextbook] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") ?? "";
   const queryClient = useQueryClient();
 
   const [errorMessage, setErrorMessage] = useState<string>("");

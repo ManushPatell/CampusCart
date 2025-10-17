@@ -30,7 +30,7 @@ export default function AddMisc() {
   const queryClient = useQueryClient();
 
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") ?? "";
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [itemImages, setItemImages] = useState<(string | File)[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
