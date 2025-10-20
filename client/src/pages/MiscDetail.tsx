@@ -281,7 +281,7 @@ export default function MiscDetail() {
               <a
                 href={
                   sellerEmail && sellerEmail !== "—"
-                    ? `mailto:${sellerEmail}?subject=Inquiry about item #${item.id}`
+                    ? `mailto:${sellerEmail}?subject=Inquiry about item: ${item.title}`
                     : undefined
                 }
                 onClick={(e) => {

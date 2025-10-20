@@ -309,7 +309,7 @@ export default function HouseDetail() {
               <a
                 href={
                   sellerEmail && sellerEmail !== "—"
-                    ? `mailto:${sellerEmail}?subject=Inquiry about rental #${house.id}`
+                    ? `mailto:${sellerEmail}?subject=Inquiry about rental: ${house.title}`
                     : undefined
                 }
                 onClick={(e) => {

@@ -276,9 +276,7 @@ export default function TextbookDetail() {
               <a
                 href={
                   sellerEmail && sellerEmail !== "—"
-                    ? `mailto:${sellerEmail}?subject=Inquiry about textbook #${
-                        (textbook as any)?.id ?? id
-                      }`
+                    ? `mailto:${sellerEmail}?subject=Inquiry about textbook: ${textbook.book_title}`
                     : undefined
                 }
                 onClick={(e) => {
