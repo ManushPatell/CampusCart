@@ -4,12 +4,11 @@ This document will attempt to provide a description of the logic behind our back
 
 ## Differences between Routes, Controllers, and Models
 
-It's important to understand how the logic works between the three components because they're a fundamental part of how the backend operates. 
+It's important to understand how the logic works between the three components because they're a fundamental part of how the backend operates.
 
-### Routes: src/routes/*.ts
+### Routes: src/routes/\*.ts
 
 These routes act as an entry point for HTTP requests. It will handle when a user requests to a path like (/users, /rentals/5), using a GET request. Routes will map a request to a specific controller function depending on what the user may need
-
 
 ```
 router.get('/:id', getRentalByIdController);
@@ -17,10 +16,9 @@ router.get('/:id', getRentalByIdController);
 
 Router will redirect traffic to a controller function "getRentalByIdController" if someone sends a GET request to "/users/:id"
 
+### Controllers: src/controllers/\*.ts
 
-### Controllers: src/controllers/*.ts
-
-Controllers are responsible for containing the business logic. These files contain functions that will run when a route is hit. The functions will decide what to do by talking to the model which fetches data from the database and sends a response with the data using ```res.json()```
+Controllers are responsible for containing the business logic. These files contain functions that will run when a route is hit. The functions will decide what to do by talking to the model which fetches data from the database and sends a response with the data using `res.json()`
 
 ```
 export async function getUserById(
@@ -42,7 +40,7 @@ export async function getUserById(
     next(err);
     return;
   }
-// 3. Send a response 
+// 3. Send a response
   if (!user) {
     res.status(500).json({ error: 'User not found!' });
     return;
@@ -51,7 +49,7 @@ export async function getUserById(
 }
 ```
 
-### Models (src/models/*.ts)
+### Models (src/models/\*.ts)
 
 Models are the only layer that will talk to the database. They hold SQL queries that will fetch, insert or update data. Models are simple:
 
@@ -81,7 +79,7 @@ export interface Rental {
 }
 
 
-export const findRentalById = async (id: string): Promise<Rental | null>  => { 
+export const findRentalById = async (id: string): Promise<Rental | null>  => {
   const result = await sql<Rental[]>`SELECT * FROM rentals WHERE id = ${id}`; //SQL query
   return result[0] ?? null;
 };

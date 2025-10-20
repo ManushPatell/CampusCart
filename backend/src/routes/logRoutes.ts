@@ -1,8 +1,8 @@
-import express from "express"
-import { postLogVisit } from "../controllers/logController"
+import express from "express";
+import { postLogVisit } from "../controllers/logController";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/", postLogVisit)
+router.post("/", postLogVisit);
 
-export default router
+export default router;

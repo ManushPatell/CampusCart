@@ -108,7 +108,7 @@ export async function getUserMisc(req: Request, res: Response) {
 
 export async function postNewUser(req: Request, res: Response) {
   const { firstName, lastName, email, password } = req.body;
-  if (!firstName || !lastName || !email  || !password) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400).json({
       error:
         "Must provide a first name, last name, email, password, and phone number.",
@@ -129,12 +129,7 @@ export async function postNewUser(req: Request, res: Response) {
       return;
     }
 
-    const newUser = await addUser(
-      firstName,
-      lastName,
-      email,
-      hash,
-    );
+    const newUser = await addUser(firstName, lastName, email, hash);
     if (!newUser) {
       res.status(409).json({ error: "That email has been taken." });
       return;

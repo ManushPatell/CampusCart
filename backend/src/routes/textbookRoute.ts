@@ -161,8 +161,6 @@ router.put("/:id", authenticateToken, putTextbook);
  *             email: { type: string, format: email }
  */
 
-
-
 /**
  * @swagger
  * /textbooks/{id}:
