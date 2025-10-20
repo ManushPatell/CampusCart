@@ -115,6 +115,13 @@ export default function AddRental() {
       (image) => typeof image === "string",
     );
 
+    // No photos are uploaded, don't submit
+    if (itemImages.length === 0) {
+      setErrorMessage("Listing photos are required");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       for (const file of itemImages.filter((image) => image instanceof File)) {
         const imageForm = new FormData();

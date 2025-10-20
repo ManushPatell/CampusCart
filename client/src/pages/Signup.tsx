@@ -9,7 +9,6 @@ type FormInputs = {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
   password: string;
 };
 
@@ -27,7 +26,6 @@ export default function SignUp() {
       firstName: "",
       lastName: "",
       email: "",
-      phoneNumber: "",
       password: "",
     },
   });
@@ -161,21 +159,6 @@ export default function SignUp() {
             }}
             placeholder="Email"
             autocomplete="username"
-          />
-          <ControlledInput
-            name="phoneNumber"
-            control={control}
-            errors={errors}
-            type="text"
-            rules={{
-              required: "Field required",
-              validate: {
-                validNumber: (v: string) =>
-                  validPhoneNumberRegex.test(v) ||
-                  "Must match format XXX-XXX-XXXX",
-              },
-            }}
-            placeholder="Phone number"
           />
           <ControlledInput
             name="password"
