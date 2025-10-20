@@ -2,7 +2,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-
 type Props = { house: any };
 
 function formatCurrency(v: unknown) {

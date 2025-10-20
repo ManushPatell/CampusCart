@@ -79,7 +79,9 @@ export default function AddMisc() {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setErrorMessage("One or more images failed to upload. Please wait, then try again.");
+      setErrorMessage(
+        "One or more images failed to upload. Please wait, then try again.",
+      );
       setIsLoading(false);
       return;
     }

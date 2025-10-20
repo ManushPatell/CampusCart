@@ -1,7 +1,7 @@
-import {useEffect} from "react"
+import { useEffect } from "react";
 
 export default function Logger() {
-    useEffect(() => {
+  useEffect(() => {
     fetch("/api/logs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -13,5 +13,5 @@ export default function Logger() {
     }).catch((err) => console.error("Failed to log visit:", err));
   }, []);
 
-    return null
+  return null;
 }

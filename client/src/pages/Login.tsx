@@ -112,7 +112,7 @@ export default function Login() {
             rules={{
               required: "Field required",
               validate: {
-               validEmail: (v: string) =>
+                validEmail: (v: string) =>
                   waterlooEmailRegex.test(v) ||
                   laurierEmailRegex.test(v) ||
                   "Invalid UWaterloo or Laurier email",

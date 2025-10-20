@@ -14,13 +14,17 @@ type UserOut = {
   email?: string;
 };
 
-export default function useUserById(userId?: number | string): UseQueryResult<UserOut, Error> {
+export default function useUserById(
+  userId?: number | string,
+): UseQueryResult<UserOut, Error> {
   const base = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
   return useQuery<ApiUser, Error, UserOut>({
     queryKey: ["userById", userId],
     enabled: !!userId,
     queryFn: async () => {
-      const r = await fetch(`${base}/users/${userId}`, { credentials: "include" });
+      const r = await fetch(`${base}/users/${userId}`, {
+        credentials: "include",
+      });
       if (!r.ok) throw new Error("Failed to load user");
       return (await r.json()) as ApiUser;
     },

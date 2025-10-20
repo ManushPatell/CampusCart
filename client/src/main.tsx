@@ -24,7 +24,7 @@ import AddMisc from "./pages/AddMisc";
 import AboutUs from "./pages/AboutUs";
 import ResetPass from "./pages/ResetPass";
 import NewPassword from "./pages/NewPassword";
-import Logger from "./components/Logger"
+import Logger from "./components/Logger";
 
 const queryClient = new QueryClient();
 

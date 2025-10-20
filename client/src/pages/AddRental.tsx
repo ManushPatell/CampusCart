@@ -141,7 +141,9 @@ export default function AddRental() {
       }
     } catch (err) {
       console.error("Upload error:", err);
-      setErrorMessage("One or more images failed to upload. Please wait, then try again.");
+      setErrorMessage(
+        "One or more images failed to upload. Please wait, then try again.",
+      );
       setIsLoading(false);
       return;
     }
@@ -349,7 +351,7 @@ export default function AddRental() {
                   />
                   <button
                     type="button"
-                   onClick={() => {
+                    onClick={() => {
                       setItemImages((prev) => {
                         return prev.filter((_, i) => i != index);
                       });
