@@ -53,7 +53,7 @@ const initialValues: FormInputs = {
 
 export default function AddRental() {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") ?? "";
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [itemImages, setItemImages] = useState<(string | File)[]>([]);
@@ -110,6 +110,7 @@ export default function AddRental() {
   const onSubmit = async (formData: FormInputs) => {
     setIsLoading(true);
     setErrorMessage("");
+    console.log(import.meta.env.VITE_API_URL);
 
     const uploadedUrls: string[] = itemImages.filter(
       (image) => typeof image === "string",
