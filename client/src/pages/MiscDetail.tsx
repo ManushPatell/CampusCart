@@ -148,6 +148,7 @@ export default function MiscDetail() {
 
   return (
     <>
+      <div className="h-24" aria-hidden="true" />
       <div className="max-w-5xl mx-auto px-4 md:px-6 pb-8">
         {/* Title + price */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 md:gap-3 mb-4 md:mb-5">
