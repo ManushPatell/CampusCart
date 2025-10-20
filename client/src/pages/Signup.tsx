@@ -12,8 +12,8 @@ type FormInputs = {
   password: string;
 };
 
-const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
-const validPhoneNumberRegex = /^\d{3}-\d{3}-\d{4}$/;
+const waterlooEmailRegex = /^[a-zA-Z0-9._%+-]+@uwaterloo\.ca$/;
+const laurierEmailRegex = /^[a-zA-Z0-9._%+-]+@mylaurier\.ca$/;
 
 export default function SignUp() {
   const {
@@ -153,8 +153,10 @@ export default function SignUp() {
             rules={{
               required: "Field required",
               validate: {
-                macEmail: (v: string) =>
-                  macEmailRegex.test(v) || "Invalid McMaster email",
+                validEmail: (v: string) =>
+                  waterlooEmailRegex.test(v) ||
+                  laurierEmailRegex.test(v) ||
+                  "Invalid UWaterloo or Laurier email",
               },
             }}
             placeholder="Email"
