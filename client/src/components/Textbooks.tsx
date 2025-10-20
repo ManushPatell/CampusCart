@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TextbookCard from "../components/TextbookCard";
 // import mockTextbooks from "../data/mockTextbooks"; // not used; remove if unused
+import { useNavigate } from "react-router-dom";
 
 const mcmasterFaculties = [
   "Engineering",
@@ -17,6 +18,7 @@ const Textbooks = () => {
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     faculty: "",
@@ -70,6 +72,14 @@ const Textbooks = () => {
         <h1 className="text-4xl font-extrabold text-[#4A4032]">
           Textbook Listings
         </h1>
+      </div>
+
+      <div className="px-4 py-6">
+        <h2 className="text-2xl text-[#4A4032]">
+          Campus Cart does not guarantee all content in the classifieds section
+          to be true. Duplicate and/or multiple listings for the same content
+          will be deleted.
+        </h2>
       </div>
 
       {/* Search + Filters Button */}
@@ -199,9 +209,38 @@ const Textbooks = () => {
       {/* Listings */}
       <div className="px-4 py-8">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
-          {filteredTextbooks.map((book) => (
-            <TextbookCard key={book.id || book._id} textbook={book} />
-          ))}
+          {filteredTextbooks.map((book) => {
+            const id = String(book.id ?? book._id);
+            const path = `/textbooks/${encodeURIComponent(id)}`;
+            const label = `Open ${book.book_title ?? "textbook"} details`;
+
+            return (
+              <div
+                key={id}
+                role="link"
+                tabIndex={0}
+                aria-label={label}
+                onClick={() => navigate(path)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(path);
+                  }
+                }}
+                // 👇 prevents column split/ghost line + clips any ring/overflow
+                className="mb-6 inline-block w-full align-top cursor-pointer rounded-lg overflow-hidden outline-none
+                     focus-visible:ring-2 focus-visible:ring-[#4A4032] focus-visible:ring-offset-2
+                     break-inside-avoid"
+                style={{
+                  breakInside: "avoid-column", // modern
+                  WebkitColumnBreakInside: "avoid", // Safari/old WebKit
+                  pageBreakInside: "avoid", // older engines
+                }}
+              >
+                <TextbookCard textbook={book} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

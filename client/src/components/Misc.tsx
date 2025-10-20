@@ -1,5 +1,5 @@
-// pages/Misc.tsx
 import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import MiscCard, { MiscItem } from "../components/MiscCard";
 
 const Misc = () => {
@@ -22,7 +22,7 @@ const Misc = () => {
       .then((data) => {
         const raw = Array.isArray(data) ? data : [];
 
-        // 🔧 1-liner-ish normalization: always give the card `image: string[]`
+        // normalize image arrays to `image: string[]`
         const arr: MiscItem[] = raw.map((it: any) => ({
           ...it,
           image: Array.isArray(it.image)
@@ -38,6 +38,7 @@ const Misc = () => {
 
         setListings(arr);
 
+        // compute dynamic slider max from price
         const max = arr.reduce((m, it) => {
           const p =
             typeof it.price === "number"
@@ -195,7 +196,7 @@ const Misc = () => {
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  currentPrice: parseInt(e.target.value),
+                  currentPrice: parseInt(e.target.value, 10),
                 }))
               }
               className="w-full h-2 bg-[#E8DFD0] rounded-lg appearance-none cursor-pointer
@@ -234,7 +235,15 @@ const Misc = () => {
       <div className="px-4 py-8">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
           {filteredListings.map((item) => (
-            <MiscCard key={item.id} misc={item} />
+            <Link
+              key={item.id}
+              to={`/misc/${item.id}`}
+              className="block outline-none focus-visible:ring-2 focus-visible:ring-[#4A4032] rounded-xl"
+              aria-label={`Open listing: ${item.title ?? "misc item"}`}
+            >
+              {/* show card with non-interactive View Details to avoid nested links */}
+              <MiscCard misc={item} hideViewDetails />
+            </Link>
           ))}
         </div>
       </div>
