@@ -7,7 +7,6 @@ export interface User {
   lastName: string;
   email: string;
   password: string;
-  phoneNumber: string;
   role: "user" | "admin" | "banned";
 }
 
@@ -23,7 +22,7 @@ export const findUserById = async (
   id: string,
 ): Promise<Omit<User, "password">> => {
   const user = await sql<Omit<User, "password">[]>`
-        SELECT id, first_name as "firstName", last_name as "lastName", email, phone_number as "phoneNumber", role as "role"
+        SELECT id, first_name as "firstName", last_name as "lastName", email, role as "role"
         FROM users
         WHERE id=${id}
         `;
@@ -34,7 +33,6 @@ export const addUser = async (
   firstName: string,
   lastName: string,
   email: string,
-  phoneNumber: string,
   password: string,
   role: "admin" | "user" | "banned" = "user",
 ): Promise<
@@ -44,8 +42,8 @@ export const addUser = async (
     const newUser = await sql<
       Pick<User, "id" | "email" | "firstName" | "lastName">[]
     >`
-        INSERT INTO users (first_name, last_name, email, phone_number, password, role)
-        VALUES (${firstName}, ${lastName}, ${email}, ${phoneNumber}, ${password}, ${role})
+        INSERT INTO users (first_name, last_name, email, password, role)
+        VALUES (${firstName}, ${lastName}, ${email}, ${password}, ${role})
         RETURNING id, first_name as "firstName", last_name as "lastName", email;
         `;
 

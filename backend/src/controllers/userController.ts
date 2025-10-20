@@ -107,8 +107,8 @@ export async function getUserMisc(req: Request, res: Response) {
 }
 
 export async function postNewUser(req: Request, res: Response) {
-  const { firstName, lastName, email, phoneNumber, password } = req.body;
-  if (!firstName || !lastName || !email || !phoneNumber || !password) {
+  const { firstName, lastName, email, password } = req.body;
+  if (!firstName || !lastName || !email  || !password) {
     res.status(400).json({
       error:
         "Must provide a first name, last name, email, password, and phone number.",
@@ -133,7 +133,6 @@ export async function postNewUser(req: Request, res: Response) {
       firstName,
       lastName,
       email,
-      phoneNumber,
       hash,
     );
     if (!newUser) {

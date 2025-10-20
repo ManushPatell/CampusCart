@@ -34,8 +34,6 @@ const router = express.Router();
  *                      type: string
  *                  email:
  *                      type: string
- *                  phoneNumber:
- *                      type: number
  *       404:
  *           description: User information not found.
  *           content:

@@ -141,7 +141,7 @@ export default function AddRental() {
       }
     } catch (err) {
       console.error("Upload error:", err);
-      setErrorMessage("One or more images failed to upload.");
+      setErrorMessage("One or more images failed to upload. Please wait, then try again.");
       setIsLoading(false);
       return;
     }
@@ -345,12 +345,14 @@ export default function AddRental() {
                   <img
                     src={url}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover"
+                    className="w-full h-32 object-contain"
                   />
                   <button
                     type="button"
-                    onClick={() => {
-                      setItemImages((prev) => [...prev].splice(index, 1));
+                   onClick={() => {
+                      setItemImages((prev) => {
+                        return prev.filter((_, i) => i != index);
+                      });
                     }}
                     className="absolute top-2 right-2 rounded-full bg-black/60 text-white text-xs px-2 py-0.5 hover:bg-black/80"
                     aria-label={`Remove image ${index + 1}`}

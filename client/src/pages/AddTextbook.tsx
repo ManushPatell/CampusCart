@@ -105,7 +105,7 @@ export default function AddTextbook() {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setErrorMessage("One or more images failed to upload.");
+      setErrorMessage("One or more images failed to upload. Please wait, then try again.");
       setIsLoading(false);
       return;
     }
@@ -303,6 +303,7 @@ export default function AddTextbook() {
           </button>
         </div>
 
+        {isUploadingImage && <p>Uploading image...</p>}
         {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {itemImages.map((image, index) => {
@@ -316,7 +317,7 @@ export default function AddTextbook() {
                   <img
                     src={url}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover"
+                    className="w-full h-32 object-contain"
                   />
                   <button
                     type="button"

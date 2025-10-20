@@ -6,7 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
 
-const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
+const waterlooEmailRegex = /^[a-zA-Z0-9._%+-]+@uwaterloo\.ca$/;
+const laurierEmailRegex = /^[a-zA-Z0-9._%+-]+@mylaurier\.ca$/;
 
 type FormInputs = {
   email: string;
@@ -111,8 +112,10 @@ export default function Login() {
             rules={{
               required: "Field required",
               validate: {
-                macEmail: (v: string) =>
-                  macEmailRegex.test(v) || "Invalid McMaster email",
+               validEmail: (v: string) =>
+                  waterlooEmailRegex.test(v) ||
+                  laurierEmailRegex.test(v) ||
+                  "Invalid UWaterloo or Laurier email",
               },
             }}
             placeholder="Email"

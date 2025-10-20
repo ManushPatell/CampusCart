@@ -24,6 +24,7 @@ import AddMisc from "./pages/AddMisc";
 import AboutUs from "./pages/AboutUs";
 import ResetPass from "./pages/ResetPass";
 import NewPassword from "./pages/NewPassword";
+import Logger from "./components/Logger"
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ createRoot(document.getElementById("root")!).render(
       <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
         <AuthProvider>
+          <Logger />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="about" element={<AboutUs />} />

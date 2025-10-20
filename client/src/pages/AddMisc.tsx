@@ -79,7 +79,7 @@ export default function AddMisc() {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setErrorMessage("One or more images failed to upload.");
+      setErrorMessage("One or more images failed to upload. Please wait, then try again.");
       setIsLoading(false);
       return;
     }
@@ -272,7 +272,7 @@ export default function AddMisc() {
                   <img
                     src={url}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover"
+                    className="w-full h-32 object-contain"
                   />
                   {/* remove */}
                   <button

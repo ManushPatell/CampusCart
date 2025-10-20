@@ -45,7 +45,7 @@ CREATE TABLE
       "title" TEXT,
       "seller" UUID REFERENCES users (id) ON DELETE cascade,
       "address" TEXT NOT NULL,
-      "post_date" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "post_date" DATE NOT NULL DEFAULT CURRENT_DATE,
       "date_available" DATE NOT NULL,
       "description" TEXT NOT NULL,
       "house_type" HOUSE_TYPE NOT NULL,

@@ -42,8 +42,6 @@ const router = express.Router();
  *                      type: string
  *                  email:
  *                      type: string
- *                  phoneNumber:
- *                      type: integer
  *       500:
  *           description: An error occurred.
  *           content:
@@ -83,8 +81,6 @@ router.get("/:id/misc", getUserMisc);
  *                     type: string
  *                   email:
  *                     type: string
- *                   phoneNumber:
- *                     type: integer
  *       500:
  *           description: An error occured.
  *           content:
@@ -117,8 +113,6 @@ router.get("/", authenticateToken, getAllUsers);
  *                  email:
  *                      type: string
  *                  password:
- *                      type: string
- *                  phoneNumber:
  *                      type: string
  *     responses:
  *       201:

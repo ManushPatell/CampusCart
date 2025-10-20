@@ -18,6 +18,7 @@ import authRoutes from "./routes/authRoutes";
 import textbookRoutes from "./routes/textbookRoute";
 import miscRoutes from "./routes/miscRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import logRoutes from "./routes/logRoutes"
 
 import cors from "cors";
 import morgan from "morgan";
@@ -66,6 +67,7 @@ app.use("/api/rentals", rentalRoutes);
 app.use("/api/misc", miscRoutes);
 app.use("/api/textbooks", textbookRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/logs", logRoutes)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(`Thrown error: ${err.stack}`);
