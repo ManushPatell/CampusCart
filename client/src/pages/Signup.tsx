@@ -9,12 +9,11 @@ type FormInputs = {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
   password: string;
 };
 
-const macEmailRegex = /^[a-zA-Z0-9._%+-]+@mcmaster\.ca$/;
-const validPhoneNumberRegex = /^\d{3}-\d{3}-\d{4}$/;
+const waterlooEmailRegex = /^[a-zA-Z0-9._%+-]+@uwaterloo\.ca$/;
+const laurierEmailRegex = /^[a-zA-Z0-9._%+-]+@mylaurier\.ca$/;
 
 export default function SignUp() {
   const {
@@ -27,7 +26,6 @@ export default function SignUp() {
       firstName: "",
       lastName: "",
       email: "",
-      phoneNumber: "",
       password: "",
     },
   });
@@ -155,27 +153,14 @@ export default function SignUp() {
             rules={{
               required: "Field required",
               validate: {
-                macEmail: (v: string) =>
-                  macEmailRegex.test(v) || "Invalid McMaster email",
+                validEmail: (v: string) =>
+                  waterlooEmailRegex.test(v) ||
+                  laurierEmailRegex.test(v) ||
+                  "Invalid UWaterloo or Laurier email",
               },
             }}
             placeholder="Email"
             autocomplete="username"
-          />
-          <ControlledInput
-            name="phoneNumber"
-            control={control}
-            errors={errors}
-            type="text"
-            rules={{
-              required: "Field required",
-              validate: {
-                validNumber: (v: string) =>
-                  validPhoneNumberRegex.test(v) ||
-                  "Must match format XXX-XXX-XXXX",
-              },
-            }}
-            placeholder="Phone number"
           />
           <ControlledInput
             name="password"

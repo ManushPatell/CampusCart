@@ -78,6 +78,14 @@ export default function AddTextbook() {
     const uploadedUrls: string[] = itemImages.filter(
       (image) => typeof image === "string",
     );
+
+    // If no photos are uploaded, don't submit
+    if (itemImages.length === 0) {
+      setErrorMessage("Listing photos are required");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       for (const file of itemImages.filter((item) => item instanceof File)) {
         const imageForm = new FormData();
