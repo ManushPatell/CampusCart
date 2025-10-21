@@ -111,12 +111,6 @@ export default function Login() {
             errors={errors}
             rules={{
               required: "Field required",
-              validate: {
-                validEmail: (v: string) =>
-                  waterlooEmailRegex.test(v) ||
-                  laurierEmailRegex.test(v) ||
-                  "Invalid UWaterloo or Laurier email",
-              },
             }}
             placeholder="Email"
             autocomplete="username"

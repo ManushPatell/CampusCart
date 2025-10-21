@@ -208,7 +208,7 @@ const Textbooks = () => {
 
       {/* Listings */}
       <div className="px-4 py-8">
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredTextbooks.map((book) => {
             const id = String(book.id ?? book._id);
             const path = `/textbooks/${encodeURIComponent(id)}`;
@@ -231,11 +231,6 @@ const Textbooks = () => {
                 className="mb-6 inline-block w-full align-top cursor-pointer rounded-lg overflow-hidden outline-none
                      focus-visible:ring-2 focus-visible:ring-[#4A4032] focus-visible:ring-offset-2
                      break-inside-avoid"
-                style={{
-                  breakInside: "avoid-column", // modern
-                  WebkitColumnBreakInside: "avoid", // Safari/old WebKit
-                  pageBreakInside: "avoid", // older engines
-                }}
               >
                 <TextbookCard textbook={book} />
               </div>

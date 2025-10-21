@@ -233,12 +233,12 @@ const Misc = () => {
 
       {/* Listings */}
       <div className="px-4 py-8">
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredListings.map((item) => (
             <Link
               key={item.id}
               to={`/misc/${item.id}`}
-              className="block outline-none focus-visible:ring-2 focus-visible:ring-[#4A4032] rounded-xl"
+              className="outline-none inline focus-visible:ring-2 focus-visible:ring-[#4A4032] rounded-xl"
               aria-label={`Open listing: ${item.title ?? "misc item"}`}
             >
               {/* show card with non-interactive View Details to avoid nested links */}
