@@ -84,9 +84,12 @@ services:
       - webroot:/var/www/certbot # ACME challenge path
       - certs:/etc/letsencrypt
     entrypoint: >
-      sh -c "certbot certonly \
-      --webroot -w /var/www/certbot \
-      -d campus-cart.ca --agree-tos --non-interactive --register-unsafely-without-email"
+      sh -c "while true; do 
+        certbot certonly \
+        --webroot -w /var/www/certbot \
+        -d campus-cart.ca --agree-tos --non-interactive --register-unsafely-without-email;
+        sleep 3d;
+      done"
     depends_on:
       - client
 

@@ -38,7 +38,7 @@ docker-compose up
 Cron job to run the certbot image every night at 3AM.
 
 '''bash
-0 3 * * * docker compose run --rm certbot renew && docker compose kill -s SIGHUP nginx
+0 3 * * * docker-compose run --rm certbot renew && docker-compose kill -s SIGHUP nginx
 '''
 
 ## Getting into the db
