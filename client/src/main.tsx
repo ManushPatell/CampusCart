@@ -44,13 +44,14 @@ createRoot(document.getElementById("root")!).render(
 
               <Route element={<ProtectedRoute />}>
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="rentals/:id" element={<HouseDetail />} />
-                <Route path="textbooks/:id" element={<TextbookDetail />} />
-                <Route path="misc/:id" element={<MiscDetail />} />
                 <Route path="rentals/create" element={<AddRental />} />
                 <Route path="textbooks/create" element={<AddTextbook />} />
                 <Route path="misc/create" element={<AddMisc />} />
               </Route>
+
+              <Route path="rentals/:id" element={<HouseDetail />} />
+              <Route path="textbooks/:id" element={<TextbookDetail />} />
+              <Route path="misc/:id" element={<MiscDetail />} />
 
               <Route path="textbooks" element={<Textbooks />} />
               <Route path="rentals" element={<Houses />} />
