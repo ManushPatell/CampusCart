@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      TZ: America/Toronto 
+      TZ: America/New_York 
     ports:
       - "${DB_PORT}:5432"
     networks:
@@ -84,12 +84,9 @@ services:
       - webroot:/var/www/certbot # ACME challenge path
       - certs:/etc/letsencrypt
     entrypoint: >
-      sh -c "while true; do 
-        certbot certonly \
-        --webroot -w /var/www/certbot \
-        -d campus-cart.ca --agree-tos --non-interactive --register-unsafely-without-email;
-        sleep 3d;
-      done"
+      sh -c "certbot certonly \
+      --webroot -w /var/www/certbot \
+      -d campus-cart.ca --agree-tos --non-interactive --register-unsafely-without-email"
     depends_on:
       - client
 
