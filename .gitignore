@@ -4,3 +4,4 @@ node_modules/
 certs/
 site/
 logs/
+.DS_Store
