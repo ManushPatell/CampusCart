@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { BookImage } from "lucide-react";
 
 const faculties = Object.freeze([
+  "Math",
   "Engineering",
   "Science",
   "Social Science",

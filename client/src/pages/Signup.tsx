@@ -10,6 +10,7 @@ type FormInputs = {
   lastName: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
 const waterlooEmailRegex = /^[a-zA-Z0-9._%+-]+@uwaterloo\.ca$/;
@@ -20,6 +21,7 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     control,
+    watch,
     setError,
   } = useForm<FormInputs>({
     defaultValues: {
@@ -27,6 +29,7 @@ export default function SignUp() {
       lastName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -34,6 +37,8 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const passwordValue = watch("password");
 
   // Lock background scroll while this view is mounted
   useEffect(() => {
@@ -47,6 +52,16 @@ export default function SignUp() {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     try {
       setIsLoading(true);
+
+      if (data.password !== data.confirmPassword) {
+        setError("confirmPassword", {
+          type: "manual",
+          message: "Passwords do not match",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -181,6 +196,21 @@ export default function SignUp() {
             placeholder="Password"
             type="password"
             autocomplete="new-password"
+          />
+          <ControlledInput
+            name="confirmPassword"
+            control={control}
+            errors={errors}
+            type="password"
+            placeholder="Confirm password"
+            autocomplete="new-password"
+            rules={{
+              required: "Field required",
+              validate: {
+                matchesPassword: (v: string) =>
+                  v === passwordValue || "Passwords do not match",
+              },
+            }}
           />
 
           {errorMessage && (
