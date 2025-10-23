@@ -313,6 +313,10 @@ export default function Dashboard() {
                     <div className="text-secondary-fg text-base">
                       by {t.author}
                     </div>
+                    <span className="inline-flex items-center gap-1 font-medium">
+                      <Banknote className="h-6 w-6 opacity-70" /> $
+                      {t.price}
+                    </span>
 
                     <div className="flex flex-wrap gap-2 text-secondary-fg text-xs">
                       {t.edition ? (
