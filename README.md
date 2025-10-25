@@ -29,8 +29,7 @@ docker system prune -a --volumes -f
 ```
 
 ```bash
-docker-compose build
-docker-compose up
+docker-compose up --build -d
 ```
 
 ## HTTPS Renewal
