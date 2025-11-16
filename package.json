@@ -1,6 +1,9 @@
 {
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.888.0",
-    "multer": "^2.0.2"
+  "name": "campus-cart",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose -f docker-compose.dev.yml up --build",
+    "prod": "docker compose -f docker-compose.yml up --build",
+    "down": "docker compose down"
   }
 }

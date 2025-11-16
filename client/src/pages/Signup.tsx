@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 type FormInputs = {
@@ -37,6 +37,11 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
+  const redirectTo = decodeURIComponent(redirect ?? "") || "/dashboard";
 
   const passwordValue = watch("password");
 
@@ -95,7 +100,7 @@ export default function SignUp() {
         );
         if (loginRes.status === 200) {
           queryClient.invalidateQueries({ queryKey: ["auth"] });
-          navigate(`/dashboard`);
+          navigate(redirectTo);
         } else if (loginRes.status === 400)
           setErrorMessage("Failed to provide email and password.");
         else if (loginRes.status === 401)
