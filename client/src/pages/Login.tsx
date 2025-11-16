@@ -2,12 +2,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ControlledInput from "../components/forms/ControlledInput";
 import Submit from "../components/forms/Submit";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-
-const waterlooEmailRegex = /^[a-zA-Z0-9._%+-]+@uwaterloo\.ca$/;
-const laurierEmailRegex = /^[a-zA-Z0-9._%+-]+@mylaurier\.ca$/;
 
 type FormInputs = {
   email: string;
@@ -18,6 +15,11 @@ export default function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
+  const redirectTo = decodeURIComponent(redirect ?? "") || "/dashboard";
 
   const {
     handleSubmit,
@@ -31,7 +33,7 @@ export default function Login() {
   // Redirect if already authed
   useEffect(() => {
     if (user) navigate("/dashboard");
-  }, [user, navigate]);
+  }, [navigate]);
 
   // Lock background scroll while this view is mounted
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function Login() {
 
       if (res.status === 200) {
         queryClient.invalidateQueries({ queryKey: ["auth"] });
-        navigate("/dashboard");
+        navigate(redirectTo, { replace: true });
       } else if (res.status === 400) {
         setErrorMessage("Failed to provide email and password.");
       } else if (res.status === 401) {

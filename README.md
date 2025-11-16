@@ -1,21 +1,11 @@
 # Development
 
-To run CampusCart locally, make sure you have Docker installed.
+To run CampusCart locally, make sure you have Docker installed. From the root folder:
 
 Run 
 ```bash
-docker-compose -f docker-compose.dev.yml build
-docker-compose -f docker-compose.dev.yml up
+npm run dev
 ```
-
-You might have to run
-```bash
-docker compose -f docker-compose.dev.yml build
-docker compose -f docker-compose.dev.yml up
-```
-
-depending on how you installed docker compose I think.
-
 The frontend and backend should run based on the config you provide it in your `.env` file.
 Make a copy, and modify the `.env.example` if you have not already.
 
@@ -29,8 +19,7 @@ docker system prune -a --volumes -f
 ```
 
 ```bash
-docker-compose build
-docker-compose up
+npm run prod
 ```
 
 ## HTTPS Renewal
