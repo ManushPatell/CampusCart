@@ -43,3 +43,11 @@ docker-compose exec -it db psql -U <username> -d <database>
 ```bash
 docker volume rm campuscart_db-data
 ```
+
+If it says "npm ci" failed to work. It's likely because the disk storage is full on the ec2. To fix this, clear all docker cached images and containers not in use. Make sure __NOT__ to clear volumes.
+
+You can also clean npm cache with 
+
+```bash
+npm cache clean --force
+```
