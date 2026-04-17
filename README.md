@@ -1,11 +1,19 @@
+# Status
+
+Sadly, the AWS costs were too high to keep CampusCart running. Thank you for your support!
+
+---
+
 # Development
 
 To run CampusCart locally, make sure you have Docker installed. From the root folder:
 
-Run 
+Run
+
 ```bash
 npm run dev
 ```
+
 The frontend and backend should run based on the config you provide it in your `.env` file.
 Make a copy, and modify the `.env.example` if you have not already.
 
@@ -46,7 +54,7 @@ docker volume rm campuscart_db-data
 
 If it says "npm ci" failed to work. It's likely because the disk storage is full on the ec2. To fix this, clear all docker cached images and containers not in use. Make sure __NOT__ to clear volumes.
 
-You can also clean npm cache with 
+You can also clean npm cache with
 
 ```bash
 npm cache clean --force
